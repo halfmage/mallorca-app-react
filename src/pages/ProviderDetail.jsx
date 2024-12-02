@@ -6,10 +6,41 @@ import { useTranslation } from 'react-i18next';
 const ProviderDetail = () => {
   const { id } = useParams();
   const [provider, setProvider] = useState(null);
+  const [providerImages, setProviderImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const [savingStatus, setSavingStatus] = useState('idle');
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const { t } = useTranslation();
+
+  const fetchProviderImages = useCallback(async (providerId) => {
+    try {
+      const { data, error } = await supabase
+        .from('provider_images')
+        .select('*')
+        .eq('provider_id', providerId);
+
+      if (error) {
+        console.error('Error fetching provider images:', error.message);
+        return;
+      }
+
+      // Get public URLs for all images
+      const imagesWithUrls = await Promise.all(data.map(async (image) => {
+        const { data: publicUrlData } = supabase.storage
+          .from('provider-images')
+          .getPublicUrl(image.image_url);
+        return {
+          ...image,
+          publicUrl: publicUrlData.publicUrl
+        };
+      }));
+
+      setProviderImages(imagesWithUrls);
+    } catch (error) {
+      console.error('Error processing provider images:', error.message);
+    }
+  }, []);
 
   const fetchProvider = useCallback(async () => {
     try {
@@ -18,7 +49,6 @@ const ProviderDetail = () => {
         .select(`
           id,
           name,
-          image_url,
           maincategory_id,
           maincategories (
             id,
@@ -34,20 +64,14 @@ const ProviderDetail = () => {
         return;
       }
 
-      if (data.image_url) {
-        const { data: publicUrlData } = supabase.storage
-          .from('provider-images')
-          .getPublicUrl(data.image_url);
-        data.image_url = publicUrlData.publicUrl;
-      }
-
       setProvider(data);
+      await fetchProviderImages(data.id);
       setLoading(false);
     } catch (error) {
       console.error(t('providerDetail.error.fetchProvider'), error.message);
       setLoading(false);
     }
-  }, [id, t]);
+  }, [id, t, fetchProviderImages]);
 
   const checkIfSaved = useCallback(async () => {
     try {
@@ -124,41 +148,79 @@ const ProviderDetail = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">{provider.name}</h1>
-            {provider.maincategories && (
-              <p className="text-gray-600">{provider.maincategories.name}</p>
+    <div className="max-w-4xl mx-auto p-4">
+      {loading ? (
+        <div className="text-center">{t('common.loading')}</div>
+      ) : provider ? (
+        <div>
+          <h1 className="text-3xl font-bold mb-4">{provider.name}</h1>
+          
+          {/* Image Gallery */}
+          <div className="mb-6">
+            {providerImages.length > 0 ? (
+              <div>
+                {/* Main Image Display */}
+                <div className="relative aspect-w-16 aspect-h-9 mb-4">
+                  <img
+                    src={providerImages[activeImageIndex].publicUrl}
+                    alt={`${provider.name} - ${activeImageIndex + 1}`}
+                    className="object-cover w-full h-full rounded-lg"
+                  />
+                </div>
+                
+                {/* Thumbnail Navigation */}
+                {providerImages.length > 1 && (
+                  <div className="flex space-x-2 overflow-x-auto">
+                    {providerImages.map((image, index) => (
+                      <button
+                        key={image.id}
+                        onClick={() => setActiveImageIndex(index)}
+                        className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 
+                          ${index === activeImageIndex ? 'border-blue-500' : 'border-transparent'}`}
+                      >
+                        <img
+                          src={image.publicUrl}
+                          alt={`${provider.name} thumbnail ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="bg-gray-100 aspect-w-16 aspect-h-9 rounded-lg flex items-center justify-center">
+                <span className="text-gray-400">{t('providerDetail.noImages')}</span>
+              </div>
             )}
           </div>
+
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold mb-2">{t('providerDetail.category')}</h2>
+            <p>{provider.maincategories?.name}</p>
+          </div>
+
           <button
             onClick={handleSaveToggle}
             disabled={savingStatus === 'loading'}
-            className={`px-4 py-2 rounded ${
+            className={`${
               isSaved
                 ? 'bg-red-500 hover:bg-red-600'
                 : 'bg-blue-500 hover:bg-blue-600'
-            } text-white transition-colors duration-200`}
+            } text-white px-4 py-2 rounded transition-colors`}
           >
-            {savingStatus === 'loading' 
-              ? t('providerDetail.saveButton.saving')
-              : isSaved 
-                ? t('providerDetail.saveButton.unsave')
-                : t('providerDetail.saveButton.save')
-            }
+            {savingStatus === 'loading'
+              ? t('common.loading')
+              : isSaved
+              ? t('providerDetail.saveButton.remove')
+              : t('providerDetail.saveButton.save')}
           </button>
         </div>
-
-        {provider.image_url && (
-          <img
-            src={provider.image_url}
-            alt={provider.name}
-            className="w-full h-64 object-cover rounded-lg mb-6"
-          />
-        )}
-      </div>
+      ) : (
+        <div className="text-center text-red-500">
+          {t('providerDetail.error.notFound')}
+        </div>
+      )}
     </div>
   );
 };

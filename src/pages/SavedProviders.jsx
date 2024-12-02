@@ -19,27 +19,38 @@ const SavedProviders = () => {
           providers (
             id,
             name,
-            image_url
+            maincategory_id,
+            maincategories (
+              name
+            ),
+            provider_images (
+              id,
+              image_url
+            )
           )
         `)
         .eq('user_id', user.id);
 
       if (error) throw error;
 
-      // Process the providers to get public URLs for images
-      const processedProviders = data.map(item => {
+      // Process the providers to get public URLs for first images
+      const processedProviders = await Promise.all(data.map(async (item) => {
         const provider = item.providers;
-        if (provider.image_url) {
+        const firstImage = provider.provider_images?.[0];
+        
+        if (firstImage) {
           const { data: publicUrlData } = supabase.storage
             .from('provider-images')
-            .getPublicUrl(provider.image_url);
+            .getPublicUrl(firstImage.image_url);
+          
           return {
             ...provider,
-            image_url: publicUrlData.publicUrl
+            firstImage: publicUrlData.publicUrl
           };
         }
+        
         return provider;
-      });
+      }));
 
       setSavedProviders(processedProviders);
       setLoading(false);
@@ -103,35 +114,48 @@ const SavedProviders = () => {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {savedProviders.map((provider) => (
             <div
               key={provider.id}
-              className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
+              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
             >
-              <Link to={`/provider/${provider.id}`}>
-                {provider.image_url ? (
+              {/* Provider Image */}
+              <div className="h-48 w-full overflow-hidden bg-gray-100">
+                {provider.firstImage ? (
                   <img
-                    src={provider.image_url}
+                    src={provider.firstImage}
                     alt={provider.name}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
-                    <p className="text-gray-500">{t('home.noImage')}</p>
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    {t('common.noImage')}
                   </div>
                 )}
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold">{provider.name}</h2>
+              </div>
+
+              {/* Provider Details */}
+              <div className="p-4">
+                <h3 className="text-xl font-semibold mb-2">{provider.name}</h3>
+                {provider.maincategories && (
+                  <p className="text-gray-600 mb-4">{provider.maincategories.name}</p>
+                )}
+
+                <div className="flex justify-between items-center">
+                  <Link
+                    to={`/provider/${provider.id}`}
+                    className="text-blue-500 hover:text-blue-600"
+                  >
+                    {t('savedProviders.viewDetails')}
+                  </Link>
+                  <button
+                    onClick={() => handleUnsave(provider.id)}
+                    className="text-red-500 hover:text-red-600"
+                  >
+                    {t('savedProviders.unsave')}
+                  </button>
                 </div>
-              </Link>
-              <div className="px-4 pb-4">
-                <button
-                  onClick={() => handleUnsave(provider.id)}
-                  className="text-red-500 hover:text-red-600 text-sm font-medium"
-                >
-                  {t('savedProviders.unsave')}
-                </button>
               </div>
             </div>
           ))}

@@ -1,22 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { supabase } from '../utils/supabaseClient';
 
 const ProviderCard = ({ provider }) => {
   const { t } = useTranslation();
+  const [firstImage, setFirstImage] = useState(null);
+
+  useEffect(() => {
+    const fetchFirstImage = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('provider_images')
+          .select('image_url')
+          .eq('provider_id', provider.id)
+          .order('created_at', { ascending: true })
+          .limit(1)
+          .single();
+
+        if (error) {
+          console.error('Error fetching provider image:', error.message);
+          return;
+        }
+
+        if (data) {
+          const { data: publicUrlData } = supabase.storage
+            .from('provider-images')
+            .getPublicUrl(data.image_url);
+          setFirstImage(publicUrlData.publicUrl);
+        }
+      } catch (error) {
+        console.error('Error processing provider image:', error.message);
+      }
+    };
+
+    fetchFirstImage();
+  }, [provider.id]);
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Provider Image */}
-      {provider.image_url && (
-        <div className="h-48 w-full overflow-hidden">
+      <div className="h-48 w-full overflow-hidden bg-gray-100">
+        {firstImage ? (
           <img 
-            src={provider.image_url} 
+            src={firstImage} 
             alt={provider.name} 
             className="w-full h-full object-cover"
           />
-        </div>
-      )}
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-400">
+            {t('common.noImage')}
+          </div>
+        )}
+      </div>
 
       {/* Provider Details */}
       <div className="p-4">

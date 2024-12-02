@@ -9,10 +9,13 @@ import AdminDashboard from './pages/AdminDashboard';
 import ProviderDetail from './pages/ProviderDetail';
 import SavedProviders from './pages/SavedProviders';
 import EditProvider from './pages/EditProvider';
+import ProviderDashboard from './pages/ProviderDashboard';
 import withAdminAuth from './hoc/withAdminAuth';
+import withProviderAuth from './hoc/withProviderAuth';
 
 const AdminDashboardWithAuth = withAdminAuth(AdminDashboard);
 const EditProviderWithAuth = withAdminAuth(EditProvider);
+const ProviderDashboardWithAuth = withProviderAuth(ProviderDashboard);
 
 const App = () => {
   return (
@@ -26,6 +29,7 @@ const App = () => {
         <Route path="/admin/edit-provider/:id" element={<EditProviderWithAuth />} />
         <Route path="/provider/:id" element={<ProviderDetail />} />
         <Route path="/saved" element={<SavedProviders />} />
+        <Route path="/dashboard" element={<ProviderDashboardWithAuth />} />
       </Routes>
     </Layout>
   );

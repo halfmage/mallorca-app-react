@@ -118,6 +118,18 @@
         }
       }
     },
+    "subscription": {
+      "title": "Provider Subscription",
+      "currentPlan": {
+        "title": "Current Plan",
+        "status": "Status: {{status}}, Valid until: {{date}}"
+      },
+      "billingInterval": "Billed {{interval}}ly",
+      "subscribe": "Subscribe Now",
+      "alreadySubscribed": "Already Subscribed",
+      "approved": "Your subscription is approved",
+      "pendingApproval": "Waiting for admin approval"
+    },
     "common": {
       "loading": "Loading...",
       "updating": "Updating...",

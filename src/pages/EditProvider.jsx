@@ -65,17 +65,17 @@ const EditProvider = () => {
 
       setImages(imagesWithUrls);
     } catch (error) {
-      console.error('Error fetching provider:', error);
+      console.error(t('admin.error.fetchProvider'), error);
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, t]);
 
   // Fetch main categories
   const fetchMainCategories = async () => {
     const { data, error } = await supabase.from('maincategories').select('*');
     if (error) {
-      console.error('Error fetching main categories:', error);
+      console.error(t('admin.error.fetchCategories'), error);
     } else {
       setMainCategories(data);
     }
@@ -118,8 +118,9 @@ const EditProvider = () => {
 
       // Update local state
       setImages(prev => prev.filter(img => img.id !== imageId));
+      alert(t('common.success.imageDeleted'));
     } catch (error) {
-      console.error('Error deleting image:', error);
+      console.error(t('admin.error.deleteImage'), error);
     }
   };
 
@@ -143,8 +144,9 @@ const EditProvider = () => {
         if (error) throw error;
       }
       setReorderMode(false);
+      alert(t('common.success.orderSaved'));
     } catch (error) {
-      console.error('Error saving image order:', error);
+      console.error(t('admin.error.saveOrder'), error);
     } finally {
       setSaving(false);
     }
@@ -191,8 +193,9 @@ const EditProvider = () => {
       // Refresh provider data
       await fetchProvider();
       setNewImages([]);
+      alert(t('common.success.saved'));
     } catch (error) {
-      console.error('Error updating provider:', error);
+      console.error(t('admin.error.updateProvider'), error);
     } finally {
       setSaving(false);
     }

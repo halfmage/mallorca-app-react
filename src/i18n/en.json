@@ -16,6 +16,7 @@
       "noProviders": "No providers available at the moment",
       "category": "Category",
       "saves": "Saves",
+      "noSaves": "No saves yet",
       "viewDetails": "View Details",
       "noCategory": "Uncategorized",
       "noImage": "No image available",
@@ -26,6 +27,7 @@
       "saveButton": {
         "save": "Save Provider",
         "unsave": "Unsave Provider",
+        "remove": "Remove",
         "saving": "Saving...",
         "loginRequired": "Please log in to save providers"
       },
@@ -38,7 +40,12 @@
       "title": "Saved Providers",
       "empty": "You haven't saved any providers yet.",
       "browseProviders": "Browse Providers",
-      "unsave": "Unsave"
+      "unsave": "Unsave",
+      "viewDetails": "View Details",
+      "error": {
+        "fetch": "Error fetching saved providers",
+        "remove": "Error removing provider"
+      }
     },
     "profile": {
       "title": "Profile",
@@ -50,6 +57,7 @@
       "logoutSuccess": "You have been successfully logged out",
       "updateProfile": "Update Profile",
       "notLoggedIn": "Please log in to view your profile",
+      "userType": "Account Type",
       "becomeProvider": {
         "title": "Become a Provider",
         "description": "Upgrade your account to a provider account to list your business and connect with potential clients.",
@@ -68,7 +76,9 @@
         "error": {
           "noFile": "No file selected.",
           "upload": "Error uploading avatar"
-        }
+        },
+        "change": "Change Avatar",
+        "remove": "Remove Avatar"
       },
       "userId": "User ID",
       "success": {
@@ -81,7 +91,9 @@
     "admin": {
       "dashboard": "Admin Dashboard",
       "providers": "Providers",
+      "providerList": "Provider List",
       "addProvider": "Add Provider",
+      "editProvider": "Edit Provider",
       "providerName": "Provider Name",
       "providerEmail": "Email",
       "providerPhone": "Phone",
@@ -89,9 +101,25 @@
       "providerServices": "Services",
       "servicesPlaceholder": "List the services offered by this provider",
       "providerAdded": "Provider added successfully!",
+      "noProviders": "No providers available",
+      "providerNotFound": "Provider not found",
+      "viewDetails": "View Details",
+      "edit": "Edit",
+      "category": "Category",
+      "selectCategory": "Select a category",
+      "images": "Images",
+      "reorderImages": "Reorder Images",
+      "saveOrder": "Save Order",
+      "deleteImage": "Delete",
       "error": {
         "notAdmin": "You don't have permission to access this page.",
-        "addProvider": "Error adding provider"
+        "addProvider": "Error adding provider",
+        "fetch": "Error fetching providers",
+        "fetchProvider": "Error fetching provider details",
+        "updateProvider": "Error updating provider",
+        "deleteImage": "Error deleting image",
+        "saveOrder": "Error saving image order",
+        "fetchCategories": "Error fetching categories"
       }
     },
     "providerDashboard": {
@@ -116,27 +144,31 @@
           "actions": "Actions",
           "message": "Send Message"
         }
-      }
-    },
-    "subscription": {
-      "title": "Provider Subscription",
-      "currentPlan": {
-        "title": "Current Plan",
-        "status": "Status: {{status}}, Valid until: {{date}}"
       },
-      "billingInterval": "Billed {{interval}}ly",
-      "subscribe": "Subscribe Now",
-      "alreadySubscribed": "Already Subscribed",
-      "approved": "Your subscription is approved",
-      "pendingApproval": "Waiting for admin approval"
+      "error": {
+        "notFound": "Provider profile not found"
+      },
+      "viewPublicProfile": "View Public Profile",
+      "editProfile": "Edit Profile"
     },
     "common": {
       "loading": "Loading...",
       "updating": "Updating...",
+      "uploading": "Uploading...",
+      "saving": "Saving...",
+      "save": "Save",
+      "update": "Update",
+      "back": "Back",
+      "noImage": "No image available",
+      "user": "User",
       "error": {
         "generic": "An error occurred",
         "unauthorized": "You are not authorized to view this page"
       },
-      "success": "Success!"
+      "success": {
+        "saved": "Changes saved successfully",
+        "imageDeleted": "Image deleted successfully",
+        "orderSaved": "Image order saved successfully"
+      }
     }
 }

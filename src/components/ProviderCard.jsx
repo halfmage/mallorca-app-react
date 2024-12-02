@@ -6,6 +6,7 @@ import { supabase } from '../utils/supabaseClient';
 const ProviderCard = ({ provider }) => {
   const { t } = useTranslation();
   const [firstImage, setFirstImage] = useState(null);
+  const [savesCount, setSavesCount] = useState(0);
 
   useEffect(() => {
     const fetchFirstImage = async () => {
@@ -18,7 +19,7 @@ const ProviderCard = ({ provider }) => {
           .limit(1)
           .single();
 
-        if (error) {
+        if (error && error.code !== 'PGRST116') { // Ignore "no rows returned" error
           console.error('Error fetching provider image:', error.message);
           return;
         }
@@ -34,7 +35,22 @@ const ProviderCard = ({ provider }) => {
       }
     };
 
+    const fetchSavesCount = async () => {
+      try {
+        const { count, error } = await supabase
+          .from('saved_providers')
+          .select('*', { count: 'exact', head: true })
+          .eq('provider_id', provider.id);
+
+        if (error) throw error;
+        setSavesCount(count || 0);
+      } catch (error) {
+        console.error('Error fetching saves count:', error.message);
+      }
+    };
+
     fetchFirstImage();
+    fetchSavesCount();
   }, [provider.id]);
 
   return (
@@ -69,19 +85,19 @@ const ProviderCard = ({ provider }) => {
         </div>
 
         {/* Saves Count */}
-        <div className="flex items-center">
+        <div className="flex items-center mb-4">
           <span className="text-sm text-gray-600 mr-2">
             {t('home.saves')}:
           </span>
           <span className="text-sm font-medium text-green-600">
-            {provider.saves_count || 0}
+            {savesCount}
           </span>
         </div>
 
         {/* View Details Button */}
         <Link 
           to={`/provider/${provider.id}`} 
-          className="block mt-4 w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
+          className="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
         >
           {t('home.viewDetails')}
         </Link>

@@ -9,6 +9,8 @@ const Header = () => {
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isAdmin = user?.email === 'halfmage@gmail.com';
+  const avatarUrl = user?.user_metadata?.avatar_url;
+  const displayName = user?.user_metadata?.display_name;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -17,6 +19,22 @@ const Header = () => {
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
+
+  const AvatarDisplay = () => (
+    <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+      {avatarUrl ? (
+        <img
+          src={avatarUrl}
+          alt="Profile"
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <span className="text-gray-500 text-sm">
+          {displayName ? displayName[0].toUpperCase() : '?'}
+        </span>
+      )}
+    </div>
+  );
 
   return (
     <header className="bg-white shadow-sm">
@@ -71,9 +89,10 @@ const Header = () => {
                 </Link>
                 <Link
                   to="/profile"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
                 >
-                  {t('header.profile')}
+                  <span>{t('header.profile')}</span>
+                  <AvatarDisplay />
                 </Link>
               </>
             ) : (
@@ -106,10 +125,11 @@ const Header = () => {
                 </Link>
                 <Link
                   to="/profile"
-                  className="text-gray-600 hover:text-gray-900 py-2"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 py-2"
                   onClick={closeMenu}
                 >
-                  {t('header.profile')}
+                  <span>{t('header.profile')}</span>
+                  <AvatarDisplay />
                 </Link>
                 {isAdmin && (
                   <Link

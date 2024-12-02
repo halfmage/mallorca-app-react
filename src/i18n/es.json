@@ -1,0 +1,88 @@
+{
+    "header": {
+      "title": "Mallorca App",
+      "savedProviders": "Guardados",
+      "profile": "Perfil",
+      "admin": "Admin",
+      "signOut": "Cerrar Sesión",
+      "signIn": "Iniciar Sesión",
+      "userRole": {
+        "admin": "Administrador",
+        "member": "Miembro"
+      }
+    },
+    "home": {
+      "title": "Proveedores",
+      "noProviders": "No se encontraron proveedores.",
+      "loading": "Cargando proveedores...",
+      "noImage": "No hay imagen disponible"
+    },
+    "providerDetail": {
+      "loading": "Cargando detalles del proveedor...",
+      "saveButton": {
+        "save": "Guardar Proveedor",
+        "unsave": "Eliminar de Guardados",
+        "saving": "Guardando...",
+        "loginRequired": "Por favor, inicia sesión para guardar proveedores"
+      },
+      "error": {
+        "fetchProvider": "Error al cargar los detalles del proveedor",
+        "saveProvider": "Error al guardar el proveedor"
+      }
+    },
+    "savedProviders": {
+      "title": "Proveedores Guardados",
+      "empty": "Aún no has guardado ningún proveedor.",
+      "browseProviders": "Explorar Proveedores",
+      "unsave": "Eliminar"
+    },
+    "profile": {
+      "title": "Tu Perfil",
+      "displayName": "Nombre para Mostrar",
+      "save": "Guardar Cambios",
+      "avatar": {
+        "upload": "Subir Avatar",
+        "uploading": "Subiendo...",
+        "noAvatar": "Sin Avatar",
+        "success": "¡Avatar subido con éxito!",
+        "error": {
+          "noFile": "No se seleccionó ningún archivo.",
+          "upload": "Error al subir el avatar"
+        }
+      },
+      "email": "Correo Electrónico",
+      "userId": "ID de Usuario",
+      "logout": "Cerrar Sesión",
+      "notLoggedIn": "No has iniciado sesión. Por favor, inicia sesión para ver tu perfil.",
+      "success": {
+        "profile": "¡Perfil actualizado con éxito!"
+      },
+      "error": {
+        "update": "Error al actualizar el perfil"
+      }
+    },
+    "admin": {
+      "dashboard": "Panel de Administración",
+      "providers": "Proveedores",
+      "addProvider": "Añadir Proveedor",
+      "providerName": "Nombre del Proveedor",
+      "providerEmail": "Correo Electrónico",
+      "providerPhone": "Teléfono",
+      "providerAddress": "Dirección",
+      "providerServices": "Servicios",
+      "servicesPlaceholder": "Lista los servicios que ofrece este proveedor",
+      "providerAdded": "¡Proveedor añadido con éxito!",
+      "error": {
+        "notAdmin": "No tienes permiso para acceder a esta página",
+        "addProvider": "Error al añadir el proveedor"
+      }
+    },
+    "common": {
+      "loading": "Cargando...",
+      "error": {
+        "general": "Ha ocurrido un error",
+        "unauthorized": "Acceso no autorizado"
+      },
+      "success": "¡Éxito!"
+    }
+}

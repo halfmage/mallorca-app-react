@@ -1,0 +1,88 @@
+{
+    "header": {
+      "title": "Mallorca App",
+      "savedProviders": "Gespeichert",
+      "profile": "Profil",
+      "admin": "Admin",
+      "signOut": "Abmelden",
+      "signIn": "Anmelden",
+      "userRole": {
+        "admin": "Administrator",
+        "member": "Mitglied"
+      }
+    },
+    "home": {
+      "title": "Anbieter",
+      "noProviders": "Keine Anbieter gefunden.",
+      "loading": "Anbieter werden geladen...",
+      "noImage": "Kein Bild verfügbar"
+    },
+    "providerDetail": {
+      "loading": "Anbieterdetails werden geladen...",
+      "saveButton": {
+        "save": "Anbieter speichern",
+        "unsave": "Anbieter entfernen",
+        "saving": "Wird gespeichert...",
+        "loginRequired": "Bitte melden Sie sich an, um Anbieter zu speichern"
+      },
+      "error": {
+        "fetchProvider": "Fehler beim Laden der Anbieterdetails",
+        "saveProvider": "Fehler beim Speichern des Anbieters"
+      }
+    },
+    "savedProviders": {
+      "title": "Gespeicherte Anbieter",
+      "empty": "Sie haben noch keine Anbieter gespeichert.",
+      "browseProviders": "Anbieter durchsuchen",
+      "unsave": "Entfernen"
+    },
+    "profile": {
+      "title": "Ihr Profil",
+      "displayName": "Anzeigename",
+      "save": "Änderungen speichern",
+      "avatar": {
+        "upload": "Avatar hochladen",
+        "uploading": "Wird hochgeladen...",
+        "noAvatar": "Kein Avatar",
+        "success": "Avatar erfolgreich hochgeladen!",
+        "error": {
+          "noFile": "Keine Datei ausgewählt.",
+          "upload": "Fehler beim Hochladen des Avatars"
+        }
+      },
+      "email": "E-Mail",
+      "userId": "Benutzer-ID",
+      "logout": "Abmelden",
+      "notLoggedIn": "Sie sind nicht angemeldet. Bitte melden Sie sich an, um Ihr Profil zu sehen.",
+      "success": {
+        "profile": "Profil erfolgreich aktualisiert!"
+      },
+      "error": {
+        "update": "Fehler beim Aktualisieren des Profils"
+      }
+    },
+    "admin": {
+      "dashboard": "Admin-Dashboard",
+      "providers": "Anbieter",
+      "addProvider": "Anbieter hinzufügen",
+      "providerName": "Anbietername",
+      "providerEmail": "E-Mail",
+      "providerPhone": "Telefon",
+      "providerAddress": "Adresse",
+      "providerServices": "Dienstleistungen",
+      "servicesPlaceholder": "Listen Sie die Dienstleistungen dieses Anbieters auf",
+      "providerAdded": "Anbieter erfolgreich hinzugefügt!",
+      "error": {
+        "notAdmin": "Sie müssen Administrator sein, um auf diese Seite zuzugreifen",
+        "addProvider": "Fehler beim Hinzufügen des Anbieters"
+      }
+    },
+    "common": {
+      "loading": "Lädt...",
+      "error": {
+        "general": "Ein Fehler ist aufgetreten",
+        "unauthorized": "Nicht autorisierter Zugriff"
+      },
+      "success": "Erfolgreich!"
+    }
+}

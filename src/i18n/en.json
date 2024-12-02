@@ -1,0 +1,88 @@
+{
+    "header": {
+      "title": "Mallorca App",
+      "savedProviders": "Saved",
+      "profile": "Profile",
+      "admin": "Admin",
+      "signOut": "Sign Out",
+      "signIn": "Sign In",
+      "userRole": {
+        "admin": "Admin",
+        "member": "Member"
+      }
+    },
+    "home": {
+      "title": "Providers",
+      "noProviders": "No providers found.",
+      "loading": "Loading providers...",
+      "noImage": "No Image Available"
+    },
+    "providerDetail": {
+      "loading": "Loading provider details...",
+      "saveButton": {
+        "save": "Save Provider",
+        "unsave": "Unsave Provider",
+        "saving": "Saving...",
+        "loginRequired": "Please log in to save providers"
+      },
+      "error": {
+        "fetchProvider": "Error fetching provider details",
+        "saveProvider": "Error saving provider"
+      }
+    },
+    "savedProviders": {
+      "title": "Saved Providers",
+      "empty": "You haven't saved any providers yet.",
+      "browseProviders": "Browse Providers",
+      "unsave": "Unsave"
+    },
+    "profile": {
+      "title": "Your Profile",
+      "displayName": "Display Name",
+      "save": "Save Changes",
+      "avatar": {
+        "upload": "Upload Avatar",
+        "uploading": "Uploading...",
+        "noAvatar": "No Avatar",
+        "success": "Avatar uploaded successfully!",
+        "error": {
+          "noFile": "No file selected.",
+          "upload": "Error uploading avatar"
+        }
+      },
+      "email": "Email",
+      "userId": "User ID",
+      "logout": "Logout",
+      "notLoggedIn": "You are not logged in. Please log in to view your profile.",
+      "success": {
+        "profile": "Profile updated successfully!"
+      },
+      "error": {
+        "update": "Error updating profile"
+      }
+    },
+    "admin": {
+      "dashboard": "Admin Dashboard",
+      "providers": "Providers",
+      "addProvider": "Add Provider",
+      "providerName": "Provider Name",
+      "providerEmail": "Email",
+      "providerPhone": "Phone",
+      "providerAddress": "Address",
+      "providerServices": "Services",
+      "servicesPlaceholder": "List the services offered by this provider",
+      "providerAdded": "Provider added successfully!",
+      "error": {
+        "notAdmin": "You don't have permission to access this page.",
+        "addProvider": "Error adding provider"
+      }
+    },
+    "common": {
+      "loading": "Loading...",
+      "error": {
+        "general": "An error occurred",
+        "unauthorized": "Unauthorized access"
+      },
+      "success": "Success!"
+    }
+}

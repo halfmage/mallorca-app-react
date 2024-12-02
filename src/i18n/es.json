@@ -12,9 +12,13 @@
       }
     },
     "home": {
-      "title": "Proveedores",
-      "noProviders": "No se encontraron proveedores.",
+      "title": "Encuentre su Proveedor Perfecto",
+      "noProviders": "No hay proveedores disponibles en este momento",
       "loading": "Cargando proveedores...",
+      "category": "Categoría",
+      "saves": "Guardados",
+      "viewDetails": "Ver Detalles",
+      "noCategory": "Sin categoría",
       "noImage": "No hay imagen disponible"
     },
     "providerDetail": {
@@ -37,9 +41,25 @@
       "unsave": "Eliminar"
     },
     "profile": {
-      "title": "Tu Perfil",
-      "displayName": "Nombre para Mostrar",
-      "save": "Guardar Cambios",
+      "title": "Perfil",
+      "email": "Correo electrónico",
+      "fullName": "Nombre completo",
+      "displayName": "Nombre de usuario",
+      "save": "Guardar cambios",
+      "logout": "Cerrar sesión",
+      "logoutSuccess": "Has cerrado sesión correctamente",
+      "updateProfile": "Actualizar perfil",
+      "notLoggedIn": "Por favor, inicia sesión para ver tu perfil",
+      "becomeProvider": {
+        "title": "Conviértete en proveedor",
+        "description": "Actualiza tu cuenta a una cuenta de proveedor para listar tu negocio y conectar con clientes potenciales.",
+        "button": "Actualizar a cuenta de proveedor"
+      },
+      "providerSection": {
+        "title": "Cuenta de proveedor",
+        "description": "Gestiona tu cuenta de proveedor, ve análisis y conéctate con usuarios guardados.",
+        "dashboard": "Ir al panel de proveedor"
+      },
       "avatar": {
         "upload": "Subir Avatar",
         "uploading": "Subiendo...",
@@ -50,10 +70,7 @@
           "upload": "Error al subir el avatar"
         }
       },
-      "email": "Correo Electrónico",
       "userId": "ID de Usuario",
-      "logout": "Cerrar Sesión",
-      "notLoggedIn": "No has iniciado sesión. Por favor, inicia sesión para ver tu perfil.",
       "success": {
         "profile": "¡Perfil actualizado con éxito!"
       },
@@ -77,11 +94,36 @@
         "addProvider": "Error al añadir el proveedor"
       }
     },
+    "providerDashboard": {
+      "stats": {
+        "totalSaves": "Total Guardados",
+        "totalViews": "Total Vistas",
+        "recentViews": "Vistas (Últimos 30 días)"
+      },
+      "subscription": {
+        "title": "Estado de Suscripción",
+        "manage": "Gestionar Suscripción",
+        "subscribe": "Suscribirse Ahora",
+        "status": "Tu suscripción está {{status}} y se renovará el {{date}}",
+        "noSubscription": "No tienes una suscripción activa. Suscríbete ahora para acceder a todas las funciones de proveedor."
+      },
+      "savedUsers": {
+        "title": "Guardado por Usuarios",
+        "noUsers": "Ningún usuario ha guardado tu perfil todavía.",
+        "table": {
+          "user": "Usuario",
+          "savedDate": "Fecha Guardado",
+          "actions": "Acciones",
+          "message": "Enviar Mensaje"
+        }
+      }
+    },
     "common": {
       "loading": "Cargando...",
+      "updating": "Actualizando...",
       "error": {
-        "general": "Ha ocurrido un error",
-        "unauthorized": "Acceso no autorizado"
+        "generic": "Ha ocurrido un error",
+        "unauthorized": "No estás autorizado para ver esta página"
       },
       "success": "¡Éxito!"
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../utils/supabaseClient';
 import { useTranslation } from 'react-i18next';
@@ -11,12 +11,7 @@ const ProviderDetail = () => {
   const [savingStatus, setSavingStatus] = useState('idle');
   const { t } = useTranslation();
 
-  useEffect(() => {
-    fetchProvider();
-    checkIfSaved();
-  }, [id]);
-
-  const fetchProvider = async () => {
+  const fetchProvider = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('providers')
@@ -30,7 +25,7 @@ const ProviderDetail = () => {
             name
           )
         `)
-        .eq('id', parseInt(id))
+        .eq('id', id)
         .single();
 
       if (error) {
@@ -52,9 +47,9 @@ const ProviderDetail = () => {
       console.error(t('providerDetail.error.fetchProvider'), error.message);
       setLoading(false);
     }
-  };
+  }, [id, t]);
 
-  const checkIfSaved = async () => {
+  const checkIfSaved = useCallback(async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -63,7 +58,7 @@ const ProviderDetail = () => {
         .from('saved_providers')
         .select('id')
         .eq('user_id', user.id)
-        .eq('provider_id', parseInt(id));
+        .eq('provider_id', id);
 
       if (error) {
         console.error(t('providerDetail.error.saveProvider'), error.message);
@@ -74,7 +69,7 @@ const ProviderDetail = () => {
     } catch (error) {
       console.error(t('providerDetail.error.saveProvider'), error.message);
     }
-  };
+  }, [id, t]);
 
   const handleSaveToggle = async () => {
     try {
@@ -91,7 +86,7 @@ const ProviderDetail = () => {
           .from('saved_providers')
           .delete()
           .eq('user_id', user.id)
-          .eq('provider_id', parseInt(id));
+          .eq('provider_id', id);
 
         if (error) throw error;
         setIsSaved(false);
@@ -101,7 +96,7 @@ const ProviderDetail = () => {
           .insert([
             {
               user_id: user.id,
-              provider_id: parseInt(id)
+              provider_id: id
             }
           ]);
 
@@ -114,6 +109,11 @@ const ProviderDetail = () => {
       setSavingStatus('idle');
     }
   };
+
+  useEffect(() => {
+    fetchProvider();
+    checkIfSaved();
+  }, [fetchProvider, checkIfSaved]);
 
   if (loading) {
     return <div className="max-w-6xl mx-auto p-6">{t('providerDetail.loading')}</div>;

@@ -6,6 +6,32 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [logoutMessage, setLogoutMessage] = useState(null);
+
+  const logout = async (navigate, t) => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Logout error:', error.message);
+        return false;
+      }
+
+      setUser(null);
+      setLogoutMessage(t('profile.logoutSuccess'));
+      navigate('/');
+      
+      // Clear the logout message after 3 seconds
+      setTimeout(() => {
+        setLogoutMessage(null);
+      }, 3000);
+
+      return true;
+    } catch (error) {
+      console.error('Unexpected logout error:', error);
+      return false;
+    }
+  };
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -51,7 +77,16 @@ export const AuthProvider = ({ children }) => {
     return <div>Loading...</div>;
   }
 
-  return <AuthContext.Provider value={{ user, setUser }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ 
+      user, 
+      setUser, 
+      logout,
+      logoutMessage 
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);

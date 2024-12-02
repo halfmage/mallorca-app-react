@@ -1,27 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { supabase } from '../utils/supabaseClient';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 
 const Header = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isAdmin = user?.email === 'halfmage@gmail.com';
-
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      navigate('/');
-      setIsMenuOpen(false);
-    } catch (error) {
-      console.error('Error signing out:', error.message);
-    }
-  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -133,12 +120,6 @@ const Header = () => {
                     {t('header.admin')}
                   </Link>
                 )}
-                <button
-                  onClick={handleSignOut}
-                  className="text-gray-600 hover:text-gray-900 py-2 text-left"
-                >
-                  {t('header.signOut')}
-                </button>
               </>
             ) : (
               <Link

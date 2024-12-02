@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../utils/supabaseClient';
 import { useAuth } from '../hooks/useAuth';
@@ -10,13 +10,7 @@ const SavedProviders = () => {
   const { user } = useAuth();
   const { t } = useTranslation();
 
-  useEffect(() => {
-    if (user) {
-      fetchSavedProviders();
-    }
-  }, [user]);
-
-  const fetchSavedProviders = async () => {
+  const fetchSavedProviders = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('saved_providers')
@@ -53,7 +47,13 @@ const SavedProviders = () => {
       console.error('Error fetching saved providers:', error.message);
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchSavedProviders();
+    }
+  }, [user, fetchSavedProviders]);
 
   const handleUnsave = async (providerId) => {
     try {

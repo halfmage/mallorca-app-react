@@ -12,9 +12,13 @@
       }
     },
     "home": {
-      "title": "Anbieter",
-      "noProviders": "Keine Anbieter gefunden.",
+      "title": "Finden Sie Ihren perfekten Anbieter",
+      "noProviders": "Derzeit keine Anbieter verfügbar",
       "loading": "Anbieter werden geladen...",
+      "category": "Kategorie",
+      "saves": "Speichert",
+      "viewDetails": "Details anzeigen",
+      "noCategory": "Nicht kategorisiert",
       "noImage": "Kein Bild verfügbar"
     },
     "providerDetail": {
@@ -37,9 +41,26 @@
       "unsave": "Entfernen"
     },
     "profile": {
-      "title": "Ihr Profil",
+      "title": "Profil",
+      "email": "E-Mail",
+      "fullName": "Vollständiger Name",
       "displayName": "Anzeigename",
       "save": "Änderungen speichern",
+      "logout": "Abmelden",
+      "logoutSuccess": "Sie wurden erfolgreich abgemeldet",
+      "logoutButton": "Abmelden",
+      "updateProfile": "Profil aktualisieren",
+      "notLoggedIn": "Bitte melden Sie sich an, um Ihr Profil anzuzeigen",
+      "becomeProvider": {
+        "title": "Anbieter werden",
+        "description": "Upgraden Sie Ihr Konto zu einem Anbieterkonto, um Ihr Unternehmen zu präsentieren und mit potenziellen Kunden in Kontakt zu treten.",
+        "button": "Zum Anbieterkonto upgraden"
+      },
+      "providerSection": {
+        "title": "Anbieterkonto",
+        "description": "Verwalten Sie Ihr Anbieterkonto, sehen Sie Analysen und verbinden Sie sich mit gespeicherten Benutzern.",
+        "dashboard": "Zum Anbieter-Dashboard"
+      },
       "avatar": {
         "upload": "Avatar hochladen",
         "uploading": "Wird hochgeladen...",
@@ -50,15 +71,36 @@
           "upload": "Fehler beim Hochladen des Avatars"
         }
       },
-      "email": "E-Mail",
       "userId": "Benutzer-ID",
-      "logout": "Abmelden",
-      "notLoggedIn": "Sie sind nicht angemeldet. Bitte melden Sie sich an, um Ihr Profil zu sehen.",
       "success": {
         "profile": "Profil erfolgreich aktualisiert!"
       },
       "error": {
         "update": "Fehler beim Aktualisieren des Profils"
+      }
+    },
+    "providerDashboard": {
+      "stats": {
+        "totalSaves": "Gesamt Speicherungen",
+        "totalViews": "Gesamt Aufrufe",
+        "recentViews": "Aufrufe (Letzte 30 Tage)"
+      },
+      "subscription": {
+        "title": "Abonnement-Status",
+        "manage": "Abonnement verwalten",
+        "subscribe": "Jetzt abonnieren",
+        "status": "Ihr Abonnement ist {{status}} und wird am {{date}} verlängert",
+        "noSubscription": "Sie haben kein aktives Abonnement. Abonnieren Sie jetzt, um alle Anbieter-Funktionen zu nutzen."
+      },
+      "savedUsers": {
+        "title": "Von Nutzern gespeichert",
+        "noUsers": "Ihr Profil wurde noch von keinem Nutzer gespeichert.",
+        "table": {
+          "user": "Nutzer",
+          "savedDate": "Gespeichert am",
+          "actions": "Aktionen",
+          "message": "Nachricht senden"
+        }
       }
     },
     "admin": {
@@ -78,10 +120,11 @@
       }
     },
     "common": {
-      "loading": "Lädt...",
+      "loading": "Wird geladen...",
+      "updating": "Wird aktualisiert...",
       "error": {
-        "general": "Ein Fehler ist aufgetreten",
-        "unauthorized": "Nicht autorisierter Zugriff"
+        "generic": "Ein Fehler ist aufgetreten",
+        "unauthorized": "Sie sind nicht berechtigt, diese Seite anzuzeigen"
       },
       "success": "Erfolgreich!"
     }

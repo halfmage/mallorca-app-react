@@ -12,10 +12,14 @@
       }
     },
     "home": {
-      "title": "Providers",
-      "noProviders": "No providers found.",
-      "loading": "Loading providers...",
-      "noImage": "No Image Available"
+      "title": "Find Your Perfect Provider",
+      "noProviders": "No providers available at the moment",
+      "category": "Category",
+      "saves": "Saves",
+      "viewDetails": "View Details",
+      "noCategory": "Uncategorized",
+      "noImage": "No image available",
+      "loading": "Loading providers..."
     },
     "providerDetail": {
       "loading": "Loading provider details...",
@@ -37,9 +41,25 @@
       "unsave": "Unsave"
     },
     "profile": {
-      "title": "Your Profile",
+      "title": "Profile",
+      "email": "Email",
+      "fullName": "Full Name",
       "displayName": "Display Name",
       "save": "Save Changes",
+      "logout": "Logout",
+      "logoutSuccess": "You have been successfully logged out",
+      "updateProfile": "Update Profile",
+      "notLoggedIn": "Please log in to view your profile",
+      "becomeProvider": {
+        "title": "Become a Provider",
+        "description": "Upgrade your account to a provider account to list your business and connect with potential clients.",
+        "button": "Upgrade to Provider Account"
+      },
+      "providerSection": {
+        "title": "Provider Account",
+        "description": "Manage your provider account, view analytics, and connect with saved users.",
+        "dashboard": "Go to Provider Dashboard"
+      },
       "avatar": {
         "upload": "Upload Avatar",
         "uploading": "Uploading...",
@@ -50,10 +70,7 @@
           "upload": "Error uploading avatar"
         }
       },
-      "email": "Email",
       "userId": "User ID",
-      "logout": "Logout",
-      "notLoggedIn": "You are not logged in. Please log in to view your profile.",
       "success": {
         "profile": "Profile updated successfully!"
       },
@@ -77,11 +94,36 @@
         "addProvider": "Error adding provider"
       }
     },
+    "providerDashboard": {
+      "stats": {
+        "totalSaves": "Total Saves",
+        "totalViews": "Total Views",
+        "recentViews": "Views (Last 30 Days)"
+      },
+      "subscription": {
+        "title": "Subscription Status",
+        "manage": "Manage Subscription",
+        "subscribe": "Subscribe Now",
+        "status": "Your subscription is {{status}} and will renew on {{date}}",
+        "noSubscription": "You don't have an active subscription. Subscribe now to access all provider features."
+      },
+      "savedUsers": {
+        "title": "Saved by Users",
+        "noUsers": "No users have saved your profile yet.",
+        "table": {
+          "user": "User",
+          "savedDate": "Saved Date",
+          "actions": "Actions",
+          "message": "Send Message"
+        }
+      }
+    },
     "common": {
       "loading": "Loading...",
+      "updating": "Updating...",
       "error": {
-        "general": "An error occurred",
-        "unauthorized": "Unauthorized access"
+        "generic": "An error occurred",
+        "unauthorized": "You are not authorized to view this page"
       },
       "success": "Success!"
     }

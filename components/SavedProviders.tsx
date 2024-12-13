@@ -3,14 +3,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client';
-// import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from '@/app/i18n/client';
 
 // const t = text => text
 
 const SavedProviders = ({ providers, userId }) => {
     const [savedProviders, setSavedProviders] = useState(providers);
-    const [loading, setLoading] = useState(false);
     // const { user } = useAuth();
     const { t, i18n: { language } } = useTranslation();
     const supabase = createClient()
@@ -35,14 +33,6 @@ const SavedProviders = ({ providers, userId }) => {
         return (
             <div className="max-w-6xl mx-auto p-6">
                 <p>{t('profile.notLoggedIn')}</p>
-            </div>
-        );
-    }
-
-    if (loading) {
-        return (
-            <div className="max-w-6xl mx-auto p-6">
-                <p>{t('common.loading')}</p>
             </div>
         );
     }

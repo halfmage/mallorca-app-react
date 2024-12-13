@@ -151,6 +151,12 @@
       "viewPublicProfile": "View Public Profile",
       "editProfile": "Edit Profile"
     },
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "button": "Login"
+    },
     "common": {
       "loading": "Loading...",
       "updating": "Updating...",

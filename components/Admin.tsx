@@ -1,19 +1,31 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-// import { useAuth } from '../hooks/useAuth';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-// import { createClient } from '@/utils/supabase/client';
 import AddProvider from './AddProvider'
 import { useRouter } from 'next/navigation'
 
 const Admin = ({ providers: initialProviders, mainCategories }) => {
   const { t, i18n: { language } } = useTranslation();
-  // const supabase = createClient()
-  const { push } = useRouter();
+  const { push } = useRouter()
   const [activeTab, setActiveTab] = useState('providers');
   const [providers, setProviders] = useState(initialProviders);
   const [loading, setLoading] = useState(false);
+  const fetchProviders = useCallback(
+      async () => {
+        try {
+          setLoading(true);
+          const response = await fetch(`/api/edit-provider`)
+          const { data } = await response.json()
+          setProviders(data);
+        } catch (error) {
+          console.error('Error fetching providers:', error);
+        } finally {
+          setLoading(false);
+        }
+      },
+      [ ]
+  )
   return (
     <div className="max-w-6xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">{t('admin.dashboard')}</h1>
@@ -114,7 +126,7 @@ const Admin = ({ providers: initialProviders, mainCategories }) => {
           </div>
         </div>
       ) : (
-        <AddProvider onSuccess={() => {}} mainCategories={mainCategories} />
+        <AddProvider onSuccess={fetchProviders} mainCategories={mainCategories} />
       )}
     </div>
   );

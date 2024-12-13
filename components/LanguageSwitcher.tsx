@@ -5,17 +5,14 @@ import { useRouter } from 'next/navigation'
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
   const { push } = useRouter()
-  const handleChange = useCallback((e) => {
+  const handleChange = useCallback(
+      (e) => {
           const lng = e.target.value
           i18n.changeLanguage(lng)
           push(`/${lng}`)
       },
       [i18n, push]
   )
-
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
 
   return (
     <div className="flex items-center">

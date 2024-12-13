@@ -6,7 +6,7 @@ export default async function ProviderPage({ params }) {
     const { id } = await params
     const cookieStore = await cookies()
     const supabase = await createClient(cookieStore)
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from('providers')
         .select(`
           id,

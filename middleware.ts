@@ -12,10 +12,12 @@ export async function middleware(request: NextRequest) {
     if (!lng) lng = acceptLanguage.get(request.headers.get('Accept-Language'))
     if (!lng) lng = fallbackLng
 
+    console.log('request.nextUrl.pathname = ', request.nextUrl.pathname)
     // Redirect if lng in path is not supported
     if (
         !languages.some(loc => request.nextUrl.pathname.startsWith(`/${loc}`)) &&
-        !request.nextUrl.pathname.startsWith('/_next')
+        !request.nextUrl.pathname.startsWith('/_next') &&
+        !request.nextUrl.pathname.startsWith('/api')
     ) {
         return NextResponse.redirect(new URL(`/${lng}${request.nextUrl.pathname}`, request.url))
     }

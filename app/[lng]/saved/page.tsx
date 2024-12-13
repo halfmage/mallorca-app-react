@@ -2,17 +2,12 @@ import React from 'react';
 import {createClient} from '@/utils/supabase/server'
 import {cookies} from 'next/headers'
 import SavedProviders from "@/components/SavedProviders";
-// import { useAuth } from '../hooks/useAuth';
-// import { useTranslation } from 'react-i18next';
 
 export default async function SavedPage() {
-  // const { user } = useAuth();
-  // const { t } = useTranslation();
-  // const cookieStore = await cookies()
   const cookieStore = await cookies()
   const supabase = await createClient(cookieStore)
   const { data: { user } } = await supabase.auth.getUser();
-  const { data, error } = await supabase
+  const { data } = await supabase
       .from('saved_providers')
       .select(`
           provider_id,

@@ -6,11 +6,10 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from './LanguageSwitcher';
 
-const Header = ({ user }) => {
+const Header = ({ user, isAdmin }) => {
   // const { user } = useAuth();
   const { t, i18n: { language } } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isAdmin = user?.email === 'halfmage@gmail.com';
   const avatarUrl = user?.user_metadata?.avatar_url;
   const displayName = user?.user_metadata?.display_name;
 

@@ -1,16 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { useTranslation } from '@/app/i18n/client';
 
-const EditProvider = ({ provider, mainCategories }) => {
-  const supabase = createClient()
+const EditProvider = ({ provider: initialProvider, mainCategories }) => {
   const { id } = useParams();
   const { push } = useRouter();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [provider, setProvider] = useState(initialProvider);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: provider?.name,
@@ -19,6 +19,27 @@ const EditProvider = ({ provider, mainCategories }) => {
   const [images, setImages] = useState(provider?.provider_images || []);
   const [newImages, setNewImages] = useState([]);
   const [reorderMode, setReorderMode] = useState(false);
+  const supabase = useMemo(
+      () => createClient(),
+      []
+  )
+  const fetchProvider = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/edit-provider/${id}`)
+      const { data } = await response.json()
+      setProvider(data);
+      setFormData({
+        name: data.name,
+        maincategory_id: data.maincategory_id,
+      });
+      setImages(data.provider_images);
+    } catch (error) {
+      console.error(t('admin.error.fetchProvider'), error);
+    } finally {
+      setLoading(false);
+    }
+  }, [id, t])
 
   const handleChange = (e) => {
     const { name, value } = e.target;

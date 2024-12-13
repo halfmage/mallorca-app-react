@@ -118,6 +118,12 @@
         }
       }
     },
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "button": "Login"
+    },
     "common": {
       "loading": "Cargando...",
       "updating": "Actualizando...",

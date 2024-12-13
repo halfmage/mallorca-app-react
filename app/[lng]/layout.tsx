@@ -26,6 +26,7 @@ export default async function RootLayout({
     const cookieStore = await cookies()
     const supabase = await createClient(cookieStore)
     const {data: {user}} = await supabase.auth.getUser()
+    const isAdmin = user?.email === 'halfmage@gmail.com' // todo: handle this as a separate role
 
     return (
         <html lang={lng} dir={dir(lng)}>
@@ -33,7 +34,7 @@ export default async function RootLayout({
             className={`antialiased`}
         >
         <>
-            <Header user={user}/>
+            <Header user={user} isAdmin={isAdmin} />
             {/*{logoutMessage && (*/}
             {/*    <div className="bg-green-500 text-white text-center py-3 fixed top-0 left-0 right-0 z-50">*/}
             {/*        {logoutMessage}*/}

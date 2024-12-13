@@ -1,29 +1,9 @@
-import React, { useState, useEffect } from 'react';
-// import { useTranslation } from 'react-i18next';
+import React from 'react';
 import { useTranslation } from '@/app/i18n';
-// import { supabase } from '../utils/supabaseClient';
 import ProviderCard from './ProviderCard';
 
 const Home = async ({ providers, lng }) => {
-  const { t } = await useTranslation(lng)
-  // const [providers, setProviders] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
-  // if (loading) {
-  //   return (
-  //     <div className="container mx-auto px-4 py-8 text-center">
-  //       {t('common.loading')}
-  //     </div>
-  //   );
-  // }
-  //
-  // if (error) {
-  //   return (
-  //     <div className="container mx-auto px-4 py-8 text-center text-red-500">
-  //       {t('common.error')}: {error}
-  //     </div>
-  //   );
-  // }
+  const { t } = await useTranslation(lng) // eslint-disable-line react-hooks/rules-of-hooks
 
   return (
     <div className="max-w-6xl mx-auto p-6">

@@ -119,6 +119,12 @@
         "addProvider": "Fehler beim Hinzufügen des Anbieters"
       }
     },
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "button": "Login"
+    },
     "common": {
       "loading": "Wird geladen...",
       "updating": "Wird aktualisiert...",

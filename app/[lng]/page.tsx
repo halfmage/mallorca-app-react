@@ -8,8 +8,7 @@ export default async function Homepage({ params }) {
     const cookieStore = await cookies()
     const supabase = createClient(cookieStore)
 
-    // const { data: todos } = await supabase.from('todos').select()
-    const {data, error} = await supabase
+    const {data} = await supabase
         .from('providers')
         .select(`
             id,

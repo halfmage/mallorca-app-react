@@ -1,90 +1,112 @@
-export const ProviderService = {
+import { cookies } from 'next/headers'
+import { createClient } from '@/utils/supabase/server'
+
+const BASIC_INFO_FRAGMENT = `
+    id,
+    name,
+    maincategory_id
+`
+const IMAGES_FRAGMENT = `
+    provider_images (
+        id,
+        image_url,
+        created_at
+    )
+`
+
+export class ProviderService {
+    private supabase
+
+    constructor(supabase) {
+        this.supabase = supabase
+    }
+
+    static async init(): Promise<ProviderService> {
+        const cookieStore = await cookies()
+        const supabase = createClient(cookieStore)
+
+        return new ProviderService(supabase)
+    }
+
     // Get a single provider by ID with full details
-    async getProviderById(supabase, id) {
-        const { data } = await supabase
+    async get(id) {
+        const { data } = await this.supabase
             .from('providers')
             .select(`
-        id,
-        name,
-        status,
-        maincategory_id,
-        maincategories (
-          id,
-          name
-        ),
-        provider_images (
-          id,
-          image_url
-        )
-      `)
+                ${BASIC_INFO_FRAGMENT},
+                status,
+                maincategories (
+                  id,
+                  name
+                ),
+                ${IMAGES_FRAGMENT}
+            `)
             .eq('id', id)
             .single();
 
         // if (error) throw error;
-        return this.processProviderImages(supabase, data);
-    },
+        return {
+            ...data,
+            'provider_images': await Promise.all((data?.provider_images || []).map(this.getImageWithUrl))
+        }
+    }
 
     // Get provider by user ID (for dashboard)
-    async getProviderByUserId(supabase, userId) {
-        const { data } = await supabase
+    async getProviderByUserId(userId) {
+        const { data } = await this.supabase
             .from('providers')
             .select(`
-        *,
-        maincategory:maincategory_id(name),
-        subcategory:subcategory_id(name)
-      `)
+                *,
+                maincategory:maincategory_id(name),
+                subcategory:subcategory_id(name)
+            `)
             .eq('user_id', userId)
             .single();
         
         // if (error) throw error;
         return data;
-    },
+    }
 
     // Get recent providers for home page
-    async getRecentProviders(supabase, limit = 12) {
-        const { data } = await supabase
+    async getRecentProviders(limit = 12) {
+        const { data } = await this.supabase
             .from('providers')
             .select(`
-        id,
-        name,
-        status,
-        maincategory_id,
-        maincategories (
-          id,
-          name
-        ),
-        provider_images (
-          id,
-          image_url
-        )
-      `)
+                ${BASIC_INFO_FRAGMENT},
+                status,
+                maincategories (
+                  id,
+                  name
+                ),
+                ${IMAGES_FRAGMENT}
+            `)
             .in('status', ['active', 'pending'])
             .order('created_at', { ascending: false })
             .limit(limit);
 
         // if (error) throw error;
-        return Promise.all(data.map(provider => this.processProviderImages(supabase, provider)));
-    },
+        return Promise.all(data.map(provider => this.processProviderImages(provider)));
+    }
 
     // Get provider statistics
-    async getProviderStats(supabase, providerId) {
+    async getProviderStats(providerId) {
         
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
         const [savesData, recentViewsData, totalViewsData] = await Promise.all([
-            supabase
+            this.supabase
                 .from('saved_providers')
                 .select('*', { count: 'exact' })
                 .eq('provider_id', providerId),
 
-            supabase
+            this.supabase
                 .from('provider_views')
                 .select('*', { count: 'exact' })
                 .eq('provider_id', providerId)
                 .gte('viewed_at', thirtyDaysAgo.toISOString()),
 
-            supabase
+            this.supabase
                 .from('provider_views')
                 .select('*', { count: 'exact' })
                 .eq('provider_id', providerId)
@@ -95,12 +117,12 @@ export const ProviderService = {
             recentViews: recentViewsData.count || 0,
             totalViews: totalViewsData.count || 0
         };
-    },
+    }
 
     // Save/unsave provider
-    async toggleSaveProvider(supabase, userId, providerId) {
+    async toggleSaveProvider(userId, providerId) {
         
-        const { data: existing } = await supabase
+        const { data: existing } = await this.supabase
             .from('saved_providers')
             .select('id')
             .eq('user_id', userId)
@@ -108,7 +130,7 @@ export const ProviderService = {
             .single();
 
         if (existing) {
-            const { error } = await supabase
+            const { error } = await this.supabase
                 .from('saved_providers')
                 .delete()
                 .eq('user_id', userId)
@@ -117,45 +139,39 @@ export const ProviderService = {
             if (error) throw error;
             return false; // Provider is now unsaved
         } else {
-            const { error } = await supabase
+            const { error } = await this.supabase
                 .from('saved_providers')
                 .insert([{ user_id: userId, provider_id: providerId }]);
 
             if (error) throw error;
             return true; // Provider is now saved
         }
-    },
+    }
 
     // Get saved providers for a user
-    async getSavedProviders(supabase, userId) {
-        
-        const { data } = await supabase
+    async getSavedProviders(userId) {
+        const { data } = await this.supabase
             .from('saved_providers')
             .select(`
-        provider_id,
-        providers (
-          id,
-          name,
-          maincategory_id,
-          maincategories (
-            name
-          ),
-          provider_images (
-            id,
-            image_url
-          )
-        )
-      `)
-            .eq('user_id', userId);
+                provider_id,
+                providers (
+                  ${BASIC_INFO_FRAGMENT},
+                  maincategories (
+                    name
+                  ),
+                  ${IMAGES_FRAGMENT}
+                )
+            `)
+            .eq('user_id', userId)
 
         // if (error) throw error;
-        return Promise.all(data.map(item => this.processProviderImages(supabase, item.providers)));
-    },
+        return Promise.all(data.map(item => this.processProviderImages(item.providers)));
+    }
 
     // Get saved users for a provider
-    async getSavedUsersForProvider(supabase, providerId) {
+    async getSavedUsersForProvider(providerId) {
         
-        const { data } = await supabase
+        const { data } = await this.supabase
             .from('saved_providers')
             .select(`
                 created_at,
@@ -169,106 +185,94 @@ export const ProviderService = {
             .order('created_at', { ascending: false });
         // if (error) throw error;
         return data || [];
-    },
+    }
+
+    async isProviderSaved(providerId, userId) {
+        const { data } = await this.supabase
+            .from('saved_providers')
+            .select('provider_id')
+            .eq('user_id', userId)
+            .eq('provider_id', providerId)
+            .single()
+
+        return !!data
+    }
 
     // Helper method to process provider images
-    async processProviderImages(supabase, provider) {
-        
-        if (!provider) return null;
+    processProviderImages = async (provider) => {
+        if (!provider) {
+            return null
+        }
 
-        const firstImage = provider.provider_images?.[0];
-        if (firstImage) {
-            const { data: publicUrlData } = supabase.storage
-                .from('provider-images')
-                .getPublicUrl(firstImage.image_url);
-
+        const mainImage = await this.getProviderMainImage(provider)
+        if (mainImage) {
             return {
                 ...provider,
-                firstImage: publicUrlData.publicUrl
-            };
+                mainImage
+            }
         }
-        return provider;
-    },
-    async getEditableProviders(supabase) {
-        const {data} = await supabase
+        return provider
+    }
+    async getEditableProviders() {
+        const {data} = await this.supabase
             .from('providers')
             .select(`
-                id,
-                name,
+                ${BASIC_INFO_FRAGMENT},
                 status,
-                maincategory_id,
                 maincategories (
                   name
                 ),
-                provider_images(
-                  image_url,
-                  created_at
-                )
+                ${IMAGES_FRAGMENT}
             `)
             .order('created_at', {ascending: false})
 
+        return Promise.all(data.map(this.processProviderImages))
+    }
+
+    async getProviders() {
+        const providers = await this.getRecentProviders()
+
         return await Promise.all(
-            data.map(
+            providers.map(
                 async (provider) => {
-                    let publicUrl = null
-                    const mainImage = (provider?.provider_images || [])
-                        .reduce(
-                            (mainImage, image) =>
-                                mainImage && mainImage?.created_at < image?.created_at ?
-                                    mainImage :
-                                    image,
-                            null
-                        )
-                    if (mainImage) {
-                        const { data: publicUrlData } = supabase.storage
-                            .from('provider-images')
-                            .getPublicUrl(mainImage.image_url);
-                        publicUrl = publicUrlData.publicUrl
-                    }
+                    const { count } = await this.supabase
+                        .from('saved_providers')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('provider_id', provider.id)
 
                     return {
                         ...provider,
-                        mainImage: mainImage ? {
-                            ...mainImage,
-                            publicUrl
-                        } : null
+                        savedCount: count
                     }
                 }
             )
         )
-    },
-    async getEditableProvider(supabase, id: string) {
-        const {data} = await supabase
-            .from('providers')
-            .select(`
-                id,
-                name,
-                status,
-                maincategory_id,
-                maincategories (
-                  name
-                ),
-                provider_images(
-                  id,
-                  image_url,
-                  created_at
-                )
-            `)
-            .eq('id', id)
-            .single();
-        // if (error) throw error;
+    }
+
+    getImageWithUrl = async (image) => {
+        const { data: publicUrlData } = this.supabase.storage
+        .from('provider-images')
+        .getPublicUrl(image.image_url)
 
         return {
-            ...data,
-            'provider_images': await Promise.all((data?.provider_images || []).map(async (image) => {
-                const {data: publicUrlData} = supabase.storage
-                    .from('provider-images')
-                    .getPublicUrl(image.image_url);
-                return {
-                    ...image,
-                    publicUrl: publicUrlData.publicUrl
-                };
-            }))
+            ...image,
+            publicUrl: publicUrlData.publicUrl
         }
     }
-};
+
+    async getProviderMainImage(provider) {
+        const mainImage = (provider?.provider_images || [])
+            .reduce(
+                (mainImage, image) =>
+                    mainImage && mainImage?.created_at < image?.created_at ?
+                        mainImage :
+                        image,
+                null
+            )
+        if (!mainImage) {
+            return null
+        }
+
+        return await this.getImageWithUrl(mainImage)
+    }
+}

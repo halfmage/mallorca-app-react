@@ -1,9 +1,9 @@
 import {createClient} from '@/utils/supabase/server'
 import {cookies} from 'next/headers'
-import React from "react";
+import React from 'react'
 import { redirect } from 'next/navigation'
-import { ProviderService } from "@/app/api/utils/provider";
-import EditProvider from "@/components/EditProvider";
+import { ProviderService } from '@/app/api/utils/provider'
+import EditProvider from '@/components/EditProvider'
 
 export default async function EditProviderPage({ params }) {
     const { id, lng } = await params
@@ -13,8 +13,8 @@ export default async function EditProviderPage({ params }) {
     if ('halfmage@gmail.com' !== user?.email) {
         return redirect(`/${lng}/403`)
     }
-
-    const provider = await ProviderService.getEditableProvider(supabase, id)
+    const providerService = new ProviderService(supabase)
+    const provider = await providerService.get(id)
     const { data: mainCategories } = await supabase.from('maincategories').select('*');
 
     return (

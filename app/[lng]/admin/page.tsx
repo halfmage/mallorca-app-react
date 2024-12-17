@@ -13,8 +13,8 @@ export default async function AdminPage({ params }) {
     if ('halfmage@gmail.com' !== user?.email) {
         return redirect(`/${lng}/403`)
     }
-
-    const providers = await ProviderService.getEditableProviders(supabase)
+    const providerService = new ProviderService(supabase)
+    const providers = await providerService.getEditableProviders()
     const { data: mainCategories } = await supabase.from('maincategories').select('*');
 
     return (

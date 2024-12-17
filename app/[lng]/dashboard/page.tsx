@@ -25,14 +25,15 @@ export default async function SavedPage({ params }) {
     if (!data) {
         return redirect(`/${lng}`)
     }
+    const providerService = new ProviderService(supabase)
 
-    const provider = await ProviderService.getProviderByUserId(supabase, user.id);
+    const provider = await providerService.getProviderByUserId(user.id);
 
     // Get provider stats
-    const stats = await ProviderService.getProviderStats(supabase, provider.id);
+    const stats = await providerService.getProviderStats(provider.id);
 
     // Get saved users
-    const savedUsers = await ProviderService.getSavedUsersForProvider(supabase, provider.id);
+    const savedUsers = await providerService.getSavedUsersForProvider(provider.id);
 
     return (
         <ProviderDashboard provider={provider} savedUsers={savedUsers} stats={stats} />

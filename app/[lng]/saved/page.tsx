@@ -10,12 +10,13 @@ export default async function SavedPage() {
   const supabase = await createClient(cookieStore)
   const { data: { user } } = await supabase.auth.getUser();
   if (!user?.id) {
-      redirect('/403')
+      redirect('/not-logged')
   }
   const providerService = new ProviderService(supabase)
   const providers = await providerService.getSavedProviders(user?.id)
+  const { data: mainCategories } = await supabase.from('maincategories').select('*')
 
   return (
-    <SavedProviders providers={providers} userId={user?.id} />
+    <SavedProviders providers={providers} userId={user?.id} mainCategories={mainCategories} />
   );
 };

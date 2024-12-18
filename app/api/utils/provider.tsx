@@ -149,8 +149,8 @@ export class ProviderService {
     }
 
     // Get saved providers for a user
-    async getSavedProviders(userId) {
-        const { data } = await this.supabase
+    async getSavedProviders(userId, categoryId, keyword, sort = 'new', limit = null) {
+        const query = this.supabase
             .from('saved_providers')
             .select(`
                 provider_id,
@@ -163,14 +163,30 @@ export class ProviderService {
                 )
             `)
             .eq('user_id', userId)
+        if (categoryId !== undefined && categoryId !== null) {
+            query.eq('providers.maincategory_id', categoryId)
+        }
+        if (keyword !== undefined && keyword !== null) {
+            query.ilike('providers.name', `%${keyword}%`)
+        }
+        if (sort !== undefined && sort !== null) {
+            const sortField = (sort === 'new' || sort === 'old') && 'created_at'
+            const ascending = sort === 'old'
+            query.order(sortField, { ascending })
+        }
+        if (limit !== undefined && limit !== null) {
+            query.limit(limit)
+        }
+        const { data } = await query
+
+        const providers = data.map((item) => item?.providers).filter(Boolean)
 
         // if (error) throw error;
-        return Promise.all(data.map(item => this.processProviderImages(item.providers)));
+        return Promise.all(providers.map(this.processProviderImages));
     }
 
     // Get saved users for a provider
     async getSavedUsersForProvider(providerId) {
-        
         const { data } = await this.supabase
             .from('saved_providers')
             .select(`
@@ -196,6 +212,14 @@ export class ProviderService {
             .single()
 
         return !!data
+    }
+
+    async removeSavedProvider(userId, providerId) {
+        return await this.supabase
+            .from('saved_providers')
+            .delete()
+            .eq('user_id', userId)
+            .eq('provider_id', providerId);
     }
 
     // Helper method to process provider images

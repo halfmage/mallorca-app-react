@@ -47,6 +47,18 @@
         "remove": "Error removing provider"
       }
     },
+    "category": {
+      "title": "Top {{category}}s in Mallorca",
+      "empty": "You haven't saved any providers yet.",
+      "browseProviders": "Browse Providers",
+      "save": "Save",
+      "unsave": "Unsave",
+      "viewDetails": "View Details",
+      "error": {
+        "fetch": "Error fetching saved providers",
+        "remove": "Error removing provider"
+      }
+    },
     "profile": {
       "title": "Profile",
       "email": "Email",
@@ -175,6 +187,13 @@
         "saved": "Changes saved successfully",
         "imageDeleted": "Image deleted successfully",
         "orderSaved": "Image order saved successfully"
+      },
+      "search": {
+        "placeholder": "Search for provider"
+      },
+      "sorting": {
+        "new": "Newest",
+        "old": "Oldest"
       }
     }
 }

@@ -16,7 +16,7 @@ export async function DELETE(request: NextRequest, { params }) {
     await providerService.removeSavedProvider(user.id, id)
     const data = await providerService.getSavedProviders(
         user.id,
-        searchParams.get('maincategory'),
+        (searchParams.get('maincategory') || '').split(',').filter(Boolean),
         searchParams.get('keyword'),
         searchParams.get('sort'),
         searchParams.get('limit')

@@ -5,14 +5,12 @@ import Link from 'next/link'
 import { useTranslation } from '@/app/i18n/client'
 import { stringifyParams } from '@/app/api/utils/helpers'
 import CategoryFilter from '@/components/Filters/CategoryFilter'
-import SearchControl from '@/components/Filters/SearchControl'
 import SortingControl from '@/components/Filters/SortingControl'
 
-const SavedProviders = ({ providers, mainCategories }) => {
+const Category = ({ providers, category, subCategories, showSaveButton }) => {
     const [ savedProviders, setSavedProviders ] = useState(providers)
     const [ loading, setLoading ] = useState(false)
     const [ selectedCategories, setSelectedCategories ] = useState([])
-    const [ keyword, setKeyword ] = useState(null)
     const [ sort, setSort ] = useState('new')
     const { t, i18n: { language } } = useTranslation()
     const isFirstRender = useRef(true)
@@ -23,8 +21,7 @@ const SavedProviders = ({ providers, mainCategories }) => {
             try {
                 const response = await fetch(
                     `/api/saved/${providerId}${stringifyParams({
-                        maincategory: selectedCategories,
-                        keyword,
+                        subcategory: selectedCategories,
                         sort
                     })}`,
                     { method: 'DELETE' }
@@ -37,18 +34,19 @@ const SavedProviders = ({ providers, mainCategories }) => {
                 setLoading(false)
             }
         },
-        [ selectedCategories, keyword, sort ]
+        [ selectedCategories, sort ]
     )
 
     const fetchProviders = useCallback(
-        async (mainCategory, keyword, sort) => {
+        async (subCategory, sort) => {
             try {
                 setLoading(true)
-                const response = await fetch(`/api/saved${stringifyParams({
-                    maincategory: mainCategory,
-                    keyword,
-                    sort
-                })}`)
+                const response = await fetch(
+                    `/api/category/${category.id}${stringifyParams({
+                        subcategory: subCategory,
+                        sort
+                    })}`
+                )
                 const { data } = await response.json()
                 setSavedProviders(data)
             } catch (error) {
@@ -57,16 +55,16 @@ const SavedProviders = ({ providers, mainCategories }) => {
                 setLoading(false);
             }
         },
-        [ ]
+        [ category.id ]
     )
 
     useEffect(() => {
         if (isFirstRender.current) {
             isFirstRender.current = false
         } else {
-            fetchProviders(selectedCategories, keyword, sort)
+            fetchProviders(selectedCategories, sort)
         }
-    }, [ fetchProviders, selectedCategories, keyword, sort ])
+    }, [ fetchProviders, selectedCategories, sort ])
 
     const handleCategorySelect = useCallback(
         (categoryId) => setSelectedCategories(
@@ -82,12 +80,11 @@ const SavedProviders = ({ providers, mainCategories }) => {
     return (
         <div className="max-w-6xl mx-auto p-6">
             <h1 className="text-3xl font-bold mb-6">
-                {t('savedProviders.title')}
+                {t('category.title', { category: category.name })}
             </h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <CategoryFilter value={selectedCategories} options={mainCategories} onChange={handleCategorySelect} />
-                <SearchControl onChange={setKeyword} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CategoryFilter value={selectedCategories} options={subCategories} onChange={handleCategorySelect} />
                 <SortingControl value={sort} onChange={setSort} />
             </div>
             {
@@ -99,13 +96,13 @@ const SavedProviders = ({ providers, mainCategories }) => {
                     providers.length === 0 ? (
                         <div className="text-center py-8">
                             <p className="text-gray-600 mb-4">
-                                {t('savedProviders.empty')}
+                                {t('category.empty')}
                             </p>
                             <Link
                                 href={`/${language}`}
                                 className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
                             >
-                                {t('savedProviders.browseProviders')}
+                                {t('category.browseProviders')}
                             </Link>
                         </div>
                     ) : (
@@ -143,14 +140,16 @@ const SavedProviders = ({ providers, mainCategories }) => {
                                                 href={`/${language}/provider/${provider.id}`}
                                                 className="text-blue-500 hover:text-blue-600"
                                             >
-                                                {t('savedProviders.viewDetails')}
+                                                {t('category.viewDetails')}
                                             </Link>
-                                            <button
-                                                onClick={() => handleUnsave(provider.id)}
-                                                className="text-red-500 hover:text-red-600"
-                                            >
-                                                {t('savedProviders.unsave')}
-                                            </button>
+                                            {showSaveButton &&
+                                                <button
+                                                    onClick={() => handleUnsave(provider.id)}
+                                                    className="text-red-500 hover:text-red-600"
+                                                  >
+                                                    {t('category.save')}
+                                                </button>
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -162,4 +161,4 @@ const SavedProviders = ({ providers, mainCategories }) => {
     );
 };
 
-export default SavedProviders
+export default Category

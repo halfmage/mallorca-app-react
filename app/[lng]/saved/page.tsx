@@ -17,6 +17,6 @@ export default async function SavedPage() {
   const { data: mainCategories } = await supabase.from('maincategories').select('*')
 
   return (
-    <SavedProviders providers={providers} userId={user?.id} mainCategories={mainCategories} />
+    <SavedProviders providers={providers} mainCategories={mainCategories} />
   );
 };

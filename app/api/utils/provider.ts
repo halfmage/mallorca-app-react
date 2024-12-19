@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
+import { SORTING_ORDER_NEW, SORTING_ORDER_OLD } from './constants'
 
 const BASIC_INFO_FRAGMENT = `
     id,
@@ -82,10 +83,10 @@ export class ProviderService {
             `)
             .in('status', ['active', 'pending'])
             .order('created_at', { ascending: false })
-            .limit(limit);
+            .limit(limit)
 
         // if (error) throw error;
-        return Promise.all(data.map(provider => this.processProviderImages(provider)));
+        return Promise.all(data.map(provider => this.processProviderImages(provider)))
     }
 
     // Get provider statistics
@@ -149,7 +150,13 @@ export class ProviderService {
     }
 
     // Get saved providers for a user
-    async getSavedProviders(userId, categoryId, keyword, sort = 'new', limit = null) {
+    async getSavedProviders(
+        userId: string,
+        categories: Array<number|string> = [],
+        keyword: string | null | undefined = null,
+        sort: string = SORTING_ORDER_NEW,
+        limit: number | null | undefined = null
+    ) {
         const query = this.supabase
             .from('saved_providers')
             .select(`
@@ -163,20 +170,13 @@ export class ProviderService {
                 )
             `)
             .eq('user_id', userId)
-        if (categoryId !== undefined && categoryId !== null) {
-            query.eq('providers.maincategory_id', categoryId)
+        if (categories.length) {
+            query.in('providers.maincategory_id', categories)
         }
-        if (keyword !== undefined && keyword !== null) {
+        if (keyword) {
             query.ilike('providers.name', `%${keyword}%`)
         }
-        if (sort !== undefined && sort !== null) {
-            const sortField = (sort === 'new' || sort === 'old') && 'created_at'
-            const ascending = sort === 'old'
-            query.order(sortField, { ascending })
-        }
-        if (limit !== undefined && limit !== null) {
-            query.limit(limit)
-        }
+        this.applySortAndLimitToQuery(query, sort, limit)
         const { data } = await query
 
         const providers = data.map((item) => item?.providers).filter(Boolean)
@@ -222,6 +222,59 @@ export class ProviderService {
             .eq('provider_id', providerId);
     }
 
+    async getProvidersByCategory(
+        categoryId: number | string,
+        userId: string | null | undefined = null, // eslint-disable-line @typescript-eslint/no-unused-vars
+        subCategories: Array<number | string> = [],
+        sort: string = SORTING_ORDER_NEW,
+        limit: number | null | undefined = null
+    ) {
+        const query = this.supabase
+            .from('providers')
+            .select(`
+                ${BASIC_INFO_FRAGMENT},
+                status,
+                maincategories (
+                  id,
+                  name
+                ),
+                ${IMAGES_FRAGMENT}
+            `)
+            .in('status', ['active', 'pending'])
+            .eq('maincategory_id', categoryId)
+
+        if (subCategories.length) {
+            query.in('providers.subcategory_id', subCategories)
+        }
+
+        this.applySortAndLimitToQuery(query, sort, limit)
+
+        const { data } = await query
+
+        if (!data) {
+            return []
+        }
+
+        const providers = await Promise.all(data.map(provider => this.processProviderImages(provider)))
+        return await Promise.all(providers.map(this.processProviderSaved))
+    }
+
+    processProviderSaved = async (provider) => {
+        if (!provider) {
+            return null
+        }
+
+        const { count } = await this.supabase
+            .from('saved_providers')
+            .select('*', { count: 'exact', head: true })
+            .eq('provider_id', provider.id)
+
+        return {
+            ...provider,
+            savedCount: count
+        }
+    }
+
     // Helper method to process provider images
     processProviderImages = async (provider) => {
         if (!provider) {
@@ -256,21 +309,7 @@ export class ProviderService {
     async getProviders() {
         const providers = await this.getRecentProviders()
 
-        return await Promise.all(
-            providers.map(
-                async (provider) => {
-                    const { count } = await this.supabase
-                        .from('saved_providers')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('provider_id', provider.id)
-
-                    return {
-                        ...provider,
-                        savedCount: count
-                    }
-                }
-            )
-        )
+        return await Promise.all(providers.map(this.processProviderSaved))
     }
 
     getImageWithUrl = async (image) => {
@@ -298,5 +337,20 @@ export class ProviderService {
         }
 
         return await this.getImageWithUrl(mainImage)
+    }
+
+    private async applySortAndLimitToQuery(
+        query,
+        sort: string = SORTING_ORDER_NEW,
+        limit: number | null | undefined = null
+    ): Promise<void> {
+        if (sort) {
+            const sortField = (sort === SORTING_ORDER_NEW || sort === SORTING_ORDER_OLD) && 'created_at'
+            const ascending = sort === SORTING_ORDER_OLD
+            query.order(sortField, { ascending })
+        }
+        if (limit) {
+            query.limit(limit)
+        }
     }
 }

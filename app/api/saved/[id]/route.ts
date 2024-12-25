@@ -24,3 +24,17 @@ export async function DELETE(request: NextRequest, { params }) {
 
     return Response.json({ data })
 }
+
+export async function PUT(request: NextRequest, { params }) {
+    const { id } = await params
+    const cookieStore = await cookies()
+    const supabase = await createClient(cookieStore)
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user?.id || !id) {
+        return Response.json(null, { status: 403 })
+    }
+    const providerService = new ProviderService(supabase)
+    const data = await providerService.toggleSaveProvider(user.id, id)
+
+    return Response.json({ data })
+}

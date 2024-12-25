@@ -32,6 +32,12 @@
       "error": {
         "fetchProvider": "Error al cargar los detalles del proveedor",
         "saveProvider": "Error al guardar el proveedor"
+      },
+      "sidebar": {
+        "callButton": "Llame a",
+        "sendEmailButton": "Enviar correo",
+        "websiteButton": "Página web",
+        "claim": "Reclamar negocios"
       }
     },
     "savedProviders": {
@@ -129,7 +135,8 @@
       "updating": "Actualizando...",
       "error": {
         "generic": "Ha ocurrido un error",
-        "unauthorized": "No estás autorizado para ver esta página"
+        "unauthorized": "No estás autorizado para ver esta página",
+        "notFound": "Página no encontrada"
       },
       "success": "¡Éxito!"
     }

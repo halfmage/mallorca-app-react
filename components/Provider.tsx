@@ -1,58 +1,49 @@
 "use client"
 
-import React, { useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
-import { useTranslation } from '@/app/i18n/client';
+import React, { useMemo, useState } from 'react'
+import { useTranslation } from '@/app/i18n/client'
 
 
 const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
-    const supabase = createClient()
     const [isSaved, setIsSaved] = useState(isSavedInitially);
     const [savingStatus, setSavingStatus] = useState('idle');
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const providerImages = provider.provider_images || []
-    const { t } = useTranslation()
+    const { t, i18n: { language } } = useTranslation()
+    const descriptionHtml = useMemo(
+        () => provider?.provider_translations?.[0]?.description ?
+            {
+                __html: provider?.provider_translations?.[0]?.description
+            } :
+            null,
+        [ provider ]
+    )
 
     const handleSaveToggle = async () => {
         try {
             if (!userId) {
-                alert(t('providerDetail.saveButton.loginRequired'));
-                return;
+                alert(t('providerDetail.saveButton.loginRequired'))
+                return
             }
 
-            setSavingStatus('loading');
+            setSavingStatus('loading')
 
-            if (isSaved) {
-                const { error } = await supabase
-                    .from('saved_providers')
-                    .delete()
-                    .eq('user_id', userId)
-                    .eq('provider_id', provider.id);
+            const response = await fetch(
+                `/api/saved/${provider.id}`,
+                { method: 'PUT' }
+            )
+            const { data: isSaved } = await response.json()
 
-                if (error) throw error;
-                setIsSaved(false);
-            } else {
-                const { error } = await supabase
-                    .from('saved_providers')
-                    .insert([
-                        {
-                            user_id: userId,
-                            provider_id: provider.id
-                        }
-                    ]);
-
-                if (error) throw error;
-                setIsSaved(true);
-            }
+            setIsSaved(isSaved)
         } catch (error) {
             console.error(t('providerDetail.error.saveProvider'), error.message);
         } finally {
-            setSavingStatus('idle');
+            setSavingStatus('idle')
         }
-    };
+    }
 
     if (!provider) {
-        return <div className="max-w-6xl mx-auto p-6">{t('providerDetail.error.fetchProvider')}</div>;
+        return <div className="max-w-6xl mx-auto p-6">{t('providerDetail.error.fetchProvider')}</div>
     }
 
     return (
@@ -95,14 +86,22 @@ const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
                                 )}
                             </div>
                         ) : (
-                            <div className="bg-gray-100 aspect-w-16 aspect-h-9 rounded-lg flex items-center justify-center">
+                            <div
+                                className="bg-gray-100 aspect-w-16 aspect-h-9 rounded-lg flex items-center justify-center">
                                 <span className="text-gray-400">{t('providerDetail.noImages')}</span>
                             </div>
                         )}
                     </div>
 
                     <div className="mb-4">
-                        <h2 className="text-xl font-semibold mb-2">{t('providerDetail.category')}</h2>
+                        <h2 className="text-xl font-semibold mb-2 flex items-center gap-6">
+                            <span>
+                                {provider?.maincategories?.name}
+                            </span>
+                            <span>
+                                {provider?.subcategories?.name}
+                            </span>
+                        </h2>
                     </div>
 
                     <button
@@ -120,6 +119,64 @@ const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
                                 ? t('providerDetail.saveButton.remove')
                                 : t('providerDetail.saveButton.save')}
                     </button>
+                    <div>
+                        <div className="grid md:grid-cols-12 gap-12 max-w-screen-lg mx-auto">
+                            <div className="md:col-span-8">
+                                <p className="text-gray-700 text-sm">
+                                    { provider?.address || '' }
+                                </p>
+                                {descriptionHtml &&
+                                  <div
+                                    className="prose prose-sm md:prose-base max-w-none"
+                                    dangerouslySetInnerHTML={descriptionHtml}
+                                  />
+                                }
+                            </div>
+                            <div className="md:col-span-4">
+                                <div
+                                    className="hidden md:flex flex-col divide-y divide-gray-200 rounded-xl border border-gray-200 shadow-lg overflow-hidden">
+                                    {
+                                        provider?.phone &&
+                                        <a
+                                            className="p-4 w-full hover:bg-gray-100"
+                                            href={`tel:${provider.phone}`}
+                                          >
+                                                {t('providerDetail.sidebar.callButton')}
+                                          </a>
+                                    }
+                                    {
+                                        provider?.mail &&
+                                          <a
+                                            className="p-4 w-full hover:bg-gray-100"
+                                            href={`mailto:${provider.mail}`}
+                                          >
+                                                {t('providerDetail.sidebar.sendEmailButton')}
+                                          </a>
+                                    }
+                                    {provider?.website &&
+                                      <a
+                                        className="p-4 w-full hover:bg-gray-100"
+                                        href={
+                                          provider.website.includes('//') ?
+                                              provider.website :
+                                              `https://${provider.website}`
+                                        }
+                                      >
+                                        {t('providerDetail.sidebar.websiteButton')}
+                                      </a>
+                                    }
+                                    {provider?.id &&
+                                      <a
+                                        className="p-4 w-full hover:bg-gray-100"
+                                        href={`/${language}/provider/${provider.id}/claim`}
+                                      >
+                                          {t('providerDetail.sidebar.claim')}
+                                      </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             ) : (
                 <div className="text-center text-red-500">

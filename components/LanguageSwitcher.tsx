@@ -1,17 +1,19 @@
-import React, { useCallback } from 'react';
-import { useTranslation } from '@/app/i18n/client';
-import { useRouter } from 'next/navigation'
+import React, { useCallback } from 'react'
+import { useTranslation } from '@/app/i18n/client'
+import { useRouter, usePathname } from 'next/navigation'
 
 const LanguageSwitcher = () => {
-  const { i18n } = useTranslation();
+  const { i18n } = useTranslation()
   const { push } = useRouter()
+  const pathname = usePathname()
   const handleChange = useCallback(
       (e) => {
+          const oldLng = i18n.language
           const lng = e.target.value
           i18n.changeLanguage(lng)
-          push(`/${lng}`)
+          push(pathname.startsWith(`/${oldLng}`) ? pathname.replace(`/${oldLng}`, `/${lng}`) : `/${lng}`)
       },
-      [i18n, push]
+      [i18n, push, pathname]
   )
 
   return (
@@ -26,7 +28,7 @@ const LanguageSwitcher = () => {
         <option value="es">Español</option>
       </select>
     </div>
-  );
-};
+  )
+}
 
-export default LanguageSwitcher;
+export default LanguageSwitcher

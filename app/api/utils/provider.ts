@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { SORTING_ORDER_NEW, SORTING_ORDER_OLD } from './constants'
+import { SORTING_ORDER_NEW, SORTING_ORDER_OLD, STATUS_PENDING } from './constants'
 
 const BASIC_INFO_FRAGMENT = `
     id,
@@ -30,7 +30,7 @@ export class ProviderService {
     }
 
     // Get a single provider by ID with full details
-    async get(id) {
+    async get(id: string, language: string = 'en') {
         const { data } = await this.supabase
             .from('providers')
             .select(`
@@ -40,10 +40,21 @@ export class ProviderService {
                   id,
                   name
                 ),
+                subcategories (
+                  name
+                ),
+                address,
+                phone,
+                mail,
+                website,
+                provider_translations (
+                    description
+                ),
                 ${IMAGES_FRAGMENT}
             `)
             .eq('id', id)
-            .single();
+            .eq('provider_translations.language', language)
+            .single()
 
         // if (error) throw error;
         return {
@@ -121,31 +132,17 @@ export class ProviderService {
     }
 
     // Save/unsave provider
-    async toggleSaveProvider(userId, providerId) {
-        
-        const { data: existing } = await this.supabase
-            .from('saved_providers')
-            .select('id')
-            .eq('user_id', userId)
-            .eq('provider_id', providerId)
-            .single();
+    async toggleSaveProvider(userId: string | null | undefined, providerId: string): Promise<boolean> {
+        if (!userId) {
+            return false
+        }
+
+        const existing = await this.isProviderSaved(providerId, userId)
 
         if (existing) {
-            const { error } = await this.supabase
-                .from('saved_providers')
-                .delete()
-                .eq('user_id', userId)
-                .eq('provider_id', providerId);
-
-            if (error) throw error;
-            return false; // Provider is now unsaved
+            return !(await this.removeSavedProvider(userId, providerId))
         } else {
-            const { error } = await this.supabase
-                .from('saved_providers')
-                .insert([{ user_id: userId, provider_id: providerId }]);
-
-            if (error) throw error;
-            return true; // Provider is now saved
+            return await this.addSavedProvider(userId, providerId)
         }
     }
 
@@ -186,7 +183,7 @@ export class ProviderService {
     }
 
     // Get saved users for a provider
-    async getSavedUsersForProvider(providerId) {
+    async getSavedUsersForProvider(providerId: string) {
         const { data } = await this.supabase
             .from('saved_providers')
             .select(`
@@ -203,7 +200,7 @@ export class ProviderService {
         return data || [];
     }
 
-    async isProviderSaved(providerId, userId) {
+    async isProviderSaved(providerId: string, userId: string): Promise<boolean> {
         const { data } = await this.supabase
             .from('saved_providers')
             .select('provider_id')
@@ -214,12 +211,27 @@ export class ProviderService {
         return !!data
     }
 
-    async removeSavedProvider(userId, providerId) {
-        return await this.supabase
+    async addSavedProvider(userId: string, providerId: string): Promise<boolean> {
+        const { error } = await this.supabase
+            .from('saved_providers')
+            .insert([
+                {
+                    user_id: userId,
+                    provider_id: providerId
+                }
+            ])
+
+        return !error
+    }
+
+    async removeSavedProvider(userId: string, providerId: string): Promise<boolean> {
+        const { error } = await this.supabase
             .from('saved_providers')
             .delete()
             .eq('user_id', userId)
-            .eq('provider_id', providerId);
+            .eq('provider_id', providerId)
+
+        return !error
     }
 
     async getProvidersByCategory(
@@ -310,6 +322,27 @@ export class ProviderService {
         const providers = await this.getRecentProviders()
 
         return await Promise.all(providers.map(this.processProviderSaved))
+    }
+
+    async claimProvider(
+        providerId: string,
+        userId: string,
+        email: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+        phone: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+        message: string // eslint-disable-line @typescript-eslint/no-unused-vars
+    ): Promise<boolean> {
+        const { error } = await this.supabase
+            .from('business_claims')
+            .insert([
+                {
+                    claimer_id: userId,
+                    provider_id: providerId,
+                    status: STATUS_PENDING,
+                    payment_status: STATUS_PENDING
+                }
+            ])
+
+        return !error
     }
 
     getImageWithUrl = async (image) => {

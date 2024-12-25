@@ -34,6 +34,12 @@
       "error": {
         "fetchProvider": "Error fetching provider details",
         "saveProvider": "Error saving provider"
+      },
+      "sidebar": {
+        "callButton": "Call",
+        "sendEmailButton": "Send mail",
+        "websiteButton": "Website",
+        "claim": "Claim business"
       }
     },
     "savedProviders": {
@@ -169,6 +175,21 @@
       "password": "Password",
       "button": "Login"
     },
+    "claimBusiness": {
+      "form": {
+        "title": "Claim business",
+        "email": {
+          "placeholder": "Business contact email"
+        },
+        "phone": {
+          "placeholder": "Business contact phone"
+        },
+        "message": {
+          "placeholder": "Business contact message"
+        },
+        "submitButton": "Send claim request"
+      }
+    },
     "common": {
       "loading": "Loading...",
       "updating": "Updating...",
@@ -181,7 +202,8 @@
       "user": "User",
       "error": {
         "generic": "An error occurred",
-        "unauthorized": "You are not authorized to view this page"
+        "unauthorized": "You are not authorized to view this page",
+        "notFound": "Page not found"
       },
       "success": {
         "saved": "Changes saved successfully",

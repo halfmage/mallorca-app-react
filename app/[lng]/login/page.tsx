@@ -1,5 +1,5 @@
 import { login } from './actions'
-import React from "react";
+import React from 'react'
 import { useTranslation } from '@/app/i18n'
 
 export default async function LoginPage({ params }) {

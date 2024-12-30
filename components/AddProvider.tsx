@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
 
 const AddProvider = ({ onSuccess, mainCategories }) => {
-  const supabase = createClient();
   const [formData, setFormData] = useState({
     name: '',
     maincategory_id: '',
@@ -26,68 +24,26 @@ const AddProvider = ({ onSuccess, mainCategories }) => {
     setImageFiles(files);
   };
 
-  const uploadImages = async (providerId) => {
-    const uploadedImages = [];
-    setUploadProgress(0);
-
-    for (let i = 0; i < imageFiles.length; i++) {
-      const file = imageFiles[i];
-      const fileName = `${Date.now()}-${file.name}`;
-      
-      const { data, error: uploadError } = await supabase.storage
-        .from('provider-images')
-        .upload(fileName, file);
-
-      if (uploadError) {
-        console.error('Error uploading image:', uploadError.message);
-        continue;
-      }
-
-      uploadedImages.push({
-        provider_id: providerId,
-        image_url: data.path
-      });
-
-      setUploadProgress(((i + 1) / imageFiles.length) * 100);
-    }
-
-    return uploadedImages;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setSuccessMessage('');
   
     try {
-      // First, insert the provider
-      const { data: providerData, error: providerError } = await supabase
-        .from('providers')
-        .insert([{
-          name: formData.name,
-          maincategory_id: formData.maincategory_id,
-        }])
-        .select()
-        .single();
-  
-      if (providerError) {
-        throw providerError;
+      const preparedFormData = new FormData()
+      preparedFormData.append('name', formData.name)
+      preparedFormData.append('mainCategoryId', formData.maincategory_id)
+      for (let i = 0; i < imageFiles.length; i++) {
+        preparedFormData.append('images', imageFiles[i])
       }
 
-      // Then upload images and store their references
-      if (imageFiles.length > 0) {
-        const uploadedImages = await uploadImages(providerData.id);
-        
-        if (uploadedImages.length > 0) {
-          const { error: imageError } = await supabase
-            .from('provider_images')
-            .insert(uploadedImages);
-
-          if (imageError) {
-            console.error('Error storing image references:', imageError.message);
+      await fetch(
+          '/api/provider',
+          {
+            method: 'POST',
+            body: preparedFormData
           }
-        }
-      }
+      )
   
       setSuccessMessage('Provider added successfully!');
       setFormData({

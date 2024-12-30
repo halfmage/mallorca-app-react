@@ -345,10 +345,55 @@ export class ProviderService {
         return !error
     }
 
+    add = async (
+        name: string, maincategoryId: string, subCategoryId: string|number|undefined|null, images: Array<File>
+    ) => {
+        const { data: providerData, error: providerError } = await this.supabase
+            .from('providers')
+            .insert([{
+                name: name,
+                maincategory_id: maincategoryId,
+                ...(subCategoryId && { subcategory_id: subCategoryId }),
+            }])
+            .select()
+            .single()
+
+        if (providerError || !providerData?.id) {
+            return null
+        }
+
+        const uploadedImages = []
+
+        for (let i = 0; i < images.length; i++) {
+            const file = images[i]
+            const fileName = `${Date.now()}-${file.name}`
+
+            const { data, error: uploadError } = await this.supabase.storage
+                .from('provider-images')
+                .upload(fileName, file)
+
+            if (uploadError) {
+                console.error('Error uploading image:', uploadError.message)
+                continue
+            }
+
+            uploadedImages.push({
+                provider_id: providerData?.id,
+                image_url: data.path
+            })
+        }
+
+        await this.supabase
+            .from('provider_images')
+            .insert(uploadedImages)
+
+        return providerData
+    }
+
     getImageWithUrl = async (image) => {
-        const { data: publicUrlData } = this.supabase.storage
-        .from('provider-images')
-        .getPublicUrl(image.image_url)
+        const { data: publicUrlData } = await this.supabase.storage
+            .from('provider-images')
+            .getPublicUrl(image.image_url)
 
         return {
             ...image,

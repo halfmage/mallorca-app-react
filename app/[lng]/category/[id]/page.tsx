@@ -9,7 +9,7 @@ export default async function CategoryPage({ params }) {
   const { id } = await params
   const cookieStore = await cookies()
   const supabase = await createClient(cookieStore)
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser()
   const providerService = new ProviderService(supabase)
   const { data: category } = await supabase.from('maincategories').select('*').eq('id', id).single()
   if (!category) {

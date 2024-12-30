@@ -10,13 +10,13 @@ export default async function EditProviderPage({ params }) {
     const { id, lng } = await params
     const cookieStore = await cookies()
     const supabase = createClient(cookieStore)
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser()
     if (!isAdmin(user)) {
         return redirect(`/${lng}/403`)
     }
     const providerService = new ProviderService(supabase)
     const provider = await providerService.get(id)
-    const { data: mainCategories } = await supabase.from('maincategories').select('*');
+    const { data: mainCategories } = await supabase.from('maincategories').select('*')
 
     return (
         <EditProvider provider={provider} mainCategories={mainCategories} />

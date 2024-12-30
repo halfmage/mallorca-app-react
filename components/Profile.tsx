@@ -1,138 +1,104 @@
 'use client'
 
-import React, { useCallback, useMemo, useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
-import { useTranslation } from 'react-i18next';
-import { useRouter } from "next/navigation";
+import React, { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useRouter } from 'next/navigation'
 
+const Profile = ({ userData }) => {
+    const { push, refresh } = useRouter()
 
-const Profile = ({ user }) => {
-    const { push } = useRouter()
-
-    const { t, i18n: { language } } = useTranslation();
-    const [displayName, setDisplayName] = useState(user?.user_metadata?.display_name || '');
-    const [avatarUrl, setAvatarUrl] = useState(user?.user_metadata?.avatar_url || '');
-    const [updating, setUpdating] = useState(false);
-    const [uploading, setUploading] = useState(false);
+    const { t, i18n: { language } } = useTranslation()
+    const [displayName, setDisplayName] = useState(userData?.display_name || '')
+    const [avatarUrl, setAvatarUrl] = useState(userData?.avatar_url || '')
+    const [updating, setUpdating] = useState(false)
+    const [uploading, setUploading] = useState(false)
     const userType = useMemo(
-        () => user?.user_metadata?.user_type || '',
-        [ user ]
-    )
-    const supabase = useMemo(
-        () => createClient(),
-        []
+        () => userData?.user_type || '',
+        [ userData ]
     )
 
     const handleUpdateProfile = async (e) => {
-        e.preventDefault();
-        if (!user) return;
+        e.preventDefault()
 
         try {
-            setUpdating(true);
+            setUpdating(true)
 
             // Update auth user metadata
-            const { error: authError } = await supabase.auth.updateUser({
-                data: {
-                    display_name: displayName,
-                    avatar_url: avatarUrl
+            const response = await fetch(
+                '/api/profile',
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        displayName,
+                        avatarUrl
+                    })
                 }
-            });
-
-            if (authError) throw authError;
-
+            )
+            await response.json()
         } catch (error) {
-            console.error('Error updating profile:', error);
+            console.error('Error updating profile:', error)
         } finally {
-            setUpdating(false);
+            setUpdating(false)
         }
-    };
+    }
 
     const handleAvatarUpload = async (event) => {
         try {
             setUploading(true);
             if (!event.target.files || event.target.files.length === 0) {
-                throw new Error('You must select an image to upload.');
+                throw new Error('You must select an image to upload.')
             }
 
-            const file = event.target.files[0];
-            const fileExt = file.name.split('.').pop();
-            const filePath = `${user.id}-${Math.random()}.${fileExt}`;
+            const formData = new FormData()
+            formData.append('image', event.target.files[0])
 
-            // Upload the file to Supabase storage
-            const { error: uploadError } = await supabase.storage
-                .from('avatars')
-                .upload(filePath, file);
-
-            if (uploadError) throw uploadError;
-
-            // Get the public URL
-            const { data: publicUrlData } = supabase.storage
-                .from('avatars')
-                .getPublicUrl(filePath);
+            const response = await fetch(
+                '/api/profile/avatar',
+                {
+                    method: 'POST',
+                    body: formData
+                }
+            )
+            const { data: publicUrl } = await response.json()
 
             // Update the avatar URL
-            setAvatarUrl(publicUrlData.publicUrl);
-
-            // Update the user metadata
-            const { error: updateError } = await supabase.auth.updateUser({
-                data: { avatar_url: publicUrlData.publicUrl }
-            });
-
-            if (updateError) throw updateError;
-
+            setAvatarUrl(publicUrl)
         } catch (error) {
-            console.error('Error uploading avatar:', error);
+            console.error('Error uploading avatar:', error)
         } finally {
-            setUploading(false);
+            setUploading(false)
         }
-    };
+    }
 
     const handleRemoveAvatar = async () => {
         try {
-            setUploading(true);
-
-            // Extract the file path from the URL
-            const filePath = avatarUrl.split('/').pop();
-
-            // Remove the file from storage if it exists
-            if (filePath) {
-                const { error: removeError } = await supabase.storage
-                    .from('avatars')
-                    .remove([filePath]);
-
-                if (removeError) throw removeError;
-            }
-
-            // Update user metadata to remove avatar_url
-            const { error: updateError } = await supabase.auth.updateUser({
-                data: { avatar_url: '' }
-            });
-
-            if (updateError) throw updateError;
-
-            setAvatarUrl('');
-
+            setUploading(true)
+            await fetch(
+                '/api/profile/avatar',
+                { method: 'DELETE' }
+            )
+            setAvatarUrl('')
         } catch (error) {
-            console.error('Error removing avatar:', error);
+            console.error('Error removing avatar:', error)
         } finally {
-            setUploading(false);
+            setUploading(false)
         }
-    };
+    }
 
     const handleLogout = useCallback(
         async () => {
-            const { error } = await supabase.auth.signOut();
-            if (!error) {
-                push(`/${language}`);
+            const response = await fetch(
+                '/api/profile/logout',
+                { method: 'POST' }
+            )
+            const { data: success } = await response.json()
+            if (success) {
+                push(`/${language}`)
+                refresh()
             }
         },
-        [ push, language, supabase.auth ]
+        [ push, refresh, language ]
     )
-
-    if (!user) {
-        push(`/${language}/login`);
-        return null;
-    }
 
     return (
         <div className="max-w-4xl mx-auto p-4">

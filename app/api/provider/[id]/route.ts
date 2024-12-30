@@ -4,7 +4,8 @@ import { createClient } from '@/utils/supabase/server'
 import { ProviderService } from '@/app/api/utils/provider'
 import { isAdmin } from '@/app/api/utils/user'
 
-export async function POST(request: NextRequest) {
+export async function PATCH(request: NextRequest, { params }) {
+    const { id } = await params
     const formData = await request.formData()
     const name = formData.get('name')
     const mainCategoryId = formData.get('mainCategoryId')
@@ -13,11 +14,15 @@ export async function POST(request: NextRequest) {
     const cookieStore = await cookies()
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
-    if (!isAdmin(user)) {
+    if (!user?.id) {
         return Response.json(null, { status: 403 })
     }
     const providerService = new ProviderService(supabase)
-    const data = await providerService.add(name, mainCategoryId, subCategoryId, images)
+    const isProviderAdmin = await providerService.isProviderAdmin(user.id, id)
+    if (!isAdmin(user) && !isProviderAdmin) {
+        return Response.json(null, { status: 403 })
+    }
+    const data = await providerService.update(id, name, mainCategoryId, subCategoryId, images)
 
     return Response.json({ data })
 }

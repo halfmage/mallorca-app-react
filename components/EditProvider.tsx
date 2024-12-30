@@ -1,9 +1,8 @@
-'use client';
+'use client'
 
-import React, { useState, useCallback, useMemo } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
-import { useTranslation } from '@/app/i18n/client';
+import React, { useState, useCallback } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { useTranslation } from '@/app/i18n/client'
 
 const EditProvider = ({ provider: initialProvider, mainCategories }) => {
   const { id } = useParams();
@@ -19,10 +18,6 @@ const EditProvider = ({ provider: initialProvider, mainCategories }) => {
   const [images, setImages] = useState(provider?.provider_images || []);
   const [newImages, setNewImages] = useState([]);
   const [reorderMode, setReorderMode] = useState(false);
-  const supabase = useMemo(
-      () => createClient(),
-      []
-  )
   const fetchProvider = useCallback(async () => {
     try {
       setLoading(true);
@@ -54,26 +49,18 @@ const EditProvider = ({ provider: initialProvider, mainCategories }) => {
     setNewImages(files);
   };
 
-  const handleImageDelete = async (imageId, imageUrl) => {
+  const handleImageDelete = async (imageId) => {
     try {
-      // Delete from storage
-      const { error: storageError } = await supabase.storage
-        .from('provider-images')
-        .remove([imageUrl]);
-
-      if (storageError) throw storageError;
-
-      // Delete from database
-      const { error: dbError } = await supabase
-        .from('provider_images')
-        .delete()
-        .eq('id', imageId);
-
-      if (dbError) throw dbError;
-
-      // Update local state
-      setImages(prev => prev.filter(img => img.id !== imageId));
-      alert(t('common.success.imageDeleted'));
+      const response = await fetch(
+          `/api/provider-images/${imageId}`,
+          { method: 'DELETE' }
+      )
+      const { data: success } = await response.json()
+      if (success) {
+        // Update local state
+        setImages(prev => prev.filter(img => img.id !== imageId))
+        alert(t('common.success.imageDeleted'))
+      }
     } catch (error) {
       console.error(t('admin.error.deleteImage'), error);
     }
@@ -89,17 +76,20 @@ const EditProvider = ({ provider: initialProvider, mainCategories }) => {
   const handleSaveReorder = async () => {
     try {
       setSaving(true);
-      // Update the order in the database by updating timestamps
-      for (let i = 0; i < images.length; i++) {
-        const { error } = await supabase
-          .from('provider_images')
-          .update({ created_at: new Date(Date.now() + i).toISOString() })
-          .eq('id', images[i].id);
-
-        if (error) throw error;
+      const response = await fetch(
+          `/api/provider-images`,
+          {
+            method: 'PATCH',
+            body: JSON.stringify({
+              images: images.map(image => image?.id)
+            })
+          }
+      )
+      const { data: success } = await response.json()
+      setReorderMode(false)
+      if (success) {
+        alert(t('common.success.orderSaved'))
       }
-      setReorderMode(false);
-      alert(t('common.success.orderSaved'));
     } catch (error) {
       console.error(t('admin.error.saveOrder'), error);
     } finally {
@@ -112,43 +102,25 @@ const EditProvider = ({ provider: initialProvider, mainCategories }) => {
     setSaving(true);
 
     try {
-      // Update provider data
-      const { error: updateError } = await supabase
-        .from('providers')
-        .update({
-          name: formData.name,
-          maincategory_id: formData.maincategory_id,
-        })
-        .eq('id', id);
-
-      if (updateError) throw updateError;
-
-      // Upload new images if any
-      if (newImages.length > 0) {
-        for (const file of newImages) {
-          const fileName = `${Date.now()}-${file.name}`;
-          
-          const { data: uploadData, error: uploadError } = await supabase.storage
-            .from('provider-images')
-            .upload(fileName, file);
-
-          if (uploadError) throw uploadError;
-
-          const { error: insertError } = await supabase
-            .from('provider_images')
-            .insert({
-              provider_id: id,
-              image_url: uploadData.path
-            });
-
-          if (insertError) throw insertError;
-        }
+      const preparedFormData = new FormData()
+      preparedFormData.append('name', formData.name)
+      preparedFormData.append('mainCategoryId', formData.maincategory_id)
+      for (let i = 0; i < newImages.length; i++) {
+        preparedFormData.append('images', newImages[i])
       }
 
+      await fetch(
+          `/api/provider/${id}`,
+          {
+            method: 'PATCH',
+            body: preparedFormData
+          }
+      )
+
       // Refresh provider data
-      await fetchProvider();
-      setNewImages([]);
-      alert(t('common.success.saved'));
+      await fetchProvider()
+      setNewImages([])
+      alert(t('common.success.saved'))
     } catch (error) {
       console.error(t('admin.error.updateProvider'), error);
     } finally {
@@ -247,7 +219,7 @@ const EditProvider = ({ provider: initialProvider, mainCategories }) => {
                 {!reorderMode && (
                   <button
                     type="button"
-                    onClick={() => handleImageDelete(image.id, image.image_url)}
+                    onClick={() => handleImageDelete(image.id)}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     {t('admin.deleteImage')}

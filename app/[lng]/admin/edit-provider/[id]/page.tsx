@@ -11,7 +11,7 @@ export default async function EditProviderPage({ params }) {
     const cookieStore = await cookies()
     const supabase = createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser();
-    if (isAdmin(user)) {
+    if (!isAdmin(user)) {
         return redirect(`/${lng}/403`)
     }
     const providerService = new ProviderService(supabase)

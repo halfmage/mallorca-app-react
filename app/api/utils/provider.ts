@@ -1,6 +1,8 @@
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { SORTING_ORDER_NEW, SORTING_ORDER_OLD, STATUS_PENDING } from './constants'
+import {
+    SORTING_ORDER_NEW, SORTING_ORDER_OLD, STATUS_PENDING, STATUS_ACTIVE, STATUS_PAYMENT_COMPLETED
+} from './constants'
 
 const BASIC_INFO_FRAGMENT = `
     id,
@@ -70,7 +72,11 @@ export class ProviderService {
             .select(`
                 *,
                 maincategory:maincategory_id(name),
-                subcategory:subcategory_id(name)
+                subcategory:subcategory_id(name),
+                business_claims (
+                    id,
+                    payment_status
+                )
             `)
             .eq('user_id', userId)
             .single();
@@ -117,7 +123,7 @@ export class ProviderService {
                 ),
                 ${IMAGES_FRAGMENT}
             `)
-            .in('status', ['active', 'pending'])
+            .in('status', [STATUS_ACTIVE, STATUS_PENDING])
             .order('created_at', { ascending: false })
             .limit(limit)
 
@@ -277,7 +283,7 @@ export class ProviderService {
                 ),
                 ${IMAGES_FRAGMENT}
             `)
-            .in('status', ['active', 'pending'])
+            .in('status', [STATUS_ACTIVE, STATUS_PENDING])
             .eq('maincategory_id', categoryId)
 
         if (subCategories.length) {
@@ -367,6 +373,18 @@ export class ProviderService {
                     payment_status: STATUS_PENDING
                 }
             ])
+
+        return !error
+    }
+
+    public async addPayment(id: string, paymentId: string): Promise<boolean> {
+        const { error } = await this.supabase
+            .from('business_claims')
+            .update({
+                payment_id: paymentId,
+                payment_status: STATUS_PAYMENT_COMPLETED
+            })
+            .eq('id', id)
 
         return !error
     }

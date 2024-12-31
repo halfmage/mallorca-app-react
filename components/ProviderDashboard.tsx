@@ -1,12 +1,11 @@
 'use client'
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { useTranslation } from '@/app/i18n/client';
+import React from 'react'
+import { useTranslation } from '@/app/i18n/client'
+import Link from 'next/link'
 
-const ProviderDashboard = ({ provider, savedUsers, stats }) => {
-    const { push } = useRouter();
-    const { t, i18n: { language } } = useTranslation();
+const ProviderDashboard = ({ provider, savedUsers, stats, subscriptionLink }) => {
+    const { t, i18n: { language } } = useTranslation()
 
     if (!provider) {
         return (
@@ -25,6 +24,14 @@ const ProviderDashboard = ({ provider, savedUsers, stats }) => {
                     {provider.maincategory?.name} {provider.subcategory?.name && `• ${provider.subcategory.name}`}
                 </p>
             </div>
+
+            <Link href={subscriptionLink}>
+                <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+                >
+                    {t('providerDashboard.subscription.subscribe')}
+                </button>
+            </Link>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -86,18 +93,20 @@ const ProviderDashboard = ({ provider, savedUsers, stats }) => {
 
             {/* Action Buttons */}
             <div className="mt-6 flex space-x-4">
-                <button
-                    onClick={() => push(`/${language}/provider/${provider.id}`)}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                >
-                    {t('providerDashboard.viewPublicProfile')}
-                </button>
-                <button
-                    onClick={() => push(`/${language}/admin/edit-provider/${provider.id}`)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
-                >
-                    {t('providerDashboard.editProfile')}
-                </button>
+                <Link href={`/${language}/provider/${provider.id}`}>
+                    <button
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+                    >
+                        {t('providerDashboard.viewPublicProfile')}
+                    </button>
+                </Link>
+                <Link href={`/${language}/admin/edit-provider/${provider.id}`}>
+                    <button
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
+                    >
+                        {t('providerDashboard.editProfile')}
+                    </button>
+                </Link>
             </div>
         </div>
     );

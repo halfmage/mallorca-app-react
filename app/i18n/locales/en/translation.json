@@ -20,7 +20,8 @@
       "viewDetails": "View Details",
       "noCategory": "Uncategorized",
       "noImage": "No image available",
-      "loading": "Loading providers..."
+      "loading": "Loading providers...",
+      "showAll": "Show all"
     },
     "providerDetail": {
       "loading": "Loading provider details...",

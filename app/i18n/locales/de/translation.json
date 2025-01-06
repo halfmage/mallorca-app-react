@@ -19,7 +19,8 @@
       "saves": "Speichert",
       "viewDetails": "Details anzeigen",
       "noCategory": "Nicht kategorisiert",
-      "noImage": "Kein Bild verfügbar"
+      "noImage": "Kein Bild verfügbar",
+      "showAll": "Alle anzeigen"
     },
     "providerDetail": {
       "loading": "Anbieterdetails werden geladen...",

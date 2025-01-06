@@ -93,7 +93,7 @@ const ProviderDashboard = ({ provider, savedUsers, stats, subscriptionLink }) =>
 
             {/* Action Buttons */}
             <div className="mt-6 flex space-x-4">
-                <Link href={`/${language}/provider/${provider.id}`}>
+                <Link href={`/${language}/provider/${provider.slug || provider.id}`}>
                     <button
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
                     >

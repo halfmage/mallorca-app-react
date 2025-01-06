@@ -106,7 +106,7 @@ const Admin = ({ providers: initialProviders, mainCategories }) => {
                       {/* Action Buttons */}
                       <div className="flex-shrink-0 space-x-2">
                         <button
-                          onClick={() => push(`/${language}/provider/${provider.id}`)}
+                          onClick={() => push(`/${language}/provider/${provider.slug || provider.id}`)}
                           className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         >
                           {t('admin.viewDetails')}

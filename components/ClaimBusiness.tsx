@@ -17,7 +17,7 @@ const ClaimBusiness = ({ provider }) => {
                     setSavingStatus('loading')
 
                     const response = await fetch(
-                        `/api/provider/${provider.id}/claim`,
+                        `/api/provider/${provider.slug || provider.id}/claim`,
                         {
                             method: 'POST',
                             body: JSON.stringify({

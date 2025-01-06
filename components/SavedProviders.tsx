@@ -140,7 +140,7 @@ const SavedProviders = ({ providers, mainCategories }) => {
 
                                         <div className="flex justify-between items-center">
                                             <Link
-                                                href={`/${language}/provider/${provider.id}`}
+                                                href={`/${language}/provider/${provider.slug || provider.id}`}
                                                 className="text-blue-500 hover:text-blue-600"
                                             >
                                                 {t('savedProviders.viewDetails')}

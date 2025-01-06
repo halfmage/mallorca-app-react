@@ -3,10 +3,12 @@ import { createClient } from '@/utils/supabase/server'
 import {
     SORTING_ORDER_NEW, SORTING_ORDER_OLD, STATUS_PENDING, STATUS_ACTIVE, STATUS_PAYMENT_COMPLETED
 } from './constants'
+import { isUUID } from './helpers'
 
 const BASIC_INFO_FRAGMENT = `
     id,
     name,
+    slug,
     maincategory_id
 `
 const IMAGES_FRAGMENT = `
@@ -31,8 +33,8 @@ export class ProviderService {
         return new ProviderService(supabase)
     }
 
-    // Get a single provider by ID with full details
-    public async get(id: string, language: string = 'en') {
+    // Get a single provider by ID or by slug with full details
+    public async get(idOrSlug: string, language: string = 'en') {
         const { data } = await this.supabase
             .from('providers')
             .select(`
@@ -54,8 +56,8 @@ export class ProviderService {
                 ),
                 ${IMAGES_FRAGMENT}
             `)
-            .eq('id', id)
             .eq('provider_translations.language', language)
+            .eq(isUUID(idOrSlug) ? 'id' : 'slug', idOrSlug)
             .single()
 
         // if (error) throw error;
@@ -133,7 +135,6 @@ export class ProviderService {
 
     // Get provider statistics
     public async getProviderStats(providerId) {
-        
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -517,6 +518,41 @@ export class ProviderService {
         }
 
         return true
+    }
+
+    public async getProvidersGroupedByCategories(limit: number = 4) {
+        const { data } = await this.supabase
+            .from('maincategories')
+            .select(`
+                id,
+                name,
+                slug,
+                providers (
+                    ${BASIC_INFO_FRAGMENT},
+                    status,
+                    maincategories (
+                      id,
+                      name
+                    ),
+                    ${IMAGES_FRAGMENT}
+                )
+            `)
+            .in('providers.status', [STATUS_ACTIVE, STATUS_PENDING])
+            .order('created_at', { referencedTable: 'providers', ascending: false })
+            .limit(limit, { referencedTable: 'providers' })
+
+        return Promise.all(
+            data.map(async mainCategory => {
+                const providers = await Promise.all(
+                    mainCategory.providers.map(async provider => await this.processProviderImages(provider))
+                )
+
+                return {
+                    ...mainCategory,
+                    providers
+                }
+            })
+        )
     }
 
     private getImageWithUrl = async (image) => {

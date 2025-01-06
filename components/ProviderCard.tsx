@@ -50,7 +50,7 @@ const ProviderCard = ({ provider }) => {
 
          {/* View Details Button */}
         <Link
-          href={`/${language}/provider/${provider.id}`}
+          href={`/${language}/provider/${provider.slug || provider.id}`}
           className="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
         >
           {t('home.viewDetails')}

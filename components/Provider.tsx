@@ -165,10 +165,10 @@ const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
                                         {t('providerDetail.sidebar.websiteButton')}
                                       </a>
                                     }
-                                    {provider?.id &&
+                                    {(provider?.id || provider?.slug) &&
                                       <a
                                         className="p-4 w-full hover:bg-gray-100"
-                                        href={`/${language}/provider/${provider.id}/claim`}
+                                        href={`/${language}/provider/${provider.slug || provider.id}/claim`}
                                       >
                                           {t('providerDetail.sidebar.claim')}
                                       </a>

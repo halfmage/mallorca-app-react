@@ -19,7 +19,8 @@
       "saves": "Guardados",
       "viewDetails": "Ver Detalles",
       "noCategory": "Sin categoría",
-      "noImage": "No hay imagen disponible"
+      "noImage": "No hay imagen disponible",
+      "showAll": "Mostrar todo"
     },
     "providerDetail": {
       "loading": "Cargando detalles del proveedor...",

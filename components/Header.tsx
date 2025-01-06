@@ -83,6 +83,12 @@ const Header = ({ user, isAdmin }) => {
                   </Link>
                 )}
                 <Link
+                    href={`/${language}/messages`}
+                    className="text-gray-600 hover:text-gray-900"
+                >
+                  {t('header.messages')}
+                </Link>
+                <Link
                   href={`/${language}/saved`}
                   className="text-gray-600 hover:text-gray-900"
                 >

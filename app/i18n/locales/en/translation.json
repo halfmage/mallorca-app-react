@@ -6,6 +6,7 @@
       "admin": "Admin",
       "signOut": "Sign Out",
       "signIn": "Sign In",
+      "messages": "Messages",
       "userRole": {
         "admin": "Admin",
         "member": "Member"
@@ -22,6 +23,28 @@
       "noImage": "No image available",
       "loading": "Loading providers...",
       "showAll": "Show all"
+    },
+    "messages":  {
+      "provider": {
+        "title": "Messages",
+        "composeButton": "Compose new message",
+        "receivedCount": "Received",
+        "viewedCount": "Viewed"
+      },
+      "form": {
+        "title": "New Message",
+        "messageTitle": {
+          "placeholder": "title"
+        },
+        "messageText": {
+          "placeholder": "text"
+        },
+        "blockedMessage": "Messages are blocked for:",
+        "infoText": "You will send this message to all your <b>{{count}}</b> fans. After sending you will be unable to send another message for 12 hours to prevent spamming.",
+        "addImageButton": "Add image",
+        "sendButton": "Send message",
+        "cancelButton": "Cancel"
+      }
     },
     "providerDetail": {
       "loading": "Loading provider details...",

@@ -1,9 +1,8 @@
-import { cookies } from 'next/headers'
-import { createClient } from '@/utils/supabase/server'
 import {
-    SORTING_ORDER_NEW, SORTING_ORDER_OLD, STATUS_PENDING, STATUS_ACTIVE, STATUS_PAYMENT_COMPLETED
+    SORTING_ORDER_NEW, STATUS_PENDING, STATUS_ACTIVE, STATUS_PAYMENT_COMPLETED
 } from './constants'
 import { isUUID } from './helpers'
+import { EntityService } from '@/app/api/utils/entity'
 
 const BASIC_INFO_FRAGMENT = `
     id,
@@ -19,20 +18,7 @@ const IMAGES_FRAGMENT = `
     )
 `
 
-export class ProviderService {
-    private supabase
-
-    constructor(supabase) {
-        this.supabase = supabase
-    }
-
-    static async init(): Promise<ProviderService> {
-        const cookieStore = await cookies()
-        const supabase = createClient(cookieStore)
-
-        return new ProviderService(supabase)
-    }
-
+export class ProviderService extends EntityService {
     // Get a single provider by ID or by slug with full details
     public async get(idOrSlug: string, language: string = 'en') {
         const { data } = await this.supabase
@@ -580,20 +566,5 @@ export class ProviderService {
         }
 
         return await this.getImageWithUrl(mainImage)
-    }
-
-    private async applySortAndLimitToQuery(
-        query,
-        sort: string = SORTING_ORDER_NEW,
-        limit: number | null | undefined = null
-    ): Promise<void> {
-        if (sort) {
-            const sortField = (sort === SORTING_ORDER_NEW || sort === SORTING_ORDER_OLD) && 'created_at'
-            const ascending = sort === SORTING_ORDER_OLD
-            query.order(sortField, { ascending })
-        }
-        if (limit) {
-            query.limit(limit)
-        }
     }
 }

@@ -2,6 +2,7 @@ import React from 'react'
 import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { MessageService } from '@/app/api/utils/message'
 import { ProviderService } from '@/app/api/utils/provider'
 import Send from '@/components/Messages/Send'
 
@@ -15,12 +16,18 @@ export default async function MessageSendPage({ params }) {
     }
     const providerService = new ProviderService(supabase)
     const provider = await providerService.getProviderByUserId(user.id)
+    const messageService = new MessageService(supabase)
+    const latestEmailDate = await messageService.getLatestEmailDate(provider.id)
 
     if (!provider?.id) {
         return redirect(`/${lng}/not-logged`)
     }
 
     return (
-        <Send />
+        <Send
+            savedCount={provider?.saved_providers?.[0]?.count || 0}
+            limit={process.env.MESSAGE_RATE_LIMIT}
+            latestEmailDate={latestEmailDate}
+        />
     )
 }

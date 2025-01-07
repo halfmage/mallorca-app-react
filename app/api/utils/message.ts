@@ -41,4 +41,68 @@ export class MessageService extends EntityService {
             })
         )
     }
+
+    public async getLatestEmailDate(providerId: string): Promise<Date | null | undefined> {
+        const query = this.supabase
+            .from('messages')
+            .select('created_at')
+            .eq('provider_id', providerId)
+            .single()
+        this.applySortAndLimitToQuery(query, SORTING_ORDER_NEW, 1)
+        const { data } = await query
+
+        if (!data) {
+            return null
+        }
+
+        return data?.created_at
+    }
+
+    public async send(
+        providerId: string,
+        userId: string,
+        title: string,
+        text: string,
+        imageUrl: string|null|undefined = null
+    ): Promise<boolean> {
+        const { data, error: messageError } = await this.supabase
+            .from('messages')
+            .insert({
+                provider_id: providerId,
+                sender_id: userId,
+                title,
+                text,
+                image_url: imageUrl,
+            })
+            .select('id')
+            .single()
+
+        if (messageError) {
+            return false
+        }
+
+        const { data: users } = await this.supabase
+            .from('saved_providers')
+            .select('user_id')
+            .eq('provider_id', providerId)
+
+        if (!users?.length) {
+            return false
+        }
+
+        try {
+            Promise.all(users.map(async ({ user_id }) => {
+                await this.supabase
+                    .from('sent_messages')
+                    .insert({
+                        receiver_id: user_id,
+                        message_id: data?.id
+                    })
+            }))
+        } catch {
+            return false
+        }
+
+        return true
+    }
 }

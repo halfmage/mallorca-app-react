@@ -64,7 +64,8 @@ export class ProviderService extends EntityService {
                 business_claims (
                     id,
                     payment_status
-                )
+                ),
+                saved_providers(count)
             `)
             .eq('user_id', userId)
             .single();

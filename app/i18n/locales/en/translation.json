@@ -40,7 +40,7 @@
           "placeholder": "text"
         },
         "blockedMessage": "Messages are blocked for:",
-        "infoText": "You will send this message to all your <b>{{count}}</b> fans. After sending you will be unable to send another message for 12 hours to prevent spamming.",
+        "infoText": "You will send this message to all your <b>{{count}}</b> fans. After sending you will be unable to send another message for {{limit}} hours to prevent spamming.",
         "addImageButton": "Add image",
         "sendButton": "Send message",
         "cancelButton": "Cancel"

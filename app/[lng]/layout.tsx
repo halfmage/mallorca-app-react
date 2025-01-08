@@ -1,11 +1,13 @@
-import type {Metadata} from "next";
+import type { Metadata } from 'next'
 // import localFont from "next/font/local";
 // import '../../../src/i18n';
-import "./globals.css";
-import Header from "@/components/Header";
-import React from "react";
-import {createClient} from '@/utils/supabase/server'
-import {cookies} from 'next/headers'
+import './globals.css'
+import Header from '@/components/Header'
+import React from 'react'
+import { createClient } from '@/utils/supabase/server'
+import { isAdmin } from '@/app/api/utils/user'
+import { MessageService } from '@/app/api/utils/message'
+import { cookies } from 'next/headers'
 import { dir } from 'i18next'
 import { languages } from '../i18n/settings'
 
@@ -25,16 +27,15 @@ export default async function RootLayout({
     const { lng } = await params
     const cookieStore = await cookies()
     const supabase = await createClient(cookieStore)
-    const {data: {user}} = await supabase.auth.getUser()
-    const isAdmin = user?.email === 'halfmage@gmail.com' // todo: handle this as a separate role
+    const { data: { user } } = await supabase.auth.getUser()
+    const messageService = new MessageService(supabase)
+    const newMessagesCount = await messageService.getNewMessagesCount(user.id)
 
     return (
         <html lang={lng} dir={dir(lng)}>
-        <body
-            className={`antialiased`}
-        >
+        <body className={`antialiased`}>
         <>
-            <Header user={user} isAdmin={isAdmin} />
+            <Header user={user} isAdmin={isAdmin(user)} newMessagesCount={newMessagesCount} />
             {/*{logoutMessage && (*/}
             {/*    <div className="bg-green-500 text-white text-center py-3 fixed top-0 left-0 right-0 z-50">*/}
             {/*        {logoutMessage}*/}

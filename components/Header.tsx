@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from './LanguageSwitcher';
 
-const Header = ({ user, isAdmin }) => {
+const Header = ({ user, isAdmin, newMessagesCount }) => {
   // const { user } = useAuth();
   const { t, i18n: { language } } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -86,7 +86,7 @@ const Header = ({ user, isAdmin }) => {
                     href={`/${language}/messages`}
                     className="text-gray-600 hover:text-gray-900"
                 >
-                  {t('header.messages')}
+                  {t('header.messages')} {newMessagesCount > 0 && `(${newMessagesCount})`}
                 </Link>
                 <Link
                   href={`/${language}/saved`}

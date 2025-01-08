@@ -44,6 +44,9 @@
         "addImageButton": "Add image",
         "sendButton": "Send message",
         "cancelButton": "Cancel"
+      },
+      "user": {
+        "title": "my messages"
       }
     },
     "providerDetail": {

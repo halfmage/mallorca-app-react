@@ -201,6 +201,18 @@ export class ProviderService extends EntityService {
         return Promise.all(providers.map(this.processProviderImages));
     }
 
+    public async getSavedProvidersByUserIds(userIds: Array<string>) {
+        const { data } = await this.supabase
+            .from('saved_providers')
+            .select(`
+                provider_id,
+                user_id
+            `)
+            .in('user_id', userIds)
+
+        return data
+    }
+
     // Get saved users for a provider
     public async getSavedUsersForProvider(providerId: string) {
         const { data } = await this.supabase

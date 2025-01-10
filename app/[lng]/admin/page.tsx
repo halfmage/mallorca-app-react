@@ -1,10 +1,10 @@
-import {createClient} from '@/utils/supabase/server'
-import {cookies} from 'next/headers'
+import { createClient } from '@/utils/supabase/server'
+import { cookies } from 'next/headers'
 import React from "react";
 import Admin from '@/components/Admin'
 import { redirect } from 'next/navigation'
 import { ProviderService } from '@/app/api/utils/provider'
-import { isAdmin } from '@/app/api/utils/user'
+import { UserService, isAdmin } from '@/app/api/utils/user'
 
 export default async function AdminPage({ params }) {
     const { lng } = await params
@@ -16,9 +16,11 @@ export default async function AdminPage({ params }) {
     }
     const providerService = new ProviderService(supabase)
     const providers = await providerService.getEditableProviders()
-    const { data: mainCategories } = await supabase.from('maincategories').select('*');
+    const { data: mainCategories } = await supabase.from('maincategories').select('*')
+    const userService = await UserService.init()
+    const usersCount = await userService.getUsersCount()
 
     return (
-        <Admin providers={providers} mainCategories={mainCategories} />
+        <Admin providers={providers} mainCategories={mainCategories} usersCount={usersCount} />
     )
 }

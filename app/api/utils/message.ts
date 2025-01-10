@@ -145,4 +145,16 @@ export class MessageService extends EntityService {
 
         return data
     }
+
+    public async getMessagesByUserIds(userIds: Array<string>) {
+        const { data } = await this.supabase
+            .from('sent_messages')
+            .select(`
+                id,
+                receiver_id
+            `)
+            .in('receiver_id', userIds)
+
+        return data
+    }
 }

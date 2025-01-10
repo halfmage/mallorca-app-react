@@ -136,7 +136,7 @@
     "admin": {
       "dashboard": "Admin Dashboard",
       "providers": "Providers",
-      "providerList": "Provider List",
+      "providerList": "Provider List ({{ count }})",
       "addProvider": "Add Provider",
       "editProvider": "Edit Provider",
       "providerName": "Provider Name",
@@ -156,6 +156,7 @@
       "reorderImages": "Reorder Images",
       "saveOrder": "Save Order",
       "deleteImage": "Delete",
+      "userList": "Users ({{ count }})",
       "error": {
         "notAdmin": "You don't have permission to access this page.",
         "addProvider": "Error adding provider",
@@ -165,6 +166,14 @@
         "deleteImage": "Error deleting image",
         "saveOrder": "Error saving image order",
         "fetchCategories": "Error fetching categories"
+      },
+      "users": {
+        "name": "Name",
+        "savedProviders": "Saved providers",
+        "messages": "Receive messages",
+        "createdAt": "Member since",
+        "actions": "Actions",
+        "remove": "Remove User"
       }
     },
     "providerDashboard": {

@@ -29,7 +29,10 @@ export default async function RootLayout({
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
     const messageService = new MessageService(supabase)
-    const newMessagesCount = await messageService.getNewMessagesCount(user.id)
+    let newMessagesCount = 0
+    if (user?.id) {
+        newMessagesCount = await messageService.getNewMessagesCount(user.id)
+    }
 
     return (
         <html lang={lng} dir={dir(lng)}>

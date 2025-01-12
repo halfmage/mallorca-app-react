@@ -9,16 +9,16 @@ const Providers = ({ providers, loading }) => {
 
     return (
         <div>
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
+            <div className="bg-white dark:bg-gray-900 shadow overflow-hidden sm:rounded-md">
                 {loading ? (
                     <p className="p-4">{t('common.loading')}</p>
                 ) : providers.length === 0 ? (
                     <p className="p-4">{t('admin.noProviders')}</p>
                 ) : (
-                    <ul className="divide-y divide-gray-200">
+                    <ul className="divide-y divide-gray-200 dark:divide-gray-800">
                         {providers.map((provider) => (
                             <li key={provider.id}>
-                                <div className="flex items-center p-4 hover:bg-gray-50">
+                                <div className="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-800">
                                     {/* Provider Image */}
                                     <div className="flex-shrink-0 h-16 w-16 mr-4">
                                         {provider?.mainImage?.publicUrl ? (
@@ -29,7 +29,7 @@ const Providers = ({ providers, loading }) => {
                                             />
                                         ) : (
                                             <div
-                                                className="h-16 w-16 bg-gray-100 flex items-center justify-center rounded">
+                                                className="h-16 w-16 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded">
                             <span className="text-gray-400 text-sm">
                               {t('common.noImage')}
                             </span>

@@ -35,22 +35,22 @@ const ProviderDashboard = ({ provider, savedUsers, stats, subscriptionLink }) =>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
                     <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('providerDashboard.stats.totalSaves')}</h3>
                     <p className="text-3xl font-bold text-blue-600">{stats.totalSaves}</p>
                 </div>
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
                     <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('providerDashboard.stats.totalViews')}</h3>
                     <p className="text-3xl font-bold text-blue-600">{stats.totalViews}</p>
                 </div>
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
                     <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('providerDashboard.stats.recentViews')}</h3>
                     <p className="text-3xl font-bold text-blue-600">{stats.recentViews}</p>
                 </div>
             </div>
 
             {/* Saved Users */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold">{t('providerDashboard.savedUsers.title')}</h2>
                 </div>
@@ -68,7 +68,7 @@ const ProviderDashboard = ({ provider, savedUsers, stats, subscriptionLink }) =>
                                 </th>
                             </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200">
                             {savedUsers.map((saved) => (
                                 <tr key={saved.user.id}>
                                     <td className="px-6 py-4 whitespace-nowrap">

@@ -10,7 +10,7 @@ const Message = ({ message }) => {
     )
 
     return (
-        <div className="bg-gray-200 px-4 py-2 rounded">
+        <div className="bg-gray-200 dark:bg-gray-900 px-4 py-2 rounded">
             <div className="flex flex-row justify-between">
                 <h2 className="text-2xl font-bold mb-4">
                     {message?.message?.title}

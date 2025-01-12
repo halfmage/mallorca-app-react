@@ -13,7 +13,7 @@ const ProviderImage = ({ provider }) => {
             className="h-16 w-16 object-cover rounded-full"
         />
     ) : (
-        <div className="h-16 w-16 bg-gray-100 flex items-center justify-center rounded">
+        <div className="h-16 w-16 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded">
             <span className="text-gray-400 text-sm">
                 {t('common.noImage')}
             </span>

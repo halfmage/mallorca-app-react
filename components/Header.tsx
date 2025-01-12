@@ -38,7 +38,7 @@ const Header = ({ user, isAdmin, newMessagesCount }) => {
   );
 
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-white dark:bg-gray-900 shadow-sm">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}

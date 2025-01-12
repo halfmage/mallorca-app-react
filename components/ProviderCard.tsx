@@ -8,9 +8,9 @@ const ProviderCard = ({ provider }) => {
   const { t, i18n: { language } } = useTranslation();
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Provider Image */}
-      <div className="h-48 w-full overflow-hidden bg-gray-100">
+      <div className="h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
         {provider?.mainImage?.publicUrl ? (
           <img
             src={provider.mainImage.publicUrl}

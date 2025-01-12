@@ -113,7 +113,7 @@ const SavedProviders = ({ providers, mainCategories }) => {
                             {savedProviders.map((provider) => (
                                 <div
                                     key={provider.id}
-                                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                                    className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                                 >
                                     {/* Provider Image */}
                                     <div className="h-48 w-full overflow-hidden bg-gray-100">

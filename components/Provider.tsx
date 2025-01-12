@@ -87,7 +87,7 @@ const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
                             </div>
                         ) : (
                             <div
-                                className="bg-gray-100 aspect-w-16 aspect-h-9 rounded-lg flex items-center justify-center">
+                                className="bg-gray-100 dark:bg-gray-800 aspect-w-16 aspect-h-9 rounded-lg flex items-center justify-center">
                                 <span className="text-gray-400">{t('providerDetail.noImages')}</span>
                             </div>
                         )}

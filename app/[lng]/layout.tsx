@@ -22,10 +22,12 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
     children,
-    params
+    params: { lng }
+}: {
+    children: React.ReactNode;
+    params: { lng: string };
 }) {
-    const { lng } = await params
-    const cookieStore = await cookies()
+    const cookieStore = cookies()
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
     const messageService = new MessageService(supabase)
@@ -36,7 +38,7 @@ export default async function RootLayout({
 
     return (
         <html lang={lng} dir={dir(lng)}>
-        <body className={`antialiased`}>
+        <body className={`antialiased bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200`}>
         <>
             <Header user={user} isAdmin={isAdmin(user)} newMessagesCount={newMessagesCount} />
             {/*{logoutMessage && (*/}

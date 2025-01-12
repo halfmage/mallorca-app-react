@@ -32,7 +32,7 @@ export default async function MessagesPage({ params }) {
     const providers = savedProviders.map((provider) => ({
         ...provider,
         messages: messages.filter((message) => message?.message?.provider_id === provider.id)
-    }))
+    })).filter(({ messages }) => messages.length)
     providers.sort(
         (a, b) => {
             const latestDateA = Math.max(...a.messages.map(message => new Date(message.created_at).getTime()));

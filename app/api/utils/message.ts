@@ -157,4 +157,16 @@ export class MessageService extends EntityService {
 
         return data
     }
+
+    public async markAsRead(messageId: string, userId: string) {
+        const { error } = await this.supabase
+            .from('sent_messages')
+            .update({
+                read: true
+            })
+            .eq('receiver_id', userId)
+            .eq('id', messageId)
+
+        return !error
+    }
 }

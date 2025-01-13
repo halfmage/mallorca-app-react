@@ -29,16 +29,25 @@ export class MessageService extends EntityService {
             return []
         }
 
-        return data.map(
-            ({ id, received, ...message }) => ({
-                id,
-                ...message,
-                receivedCount: received?.[0]?.count || 0,
-                viewedCount: readMessages
-                    .find(
-                        ({ id: messageId }) => messageId === id
-                    )?.read?.[0]?.count || 0
-            })
+        return await Promise.all(
+            data.map(
+                async ({ id, received, image_url: imageUrl, ...message }) => {
+                    let publicUrl = null
+                    if (imageUrl) {
+                        publicUrl = await this.getImagePublicUrl(imageUrl)
+                    }
+                    return {
+                        id,
+                        ...message,
+                        ...(publicUrl ? { publicUrl } : {}),
+                        receivedCount: received?.[0]?.count || 0,
+                        viewedCount: readMessages
+                            .find(
+                                ({ id: messageId }) => messageId === id
+                            )?.read?.[0]?.count || 0
+                    }
+                }
+            )
         )
     }
 
@@ -143,7 +152,23 @@ export class MessageService extends EntityService {
         this.applySortAndLimitToQuery(query, SORTING_ORDER_NEW)
         const { data } = await query
 
-        return data
+        return await Promise.all(
+            data.map(
+                async ({ message: { image_url: imageUrl, ...message }, ...sentMessage }) => {
+                    let publicUrl = null
+                    if (imageUrl) {
+                        publicUrl = await this.getImagePublicUrl(imageUrl)
+                    }
+                    return {
+                        ...sentMessage,
+                        message: {
+                            ...message,
+                            publicUrl
+                        }
+                    }
+                }
+            )
+        )
     }
 
     public async getMessagesByUserIds(userIds: Array<string>) {
@@ -168,5 +193,13 @@ export class MessageService extends EntityService {
             .eq('id', messageId)
 
         return !error
+    }
+
+    private getImagePublicUrl = async (imageUrl) => {
+        const { data: publicUrlData } = await this.supabase.storage
+            .from('message-images')
+            .getPublicUrl(imageUrl)
+
+        return publicUrlData.publicUrl
     }
 }

@@ -3,42 +3,41 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import moment from 'moment'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 
 
-const Send = ({ savedCount, limit, latestEmailDate }) => {
+const Send = ({ savedCount, limit, latestEmailDate, isBlocked }) => {
     const [ savingStatus, setSavingStatus ] = useState('idle')
+    const { push } = useRouter()
     const { register, handleSubmit } = useForm()
-    const { t } = useTranslation()
+    const { t, i18n: { language } } = useTranslation()
     const timeLeft = useMemo(
         () => {
-            if (!latestEmailDate) {
+            if (!isBlocked) {
                 return null
             }
 
-            const now = moment()
             const date = moment(latestEmailDate)
-
-            if (now.diff(date) > limit * 1000 * 60 * 60) {
-                return null
-            }
-
             const unblockDate = date.add(limit, 'hours')
-            const diff = moment.duration(unblockDate.diff(now))
+            const diff = moment.duration(unblockDate.diff(moment()))
 
-            return `${diff.hours()}h ${diff.minutes()}min`
+            return t('messages.form.blockedUntil', { hours: diff.hours(), minutes: diff.minutes() })
         },
-        [ latestEmailDate, limit ]
+        [ latestEmailDate, limit, isBlocked, t ]
     )
 
     const onSubmit = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
         handleSubmit(
-            async ({ title, text }) => {
+            async ({ title, text, image }) => {
                 try {
                     setSavingStatus('loading')
                     const formData = new FormData()
                     formData.append('title', title)
                     formData.append('text', text)
+                    if (image?.[0]) {
+                        formData.append('image', image[0])
+                    }
 
                     const response = await fetch(
                         `/api/message`,
@@ -47,15 +46,19 @@ const Send = ({ savedCount, limit, latestEmailDate }) => {
                             body: formData
                         }
                     )
-                    await response.json()
+                    const { data } = await response.json()
+
+                    if (data) {
+                        push(`/${language}/messages`)
+                    }
                 } catch (error) {
-                    console.error(t('claimBusiness.error.saveProvider'), error.message);
+                    console.error(t('messages.form.error.send'), error.message);
                 } finally {
                     setSavingStatus('idle')
                 }
             }
         ),
-        [ handleSubmit ]
+        [ handleSubmit, language, t, push]
     )
 
     return (
@@ -71,9 +74,15 @@ const Send = ({ savedCount, limit, latestEmailDate }) => {
                             <span>{timeLeft}</span>
                         </div>
                     }
-                    <div className="bg-gray-200 px-5 py-5 mb-6 text-center">
+                    <label className="w-full bg-gray-200 px-5 py-5 mb-6 text-center block cursor-pointer">
+                        <input
+                            type="file"
+                            accept="image/*"
+                            {...register('image', {required: false})}
+                            className="hidden"
+                        />
                         {t('messages.form.addImageButton')}
-                    </div>
+                    </label>
 
                     <div>
                         <div>

@@ -7,7 +7,7 @@ import { stringifyParams } from '@/app/api/utils/helpers'
 import CategoryFilter from '@/components/Filters/CategoryFilter'
 import SortingControl from '@/components/Filters/SortingControl'
 
-const Category = ({ providers, category, subCategories, showSaveButton }) => {
+const Category = ({ providers, category, subCategories }) => {
     const [ savedProviders, setSavedProviders ] = useState(providers)
     const [ loading, setLoading ] = useState(false)
     const [ selectedCategories, setSelectedCategories ] = useState([])

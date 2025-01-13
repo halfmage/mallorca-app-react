@@ -2,12 +2,13 @@
 
 import React, { useState } from 'react'
 import { useTranslation } from '@/app/i18n/client'
+import Link from 'next/link'
 import Message from './Message'
 import Provider from './Provider'
 import ProviderImage from './ProviderImage'
 
 const UserMessagesView = ({ providers }) => {
-    const { t } = useTranslation()
+    const { t, i18n: { language } } = useTranslation()
     const [ selectedProvider, setSelectedProvider ] = useState(providers?.[0])
 
     return (
@@ -36,7 +37,17 @@ const UserMessagesView = ({ providers }) => {
                             </div>
                         </div>
                         <div>
-                            <b>{selectedProvider?.name}</b>
+                            <Link href={`/${language}/provider/${selectedProvider?.slug || selectedProvider?.id}`}
+                                  className="font-bold underline">
+                                {selectedProvider?.name}
+                            </Link>
+                            {selectedProvider?.isOwnProvider && (
+                                <span
+                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                                >
+                                    {t('messages.user.ownProvider')}
+                                </span>
+                            )}
                             {selectedProvider?.maincategories && (
                                 <p className="text-gray-600 mb-4">{selectedProvider?.maincategories?.name}</p>
                             )}

@@ -39,28 +39,13 @@ const Message = ({ message }) => {
                     {message?.message?.title}
                 </h2>
             </div>
+            {message?.message?.publicUrl && <img src={message?.message?.publicUrl} alt={message?.message?.title}/>}
             <div dangerouslySetInnerHTML={textHtml} className={`${message?.read ? '' : 'font-bold'}`}/>
             <div>
                 {moment(message.created_at).format('LLL')}
             </div>
         </div>
     )
-
-    // return (
-    //     <IntersectionDetector onIntersect={markAsRead}>
-    //         <div className="bg-gray-200 dark:bg-gray-900 px-4 py-2 rounded" style={{ height: '1800px' }}>
-    //             <div className="flex flex-row justify-between">
-    //                 <h2 className="text-2xl font-bold mb-4">
-    //                     {message?.message?.title}
-    //                 </h2>
-    //             </div>
-    //             <div dangerouslySetInnerHTML={textHtml}/>
-    //             <div>
-    //                 {moment(message.created_at).format('LLL')}
-    //             </div>
-    //         </div>
-    //     </IntersectionDetector>
-    // )
 }
 
 export default Message

@@ -22,6 +22,7 @@ const Message = ({ message }) => {
                     {moment(message.created_at).format('LLL')}
                 </span>
             </div>
+            {message.publicUrl && <img src={message.publicUrl} alt={message.title} />}
             <div dangerouslySetInnerHTML={textHtml}/>
             <div className="flex flex-row gap-3">
                 <div className="flex flex-row gap-1">

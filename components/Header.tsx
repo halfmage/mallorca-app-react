@@ -1,25 +1,23 @@
 'use client'
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-// import { useAuth } from '../hooks/useAuth';
+import React, { useState } from 'react'
+import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
-import LanguageSwitcher from './LanguageSwitcher';
+import LanguageSwitcher from './LanguageSwitcher'
 
-const Header = ({ user, isAdmin, newMessagesCount }) => {
-  // const { user } = useAuth();
-  const { t, i18n: { language } } = useTranslation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const avatarUrl = user?.user_metadata?.avatar_url;
-  const displayName = user?.user_metadata?.display_name;
+const Header = ({ user, isAdmin, newMessagesCount, hasProviders }) => {
+  const { t, i18n: { language } } = useTranslation()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const avatarUrl = user?.user_metadata?.avatar_url
+  const displayName = user?.user_metadata?.display_name
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    setIsMenuOpen(!isMenuOpen)
+  }
 
   const closeMenu = () => {
-    setIsMenuOpen(false);
-  };
+    setIsMenuOpen(false)
+  }
 
   const AvatarDisplay = () => (
     <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
@@ -82,11 +80,19 @@ const Header = ({ user, isAdmin, newMessagesCount }) => {
                     {t('header.admin')}
                   </Link>
                 )}
+                {hasProviders && (
+                    <Link
+                        href={`/${language}/messages`}
+                        className="text-gray-600 dark:text-gray-400 hover:opacity-75"
+                    >
+                      {t('header.messages')}
+                    </Link>
+                )}
                 <Link
-                    href={`/${language}/messages`}
+                    href={`/${language}/my-messages`}
                     className="text-gray-600 dark:text-gray-400 hover:opacity-75"
                 >
-                  {t('header.messages')} {newMessagesCount > 0 && `(${newMessagesCount})`}
+                  {t('header.myMessages')} {newMessagesCount > 0 && `(${newMessagesCount})`}
                 </Link>
                 <Link
                   href={`/${language}/saved`}

@@ -71,7 +71,18 @@ export class ProviderService extends EntityService {
             .single();
         
         // if (error) throw error;
-        return data;
+        return data
+    }
+
+    // todo: rely on a role inside user.app_metadata
+    public async hasProviders(userId: string): Promise<boolean> {
+        const { data } = await this.supabase
+            .from('providers')
+            .select(`*`)
+            .eq('user_id', userId)
+            .single()
+
+        return !!data
     }
 
     public async isProviderAdmin(userId: string, providerId: string): Promise<boolean> {
@@ -182,6 +193,7 @@ export class ProviderService extends EntityService {
                   maincategories (
                     name
                   ),
+                  user_id,
                   ${IMAGES_FRAGMENT}
                 )
             `)

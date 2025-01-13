@@ -10,6 +10,7 @@ import { MessageService } from '@/app/api/utils/message'
 import { cookies } from 'next/headers'
 import { dir } from 'i18next'
 import { languages } from '../i18n/settings'
+import { ProviderService } from '@/app/api/utils/provider'
 
 export async function generateStaticParams() {
     return languages.map((lng) => ({ lng }))
@@ -30,12 +31,14 @@ export default async function RootLayout({ children, params }) {
     if (user?.id) {
         newMessagesCount = await messageService.getNewMessagesCount(user.id)
     }
+    const providerService = new ProviderService(supabase)
+    const hasProviders = await providerService.hasProviders(user.id)
 
     return (
         <html lang={lng} dir={dir(lng)}>
         <body className={`antialiased bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200`}>
         <>
-            <Header user={user} isAdmin={isAdmin(user)} newMessagesCount={newMessagesCount} />
+            <Header user={user} isAdmin={isAdmin(user)} newMessagesCount={newMessagesCount} hasProviders={hasProviders} />
             {/*{logoutMessage && (*/}
             {/*    <div className="bg-green-500 text-white text-center py-3 fixed top-0 left-0 right-0 z-50">*/}
             {/*        {logoutMessage}*/}

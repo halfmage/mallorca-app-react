@@ -1,10 +1,13 @@
 import React from 'react'
+import moment from 'moment'
 import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { MessageService } from '@/app/api/utils/message'
 import { ProviderService } from '@/app/api/utils/provider'
 import Send from '@/components/Messages/Send'
+
+const DEFAULT_RATE_LIMIT = 12
 
 export default async function MessageSendPage({ params }) {
     const { lng } = await params
@@ -23,11 +26,15 @@ export default async function MessageSendPage({ params }) {
         return redirect(`/${lng}/not-logged`)
     }
 
+    const limit = process.env.MESSAGE_RATE_LIMIT || DEFAULT_RATE_LIMIT
+    const isBlocked = latestEmailDate && moment().diff(moment(latestEmailDate)) <= limit * 60 * 60 * 1000
+
     return (
         <Send
             savedCount={provider?.saved_providers?.[0]?.count || 0}
-            limit={process.env.MESSAGE_RATE_LIMIT}
+            limit={limit}
             latestEmailDate={latestEmailDate}
+            isBlocked={isBlocked}
         />
     )
 }

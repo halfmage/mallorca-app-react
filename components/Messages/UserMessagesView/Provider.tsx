@@ -1,9 +1,11 @@
 'use client'
 
 import React, { useCallback, useMemo } from 'react'
+import { useTranslation } from '@/app/i18n/client'
 import ProviderImage from './ProviderImage'
 
 const Provider = ({ provider, isActive, onClick }) => {
+    const { t } = useTranslation()
     const textHtml = useMemo(
         () => ({ __html: provider?.messages?.[0]?.message?.text }),
         [ provider ]
@@ -28,6 +30,13 @@ const Provider = ({ provider, isActive, onClick }) => {
                     <h2 className={`text-2xl mb-4 ${hasNewMessages ? 'font-bold' : 'font-light'}`}>
                         {provider.name}
                     </h2>
+                    {provider?.isOwnProvider && (
+                        <span
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                        >
+                            {t('messages.user.ownProvider')}
+                        </span>
+                    )}
                     <div dangerouslySetInnerHTML={textHtml}/>
                 </div>
             </div>

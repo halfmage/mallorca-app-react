@@ -8,6 +8,10 @@ export default {
   ],
   darkMode: 'media',
   theme: {
+    container: {
+      center: true,
+      padding: '1rem', // this is equivalent to px-4
+    },
     extend: {
       colors: {
         background: "var(--background)",

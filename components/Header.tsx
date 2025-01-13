@@ -39,7 +39,7 @@ const Header = ({ user, isAdmin, newMessagesCount }) => {
 
   return (
     <header className="bg-white dark:bg-gray-900 shadow-sm">
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="container">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href={`/${language}`} className="text-xl font-bold" onClick={closeMenu}>
@@ -77,26 +77,26 @@ const Header = ({ user, isAdmin, newMessagesCount }) => {
                 {isAdmin && (
                   <Link
                     href={`/${language}/admin`}
-                    className="text-gray-600 hover:text-gray-900"
+                    className="text-gray-600 dark:text-gray-400 hover:opacity-75"
                   >
                     {t('header.admin')}
                   </Link>
                 )}
                 <Link
                     href={`/${language}/messages`}
-                    className="text-gray-600 hover:text-gray-900"
+                    className="text-gray-600 dark:text-gray-400 hover:opacity-75"
                 >
                   {t('header.messages')} {newMessagesCount > 0 && `(${newMessagesCount})`}
                 </Link>
                 <Link
                   href={`/${language}/saved`}
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 dark:text-gray-400 hover:opacity-75"
                 >
                   {t('header.savedProviders')}
                 </Link>
                 <Link
                   href={`/${language}/profile`}
-                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+                  className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:opacity-75"
                 >
                   <span>{t('header.profile')}</span>
                   <AvatarDisplay />
@@ -105,7 +105,7 @@ const Header = ({ user, isAdmin, newMessagesCount }) => {
             ) : (
               <Link
                 href={`/${language}/login`}
-                className="text-gray-600 hover:text-gray-900"
+                className="text-gray-600 dark hover:opacity-75"
               >
                 {t('header.signIn')}
               </Link>
@@ -125,14 +125,14 @@ const Header = ({ user, isAdmin, newMessagesCount }) => {
               <>
                 <Link
                   href={`/${language}/saved`}
-                  className="text-gray-600 hover:text-gray-900 py-2"
+                  className="text-gray-600 dark hover:opacity-75 py-2"
                   onClick={closeMenu}
                 >
                   {t('header.savedProviders')}
                 </Link>
                 <Link
                   href={`/${language}/profile`}
-                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 py-2"
+                  className="flex items-center space-x-2 text-gray-600 dark hover:opacity-75 py-2"
                   onClick={closeMenu}
                 >
                   <span>{t('header.profile')}</span>
@@ -141,7 +141,7 @@ const Header = ({ user, isAdmin, newMessagesCount }) => {
                 {isAdmin && (
                   <Link
                     href={`/${language}/admin`}
-                    className="text-gray-600 hover:text-gray-900 py-2"
+                    className="text-gray-600 dark hover:opacity-75 py-2"
                     onClick={closeMenu}
                   >
                     {t('header.admin')}
@@ -151,7 +151,7 @@ const Header = ({ user, isAdmin, newMessagesCount }) => {
             ) : (
               <Link
                 href={`/${language}/login`}
-                className="text-gray-600 hover:text-gray-900 py-2"
+                className="text-gray-600 dark hover:opacity-75 py-2"
                 onClick={closeMenu}
               >
                 {t('header.signIn')}

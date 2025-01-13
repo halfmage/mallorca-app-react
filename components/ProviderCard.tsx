@@ -8,14 +8,17 @@ const ProviderCard = ({ provider }) => {
   const { t, i18n: { language } } = useTranslation();
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <Link
+      href={`/${language}/provider/${provider.slug || provider.id}`}
+      className="block bg-white dark:bg-gray-900 hover:bg-gray-100 hover:dark:bg-gray-800 rounded-lg shadow-md overflow-hidden group transition-colors"
+    >
       {/* Provider Image */}
       <div className="h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
         {provider?.mainImage?.publicUrl ? (
           <img
             src={provider.mainImage.publicUrl}
             alt={provider.name} 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover group-hover:brightness-110"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -26,10 +29,10 @@ const ProviderCard = ({ provider }) => {
 
       {/* Provider Details */}
       <div className="p-4">
-        <h3 className="text-lg font-bold mb-2">{provider.name}</h3>
+        <h3 className="text-lg font-bold mb-1">{provider.name}</h3>
         
         {/* Main Category */}
-        <div className="flex items-center mb-2">
+        <div className="flex items-center mb-1">
           <span className="text-sm text-gray-600 mr-2">
             {t('home.category')}:
           </span>
@@ -39,24 +42,16 @@ const ProviderCard = ({ provider }) => {
         </div>
 
         {/* Saves Count */}
-        <div className="flex items-center mb-4">
-          <span className="text-sm text-gray-600 mr-2">
+        <div className="flex items-center">
+          <span className="text-sm text-gray-600 dark:text-gray-400 mr-2">
             {t('home.saves')}:
           </span>
           <span className="text-sm font-medium text-green-600">
             {provider.savedCount}
           </span>
         </div>
-
-         {/* View Details Button */}
-        <Link
-          href={`/${language}/provider/${provider.slug || provider.id}`}
-          className="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
-        >
-          {t('home.viewDetails')}
-        </Link>
       </div>
-    </div>
+    </Link>
   );
 };
 

@@ -2,6 +2,104 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+    /* Typography */
+
+    /* Main page title or hero heading - Use for the most important heading on a page
+     * Examples: Landing page hero, Main article title, Welcome screen */
+    .h1 {
+        @apply text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-5xl;
+    }
+
+    /* Section titles - Use for major sections within a page
+     * Examples: Feature sections, Main content areas, Form sections */
+    .h2 {
+        @apply text-3xl font-semibold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl;
+    }
+
+    /* Subsection headings - Use for content divisions within major sections
+     * Examples: Card titles, Group headings, Sidebar sections */
+    .h3 {
+        @apply text-2xl font-semibold text-gray-900 dark:text-gray-100 sm:text-3xl;
+    }
+
+    /* Minor headings - Use for smaller content blocks or UI elements
+     * Examples: Widget titles, List headings, Modal titles */
+    .h4 {
+        @apply text-xl font-semibold text-gray-900 dark:text-gray-100 sm:text-2xl;
+    }
+
+    /* Standard body text - Use for main content and general paragraphs
+     * Examples: Article content, Description text, General information */
+    .text-body {
+        @apply text-base text-gray-700 dark:text-gray-300;
+    }
+
+    /* Small body text - Use for supporting content and UI elements
+     * Examples: Meta information, Helper text, Secondary descriptions */
+    .text-body-sm {
+        @apply text-sm text-gray-700 dark:text-gray-300;
+    }
+
+    /* Large body text - Use for emphasized content sections
+     * Examples: Important paragraphs, Pull quotes, Featured text */
+    .text-body-lg {
+        @apply text-lg text-gray-700 dark:text-gray-300;
+    }
+
+    /* Caption text - Use for auxiliary information and metadata
+     * Examples: Image captions, Timestamps, Labels, Helper text */
+    .text-caption {
+        @apply text-sm text-gray-600 dark:text-gray-400;
+    }
+
+    /* Lead paragraph text - Use for introductory content
+     * Examples: Article intros, Section summaries, Feature highlights */
+    .text-lead {
+        @apply text-xl text-gray-700 dark:text-gray-300 leading-relaxed;
+    }
+
+    /* Interactive text links - Use for clickable text elements
+     * Examples: Navigation links, Read more links, Text CTAs */
+    .text-link {
+        @apply text-blue-600 dark:text-blue-400 hover:underline cursor-pointer;
+    }
+
+    /* Button Styles */
+    .button {
+        @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200
+            focus:outline-none focus:ring-2 focus:ring-offset-2
+            disabled:opacity-50 disabled:cursor-not-allowed
+            bg-gray-200 text-gray-700 hover:bg-gray-300
+            dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
+            focus:ring-gray-400 dark:focus:ring-gray-500;
+    }
+
+    .button-primary {
+        @apply button bg-blue-600 text-white hover:bg-blue-700
+            dark:bg-blue-500 dark:hover:bg-blue-600
+            focus:ring-blue-500 dark:focus:ring-blue-400;
+    }
+
+    .button-outline {
+        @apply button bg-transparent border-2 border-gray-300 hover:bg-gray-100
+            dark:border-gray-600 dark:hover:bg-gray-800 dark:text-gray-200
+            focus:ring-gray-400 dark:focus:ring-gray-500;
+    }
+
+    .button-success {
+        @apply button bg-green-600 text-white hover:bg-green-700
+            dark:bg-green-500 dark:hover:bg-green-600
+            focus:ring-green-500 dark:focus:ring-green-400;
+    }
+
+    .button-danger {
+        @apply button bg-red-600 text-white hover:bg-red-700
+            dark:bg-red-500 dark:hover:bg-red-600
+            focus:ring-red-500 dark:focus:ring-red-400;
+    }
+}
+
 /*:root {*/
 /*  --background: #ffffff;*/
 /*  --foreground: #171717;*/

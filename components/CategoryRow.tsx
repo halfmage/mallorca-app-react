@@ -7,14 +7,14 @@ const CategoryRow = async ({category, providers, lng}) => {
     const { t } = await useTranslation(lng) // eslint-disable-line react-hooks/rules-of-hooks
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
-            <div className="flex flex-row justify-between">
-                <h1 className="text-3xl font-bold mb-8 flex-grow">
+        <div className="flex flex-col gap-4">
+            <div className="flex flex-row items-center justify-between">
+                <h1 className="h4">
                     {t('category.title', {category: category.name})}
                 </h1>
                 <Link
                     href={`/${lng}/category/${category.slug || category.id}`}
-                    className="block text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
+                    className="button-outline"
                 >
                     {t('home.showAll')}
                 </Link>

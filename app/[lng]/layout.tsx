@@ -41,7 +41,7 @@ export default async function RootLayout({ children, params }) {
             {/*        {logoutMessage}*/}
             {/*    </div>*/}
             {/*)}*/}
-            <main className="container mx-auto p-4 mt-12">{children}</main>
+            <main className="container">{children}</main>
         </>
         </body>
         </html>

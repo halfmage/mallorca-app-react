@@ -78,18 +78,18 @@ const Category = ({ providers, category, subCategories, showSaveButton }) => {
     )
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
-            <h1 className="text-3xl font-bold mb-6">
+        <div className="">
+            <h1 className="h1 text-center p-12">
                 {t('category.title', { category: category.name })}
             </h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex justify-between mb-4">
                 <CategoryFilter value={selectedCategories} options={subCategories} onChange={handleCategorySelect} />
                 <SortingControl value={sort} onChange={setSort} />
             </div>
             {
                 loading ? (
-                    <div className="max-w-6xl mx-auto p-6">
+                    <div className="">
                         <p>{t('common.loading')}</p>
                     </div>
                 ) : (
@@ -106,11 +106,12 @@ const Category = ({ providers, category, subCategories, showSaveButton }) => {
                             </Link>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {savedProviders.map((provider) => (
-                                <div
+                                <Link
+                                    href={`/${language}/provider/${provider.slug || provider.id}`}
                                     key={provider.id}
-                                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                                    className="block bg-white dark:bg-gray-900 hover:bg-gray-100 hover:dark:bg-gray-800 rounded-lg shadow-md overflow-hidden group transition-colors"
                                 >
                                     {/* Provider Image */}
                                     <div className="h-48 w-full overflow-hidden bg-gray-100">
@@ -134,25 +135,14 @@ const Category = ({ providers, category, subCategories, showSaveButton }) => {
                                         {provider.maincategories && (
                                             <p className="text-gray-600 mb-4">{provider.maincategories.name}</p>
                                         )}
-
-                                        <div className="flex justify-between items-center">
-                                            <Link
-                                                href={`/${language}/provider/${provider.slug || provider.id}`}
-                                                className="text-blue-500 hover:text-blue-600"
-                                            >
-                                                {t('category.viewDetails')}
-                                            </Link>
-                                            {showSaveButton &&
-                                                <button
-                                                    onClick={() => handleUnsave(provider.id)}
-                                                    className="text-red-500 hover:text-red-600"
-                                                  >
-                                                    {t('category.save')}
-                                                </button>
-                                            }
-                                        </div>
+                                        <button
+                                            onClick={() => handleUnsave(provider.id)}
+                                            className="text-red-500 hover:text-red-600"
+                                        >
+                                            {t('category.unsave')}
+                                        </button>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     )

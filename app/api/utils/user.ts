@@ -78,6 +78,23 @@ export class UserService extends EntityService {
         return !error
     }
 
+    public async getUsersByIds(ids: string[]): Promise<Array<{ id: string; name: string; createdAt: Date; savedProviders: number; receiveMessages: number }>> {
+        // todo: consider default pagination
+        const { data: { users }, error } = await this.supabase.auth.admin.listUsers()
+
+        if (error) {
+            return []
+        }
+
+        return users
+            .filter(user => ids.includes(user.id))
+            .map(({ id, email, user_metadata }) => ({
+                id,
+                email,
+                name: user_metadata?.display_name
+            }))
+    }
+
     private sortBy(sort: string) {
         switch (sort) {
             case SORTING_ORDER_NEW:

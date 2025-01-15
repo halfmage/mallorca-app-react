@@ -3,6 +3,7 @@ import {
 } from './constants'
 import { isUUID } from './helpers'
 import { EntityService } from '@/app/api/utils/entity'
+import { UserService } from '@/app/api/utils/user'
 
 const BASIC_INFO_FRAGMENT = `
     id,
@@ -352,14 +353,37 @@ export class ProviderService extends EntityService {
             .select(`
                 ${BASIC_INFO_FRAGMENT},
                 status,
-                maincategories (
-                  name
-                ),
-                ${IMAGES_FRAGMENT}
+                saved_providers (count),
+                updated_at,
+                business_claims (
+                    status,
+                    payment_status,
+                    claimer_id,
+                    updated_at
+                )
             `)
             .order('created_at', {ascending: false})
+        const userService = await UserService.init()
+        const userIds = new Set(
+            data.reduce((result, provider) => [
+                ...result,
+                ...((provider?.business_claims || []).map(claim => claim?.claimer_id).filter(Boolean))
+            ], [])
+        )
+        const users = await userService.getUsersByIds([...userIds])
 
-        return Promise.all(data.map(this.processProviderImages))
+        return data.map(
+            ({ business_claims: claims, saved_providers: savedProviders, ...provider } ) => ({
+                ...provider,
+                saved: savedProviders?.[0]?.count || 0,
+                ...(claims?.length > 0 ? {
+                    claims: claims.map(claim => ({
+                        ...claim,
+                        claimer: users.find(user => user.id === claim.claimer_id)
+                    }))
+                } : {})
+            })
+        )
     }
 
     public async getProviders() {

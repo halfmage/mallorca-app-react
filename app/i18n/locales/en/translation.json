@@ -138,7 +138,6 @@
     },
     "admin": {
       "dashboard": "Admin Dashboard",
-      "providers": "Providers",
       "providerList": "Provider List ({{ count }})",
       "addProvider": "Add Provider",
       "editProvider": "Edit Provider",
@@ -169,6 +168,18 @@
         "deleteImage": "Error deleting image",
         "saveOrder": "Error saving image order",
         "fetchCategories": "Error fetching categories"
+      },
+      "providers": {
+        "name": "Name",
+        "status": "Status",
+        "paymentStatus": "Payment status",
+        "updatedAt": "Last update",
+        "saved": "Fans",
+        "user": "Access User",
+        "userEmail": "Access User Email",
+        "actions": "Actions",
+        "access": "Access",
+        "revoke": "Revoke"
       },
       "users": {
         "name": "Name",
@@ -255,6 +266,12 @@
       "sorting": {
         "new": "Newest",
         "old": "Oldest"
+      },
+      "status": {
+        "pending": "Pending",
+        "verified": "Verified",
+        "rejected": "Rejected",
+        "completed": "Completed"
       }
     }
 }

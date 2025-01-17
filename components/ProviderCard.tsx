@@ -3,6 +3,8 @@
 import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import Link from 'next/link';
+import { Icon } from '@mdi/react';
+import { mdiHeart as IconSaved } from '@mdi/js';
 
 const ProviderCard = ({ provider }) => {
   const { t, i18n: { language } } = useTranslation();
@@ -10,15 +12,15 @@ const ProviderCard = ({ provider }) => {
   return (
     <Link
       href={`/${language}/provider/${provider.slug || provider.id}`}
-      className="block bg-white dark:bg-gray-900 hover:bg-gray-100 hover:dark:bg-gray-800 rounded-lg shadow-md overflow-hidden group transition-colors"
+      className=""
     >
       {/* Provider Image */}
-      <div className="h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+      <div className="aspect-[6/5] w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
         {provider?.mainImage?.publicUrl ? (
           <img
             src={provider.mainImage.publicUrl}
             alt={provider.name} 
-            className="w-full h-full object-cover group-hover:brightness-110"
+            className="w-full h-full object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -28,27 +30,13 @@ const ProviderCard = ({ provider }) => {
       </div>
 
       {/* Provider Details */}
-      <div className="p-4">
-        <h3 className="text-lg font-bold mb-1">{provider.name}</h3>
-        
-        {/* Main Category */}
-        <div className="flex items-center mb-1">
-          <span className="text-sm text-gray-600 mr-2">
-            {t('home.category')}:
-          </span>
-          <span className="text-sm font-medium text-blue-600">
-            {provider.maincategories?.name || "t('home.noCategory')"}
-          </span>
-        </div>
-
-        {/* Saves Count */}
-        <div className="flex items-center">
-          <span className="text-sm text-gray-600 dark:text-gray-400 mr-2">
-            {t('home.saves')}:
-          </span>
-          <span className="text-sm font-medium text-green-600">
-            {provider.savedCount}
-          </span>
+      <div className="mt-2">
+        <div className="font-semibold">{provider.name}</div>
+        <div className='flex items-center gap-1 text-sm'>
+          <Icon path={IconSaved} size={.75} className='text-primary relative top-px' />
+          <span className='font-semibold text-primary'>{provider.savedCount || 0} {/* TODO: Fix savedCount, does not work */}</span>
+          <span>·</span>
+          <span className='text-gray-500 dark:text-gray-400'>{provider.maincategories?.name || "t('home.noCategory')"}</span>
         </div>
       </div>
     </Link>

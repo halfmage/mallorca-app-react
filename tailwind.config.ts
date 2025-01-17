@@ -14,6 +14,7 @@ export default {
     },
     extend: {
       colors: {
+        primary: "#FF4405",
         background: "var(--background)",
         foreground: "var(--foreground)",
       },

@@ -6,7 +6,7 @@ const Home = async ({ categories, lng }) => {
   const { t } = await useTranslation(lng) // eslint-disable-line react-hooks/rules-of-hooks
 
   return (
-    <div className="container">
+    <>
       <div className="h1 text-center p-12">
         {t('home.title')}
       </div>
@@ -27,7 +27,7 @@ const Home = async ({ categories, lng }) => {
             />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 

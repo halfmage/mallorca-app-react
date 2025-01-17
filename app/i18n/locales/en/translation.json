@@ -84,7 +84,7 @@
       }
     },
     "category": {
-      "title": "Top {{category}}s in Mallorca",
+      "title": "Top {{category}}s",
       "empty": "You haven't saved any providers yet.",
       "browseProviders": "Browse Providers",
       "save": "Save",

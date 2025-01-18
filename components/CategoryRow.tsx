@@ -16,9 +16,9 @@ const CategoryRow = async ({category, providers, lng}) => {
             <div className="flex flex-row items-center justify-between">
                 <h1 className="h4 flex items-center gap-2">
                     <Icon path={
-                        category.name === 'Hotel' ? IconHotel :
-                        category.name === 'Leisure' ? IconLeisure :
-                        category.name === 'Shopping' ? IconShopping :
+                        category.slug === 'hotel' ? IconHotel :
+                        category.slug === 'leisure' ? IconLeisure :
+                        category.slug === 'shopping' ? IconShopping :
                         IconRestaurant
                     } size={1} />
                     {t('category.title', {category: category.name})}

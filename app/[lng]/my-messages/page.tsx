@@ -2,8 +2,8 @@ import React from 'react'
 import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { ProviderService } from '@/app/api/utils/provider'
-import { MessageService } from '@/app/api/utils/message'
+import ProviderService from '@/app/api/utils/services/ProviderService'
+import MessageService from '@/app/api/utils/services/MessageService'
 import UserMessagesView from '@/components/Messages/UserMessagesView'
 
 export default async function MessagesPage({ params }) {
@@ -17,7 +17,7 @@ export default async function MessagesPage({ params }) {
     const messageService = new MessageService(supabase)
     const messages = await messageService.getUserMessages(user.id)
     const providerService = new ProviderService(supabase)
-    const savedProviders = await providerService.getSavedProviders(user.id)
+    const savedProviders = await providerService.getSavedProviders(user.id, lng)
     const providers = savedProviders.map(({ user_id: userId, ...provider }) => ({
         ...provider,
         isOwnProvider: userId === user.id,

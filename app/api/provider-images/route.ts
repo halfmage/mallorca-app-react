@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { ProviderService } from '@/app/api/utils/provider'
-import { isAdmin } from '@/app/api/utils/user'
+import ProviderService from '@/app/api/utils/services/ProviderService'
+import { isAdmin } from '@/app/api/utils/services/UserService'
 
 export async function PATCH(request: NextRequest) {
     const { images } = await request.json()

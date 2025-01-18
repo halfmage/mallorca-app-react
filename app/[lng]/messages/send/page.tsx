@@ -3,8 +3,8 @@ import moment from 'moment'
 import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { MessageService } from '@/app/api/utils/message'
-import { ProviderService } from '@/app/api/utils/provider'
+import MessageService from '@/app/api/utils/services/MessageService'
+import ProviderService from '@/app/api/utils/services/ProviderService'
 import Send from '@/components/Messages/Send'
 
 const DEFAULT_RATE_LIMIT = 12

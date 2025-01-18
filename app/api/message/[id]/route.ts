@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { MessageService } from '@/app/api/utils/message'
+import MessageService from '@/app/api/utils/services/MessageService'
 
 export async function POST(request: NextRequest, { params }) {
     const { id } = await params

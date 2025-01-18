@@ -3,7 +3,7 @@ import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import ProviderDashboard from '@/components/ProviderDashboard'
-import { ProviderService } from '@/app/api/utils/provider'
+import ProviderService from '@/app/api/utils/services/ProviderService'
 import { STATUS_PAYMENT_COMPLETED } from '@/app/api/utils/constants'
 
 export default async function DashboardPage({ params }) {

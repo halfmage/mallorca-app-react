@@ -1,9 +1,10 @@
 import {
     SORTING_ORDER_NEW, STATUS_PENDING, STATUS_ACTIVE, STATUS_PAYMENT_COMPLETED
-} from './constants'
-import { isUUID } from './helpers'
-import { EntityService } from '@/app/api/utils/entity'
-import { UserService } from '@/app/api/utils/user'
+} from '@/app/api/utils/constants'
+import { isUUID } from '@/app/api/utils/helpers'
+import EntityService from '@/app/api/utils/services/EntityService'
+import UserService from '@/app/api/utils/services/UserService'
+import CategoryService from '@/app/api/utils/services/CategoryService'
 
 const BASIC_INFO_FRAGMENT = `
     id,
@@ -19,7 +20,7 @@ const IMAGES_FRAGMENT = `
     )
 `
 
-export class ProviderService extends EntityService {
+class ProviderService extends EntityService {
     // Get a single provider by ID or by slug with full details
     public async get(idOrSlug: string, language: string = 'en') {
         const { data } = await this.supabase
@@ -29,33 +30,50 @@ export class ProviderService extends EntityService {
                 status,
                 maincategories (
                   id,
-                  name
+                  name,
+                  maincategory_translations (
+                    name
+                  )
                 ),
                 subcategories (
-                  name
+                  name,
+                  subcategory_translations (
+                    name
+                  )
                 ),
                 address,
                 phone,
                 mail,
                 website,
+                latitude,
+                longitude,
+                google_maps_url,
                 provider_translations (
-                    description
+                    description,
+                    advantages_list,
+                    tips_list
                 ),
                 ${IMAGES_FRAGMENT}
             `)
             .eq('provider_translations.language', language)
+            .eq('maincategories.maincategory_translations.language', language)
+            .eq('subcategories.subcategory_translations.language', language)
             .eq(isUUID(idOrSlug) ? 'id' : 'slug', idOrSlug)
             .single()
 
         // if (error) throw error;
+        const categoryService = new CategoryService(this.supabase)
+
         return {
             ...data,
+            maincategories: categoryService.mapCategory(data?.maincategories),
+            subcategories: categoryService.mapCategory(data?.subcategories),
             'provider_images': await Promise.all((data?.provider_images || []).map(this.getImageWithUrl))
         }
     }
 
     // Get provider by user ID (for dashboard)
-    public async getProviderByUserId(userId) {
+    public async getProviderByUserId(userId: string) {
         const { data } = await this.supabase
             .from('providers')
             .select(`
@@ -111,27 +129,6 @@ export class ProviderService extends EntityService {
         return data?.provider_id
     }
 
-    // Get recent providers for home page
-    public async getRecentProviders(limit = 12) {
-        const { data } = await this.supabase
-            .from('providers')
-            .select(`
-                ${BASIC_INFO_FRAGMENT},
-                status,
-                maincategories (
-                  id,
-                  name
-                ),
-                ${IMAGES_FRAGMENT}
-            `)
-            .in('status', [STATUS_ACTIVE, STATUS_PENDING])
-            .order('created_at', { ascending: false })
-            .limit(limit)
-
-        // if (error) throw error;
-        return Promise.all(data.map(provider => this.processProviderImages(provider)))
-    }
-
     // Get provider statistics
     public async getProviderStats(providerId) {
         const thirtyDaysAgo = new Date();
@@ -180,6 +177,7 @@ export class ProviderService extends EntityService {
     // Get saved providers for a user
     public async getSavedProviders(
         userId: string,
+        language: string|null = 'en',
         categories: Array<number|string> = [],
         keyword: string | null | undefined = null,
         sort: string = SORTING_ORDER_NEW,
@@ -192,13 +190,17 @@ export class ProviderService extends EntityService {
                 providers (
                   ${BASIC_INFO_FRAGMENT},
                   maincategories (
-                    name
+                    name,
+                    maincategory_translations (
+                        name
+                    )
                   ),
                   user_id,
                   ${IMAGES_FRAGMENT}
                 )
             `)
             .eq('user_id', userId)
+            .eq('providers.maincategories.maincategory_translations.language', language)
         if (categories.length) {
             query.in('providers.maincategory_id', categories)
         }
@@ -208,7 +210,17 @@ export class ProviderService extends EntityService {
         this.applySortAndLimitToQuery(query, sort, limit)
         const { data } = await query
 
-        const providers = data.map((item) => item?.providers).filter(Boolean)
+        const categoryService = new CategoryService(this.supabase)
+
+        const providers = data
+            .map((item) => item?.providers)
+            .filter(Boolean)
+            .map(
+                ({ maincategories, ...item }) => ({
+                    ...item,
+                    maincategories: categoryService.mapCategory(maincategories)
+                })
+            )
 
         // if (error) throw error;
         return Promise.all(providers.map(this.processProviderImages));
@@ -280,6 +292,7 @@ export class ProviderService extends EntityService {
 
     public async getProvidersByCategory(
         categoryId: number | string,
+        language: string|null = 'en',
         userId: string | null | undefined = null, // eslint-disable-line @typescript-eslint/no-unused-vars
         subCategories: Array<number | string> = [],
         sort: string = SORTING_ORDER_NEW,
@@ -292,12 +305,17 @@ export class ProviderService extends EntityService {
                 status,
                 maincategories (
                   id,
-                  name
+                  name,
+                  maincategory_translations (
+                    id,
+                    name
+                  )
                 ),
                 ${IMAGES_FRAGMENT}
             `)
             .in('status', [STATUS_ACTIVE, STATUS_PENDING])
             .eq('maincategory_id', categoryId)
+            .eq('maincategories.maincategory_translations.language', language)
 
         if (subCategories.length) {
             query.in('providers.subcategory_id', subCategories)
@@ -311,8 +329,20 @@ export class ProviderService extends EntityService {
             return []
         }
 
-        const providers = await Promise.all(data.map(provider => this.processProviderImages(provider)))
-        return await Promise.all(providers.map(this.processProviderSaved))
+        const providers = await Promise.all(
+            data.map(provider => this.processProviderImages(provider))
+        )
+        const categoryService = new CategoryService(this.supabase)
+        const providersWithCategories = providers.map(
+            ({ maincategories, ...item }) => ({
+                ...item,
+                maincategories: categoryService.mapCategory(maincategories)
+            })
+        )
+
+        return await Promise.all(
+            providersWithCategories.map(this.processProviderSaved)
+        )
     }
 
     private processProviderSaved = async (provider) => {
@@ -384,12 +414,6 @@ export class ProviderService extends EntityService {
                 } : {})
             })
         )
-    }
-
-    public async getProviders() {
-        const providers = await this.getRecentProviders()
-
-        return await Promise.all(providers.map(this.processProviderSaved))
     }
 
     public async claimProvider(
@@ -555,39 +579,76 @@ export class ProviderService extends EntityService {
         return true
     }
 
-    public async getProvidersGroupedByCategories(limit: number = 4) {
+    public async getProvidersGroupedByCategories(language: string, limit: number = 4) {
         const { data } = await this.supabase
             .from('maincategories')
             .select(`
                 id,
                 name,
                 slug,
+                maincategory_translations (
+                    name
+                ),
                 providers (
                     ${BASIC_INFO_FRAGMENT},
                     status,
                     maincategories (
-                      id,
-                      name
+                      id
                     ),
+                    subcategories (
+                      name,
+                      subcategory_translations (
+                        name
+                      )
+                    ),
+                    saved_providers(count),
                     ${IMAGES_FRAGMENT}
                 )
             `)
+            .eq('maincategory_translations.language', language)
             .in('providers.status', [STATUS_ACTIVE, STATUS_PENDING])
             .order('created_at', { referencedTable: 'providers', ascending: false })
             .limit(limit, { referencedTable: 'providers' })
 
+        const categoryService = new CategoryService(this.supabase)
+
         return Promise.all(
             data.map(async mainCategory => {
+                const category = categoryService.mapCategory(mainCategory)
                 const providers = await Promise.all(
-                    mainCategory.providers.map(async provider => await this.processProviderImages(provider))
+                    mainCategory.providers.map(
+                        async ({ saved_providers: savedCount, ...provider }) => {
+                            const { subcategories, ...providerWithImages } = await this.processProviderImages(provider)
+
+                            return {
+                                ...providerWithImages,
+                                savedCount: savedCount?.[0]?.count,
+                                maincategories: category,
+                                subcategories: categoryService.mapCategory(subcategories)
+                            }
+                        }
+                    )
                 )
 
                 return {
-                    ...mainCategory,
+                    ...category,
                     providers
                 }
             })
         )
+    }
+
+    public async addProviderView(providerId: string, userId: string | null | undefined): Promise<boolean> {
+        const { error } = await this.supabase
+            .from('provider_views')
+            .insert([
+                {
+                    provider_id: providerId,
+                    user_id: userId
+                }
+            ])
+
+        return !error
     }
 
     private getImageWithUrl = async (image) => {
@@ -617,3 +678,5 @@ export class ProviderService extends EntityService {
         return await this.getImageWithUrl(mainImage)
     }
 }
+
+export default ProviderService

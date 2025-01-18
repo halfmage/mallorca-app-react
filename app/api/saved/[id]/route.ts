@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { ProviderService } from '@/app/api/utils/provider'
+import ProviderService from '@/app/api/utils/services/ProviderService'
 
 export async function DELETE(request: NextRequest, { params }) {
     const { id } = await params
@@ -16,6 +16,7 @@ export async function DELETE(request: NextRequest, { params }) {
     await providerService.removeSavedProvider(user.id, id)
     const data = await providerService.getSavedProviders(
         user.id,
+        searchParams.get('language'),
         (searchParams.get('maincategory') || '').split(',').filter(Boolean),
         searchParams.get('keyword'),
         searchParams.get('sort'),

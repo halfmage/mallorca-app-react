@@ -2,6 +2,8 @@
 
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from '@/app/i18n/client'
+import { parseHtmlMessage } from '@/app/api/utils/helpers'
+import Link from 'next/link'
 
 
 const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
@@ -16,6 +18,22 @@ const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
                 __html: provider?.provider_translations?.[0]?.description
             } :
             null,
+        [ provider ]
+    )
+    const advantagesHtml = useMemo(
+        () => {
+            return provider?.provider_translations?.[0]?.advantages_list ? {
+                __html: parseHtmlMessage(provider.provider_translations[0].advantages_list)
+            } : null
+        },
+        [ provider ]
+    )
+    const tipsHtml = useMemo(
+        () => {
+            return provider?.provider_translations?.[0]?.tips_list ? {
+                __html: parseHtmlMessage(provider.provider_translations[0].tips_list)
+            } : null
+        },
         [ provider ]
     )
 
@@ -125,6 +143,20 @@ const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
                                 <p className="text-gray-700 text-sm">
                                     { provider?.address || '' }
                                 </p>
+                                <div className="grid md:grid-cols-12 gap-12">
+                                    {advantagesHtml &&
+                                      <div
+                                        className="md:col-span-6 border rounded p-4"
+                                        dangerouslySetInnerHTML={advantagesHtml}
+                                      />
+                                    }
+                                    {tipsHtml &&
+                                      <div
+                                        className="md:col-span-6 border rounded p-4"
+                                        dangerouslySetInnerHTML={tipsHtml}
+                                      />
+                                    }
+                                </div>
                                 {descriptionHtml &&
                                   <div
                                     className="prose prose-sm md:prose-base max-w-none"
@@ -165,13 +197,25 @@ const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
                                         {t('providerDetail.sidebar.websiteButton')}
                                       </a>
                                     }
-                                    {(provider?.id || provider?.slug) &&
+                                    {provider?.google_maps_url &&
                                       <a
+                                        className="p-4 w-full hover:bg-gray-100"
+                                        href={
+                                            provider.google_maps_url.includes('//') ?
+                                                provider.google_maps_url :
+                                                `https://${provider.google_maps_url}`
+                                        }
+                                      >
+                                          {t('providerDetail.sidebar.directionsButton')}
+                                      </a>
+                                    }
+                                    {(provider?.id || provider?.slug) &&
+                                      <Link
                                         className="p-4 w-full hover:bg-gray-100"
                                         href={`/${language}/provider/${provider.slug || provider.id}/claim`}
                                       >
                                           {t('providerDetail.sidebar.claim')}
-                                      </a>
+                                      </Link>
                                     }
                                 </div>
                             </div>

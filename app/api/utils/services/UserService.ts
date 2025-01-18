@@ -1,13 +1,13 @@
 import { cookies } from 'next/headers'
-import { EntityService } from '@/app/api/utils/entity'
-import { MessageService } from '@/app/api/utils/message'
-import { ProviderService } from '@/app/api/utils/provider'
+import EntityService from '@/app/api/utils/services/EntityService'
+import MessageService from '@/app/api/utils/services/MessageService'
+import ProviderService from '@/app/api/utils/services/ProviderService'
 import { createClient } from '@/utils/supabase/server'
 import { ROLE_ADMIN, ROLE_USER, SORTING_ORDER_NEW, SORTING_ORDER_OLD } from '@/app/api/utils/constants'
 
 export const isAdmin = user => ROLE_ADMIN === user?.app_metadata?.role
 
-export class UserService extends EntityService {
+class UserService extends EntityService {
     static async init(): Promise<EntityService> {
         const cookieStore = await cookies()
         const supabase = createClient(cookieStore, process.env.SUPABASE_SECRET_ROLE_KEY)
@@ -106,3 +106,5 @@ export class UserService extends EntityService {
         }
     }
 }
+
+export default UserService

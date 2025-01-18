@@ -1,8 +1,8 @@
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { SORTING_ORDER_NEW, SORTING_ORDER_OLD } from './constants'
+import { SORTING_ORDER_NEW, SORTING_ORDER_OLD } from '@/app/api/utils/constants'
 
-export class EntityService {
+class EntityService {
     protected supabase
 
     constructor(supabase) {
@@ -31,3 +31,5 @@ export class EntityService {
         }
     }
 }
+
+export default EntityService

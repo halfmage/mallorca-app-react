@@ -2,8 +2,9 @@ import {createClient} from '@/utils/supabase/server'
 import {cookies} from 'next/headers'
 import React from 'react'
 import { redirect } from 'next/navigation'
-import { ProviderService } from '@/app/api/utils/provider'
-import { isAdmin } from '@/app/api/utils/user'
+import ProviderService from '@/app/api/utils/services/ProviderService'
+import CategoryService from '@/app/api/utils/services/CategoryService'
+import { isAdmin } from '@/app/api/utils/services/UserService'
 import EditProvider from '@/components/EditProvider'
 
 export default async function EditProviderPage({ params }) {
@@ -16,7 +17,8 @@ export default async function EditProviderPage({ params }) {
     }
     const providerService = new ProviderService(supabase)
     const provider = await providerService.get(id)
-    const { data: mainCategories } = await supabase.from('maincategories').select('*')
+    const categoryService = new CategoryService(supabase)
+    const mainCategories = await categoryService.getMainCategories(lng)
 
     return (
         <EditProvider provider={provider} mainCategories={mainCategories} />

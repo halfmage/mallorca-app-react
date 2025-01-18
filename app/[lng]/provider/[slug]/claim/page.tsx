@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import ClaimBusiness from '@/components/ClaimBusiness'
-import { ProviderService } from '@/app/api/utils/provider'
+import ProviderService from '@/app/api/utils/services/ProviderService'
 
 export default async function ClaimBusinessPage({ params }) {
     const { slug, lng } = await params

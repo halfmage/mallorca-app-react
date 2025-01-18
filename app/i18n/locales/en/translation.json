@@ -69,6 +69,7 @@
         "callButton": "Call",
         "sendEmailButton": "Send mail",
         "websiteButton": "Website",
+        "directionsButton": "Directions",
         "claim": "Claim business"
       }
     },

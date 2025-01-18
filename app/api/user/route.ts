@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { UserService, isAdmin } from '@/app/api/utils/user'
+import UserService, { isAdmin } from '@/app/api/utils/services/UserService'
 
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams

@@ -1,7 +1,7 @@
-import { SORTING_ORDER_NEW } from './constants'
-import { EntityService } from '@/app/api/utils/entity'
+import { SORTING_ORDER_NEW } from '@/app/api/utils/constants'
+import EntityService from '@/app/api/utils/services/EntityService'
 
-export class MessageService extends EntityService {
+class MessageService extends EntityService {
     public async getProviderMessages(providerId: string) {
         const query = this.supabase
             .from('messages')
@@ -203,3 +203,5 @@ export class MessageService extends EntityService {
         return publicUrlData.publicUrl
     }
 }
+
+export default MessageService

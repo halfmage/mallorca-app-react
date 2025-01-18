@@ -22,7 +22,8 @@ const Category = ({ providers, category, subCategories }) => {
                 const response = await fetch(
                     `/api/saved/${providerId}${stringifyParams({
                         subcategory: selectedCategories,
-                        sort
+                        sort,
+                        language
                     })}`,
                     { method: 'DELETE' }
                 )
@@ -34,7 +35,7 @@ const Category = ({ providers, category, subCategories }) => {
                 setLoading(false)
             }
         },
-        [ selectedCategories, sort ]
+        [ selectedCategories, sort, language ]
     )
 
     const fetchProviders = useCallback(
@@ -44,7 +45,8 @@ const Category = ({ providers, category, subCategories }) => {
                 const response = await fetch(
                     `/api/category/${category.id}${stringifyParams({
                         subcategory: subCategory,
-                        sort
+                        sort,
+                        language
                     })}`
                 )
                 const { data } = await response.json()
@@ -55,7 +57,7 @@ const Category = ({ providers, category, subCategories }) => {
                 setLoading(false);
             }
         },
-        [ category.id ]
+        [ category.id, language ]
     )
 
     useEffect(() => {

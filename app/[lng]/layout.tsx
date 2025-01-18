@@ -5,12 +5,12 @@ import './globals.css'
 import Header from '@/components/Header'
 import React from 'react'
 import { createClient } from '@/utils/supabase/server'
-import { isAdmin } from '@/app/api/utils/user'
-import { MessageService } from '@/app/api/utils/message'
+import { isAdmin } from '@/app/api/utils/services/UserService'
+import MessageService from '@/app/api/utils/services/MessageService'
 import { cookies } from 'next/headers'
 import { dir } from 'i18next'
 import { languages } from '../i18n/settings'
-import { ProviderService } from '@/app/api/utils/provider'
+import ProviderService from '@/app/api/utils/services/ProviderService'
 
 export async function generateStaticParams() {
     return languages.map((lng) => ({ lng }))
@@ -28,11 +28,12 @@ export default async function RootLayout({ children, params }) {
     const { data: { user } } = await supabase.auth.getUser()
     const messageService = new MessageService(supabase)
     let newMessagesCount = 0
+    let hasProviders = false
     if (user?.id) {
         newMessagesCount = await messageService.getNewMessagesCount(user.id)
+        const providerService = new ProviderService(supabase)
+        hasProviders = await providerService.hasProviders(user.id)
     }
-    const providerService = new ProviderService(supabase)
-    const hasProviders = await providerService.hasProviders(user.id)
 
     return (
         <html lang={lng} dir={dir(lng)}>

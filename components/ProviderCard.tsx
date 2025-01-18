@@ -34,9 +34,15 @@ const ProviderCard = ({ provider }) => {
         <div className="font-semibold">{provider.name}</div>
         <div className='flex items-center gap-1 text-sm'>
           <Icon path={IconSaved} size={.75} className='text-primary relative top-px' />
-          <span className='font-semibold text-primary'>{provider.savedCount || 0} {/* TODO: Fix savedCount, does not work */}</span>
+          <span className='font-semibold text-primary'>{provider.savedCount || 0} </span>
           <span>·</span>
-          <span className='text-gray-500 dark:text-gray-400'>{provider.maincategories?.name || "t('home.noCategory')"}</span>
+          <span className='text-gray-500 dark:text-gray-400'>{provider.maincategories?.name || t('home.noCategory')}</span>
+          {provider.subcategories &&
+            <>
+              <span>·</span>
+              <span className='text-gray-500 dark:text-gray-400'>{provider.subcategories?.name}</span>
+            </>
+          }
         </div>
       </div>
     </Link>

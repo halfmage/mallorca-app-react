@@ -25,7 +25,8 @@ const SavedProviders = ({ providers, mainCategories }) => {
                     `/api/saved/${providerId}${stringifyParams({
                         maincategory: selectedCategories,
                         keyword,
-                        sort
+                        sort,
+                        language
                     })}`,
                     { method: 'DELETE' }
                 )
@@ -37,7 +38,7 @@ const SavedProviders = ({ providers, mainCategories }) => {
                 setLoading(false)
             }
         },
-        [ selectedCategories, keyword, sort ]
+        [ selectedCategories, keyword, sort, language ]
     )
 
     const fetchProviders = useCallback(
@@ -47,7 +48,8 @@ const SavedProviders = ({ providers, mainCategories }) => {
                 const response = await fetch(`/api/saved${stringifyParams({
                     maincategory: mainCategory,
                     keyword,
-                    sort
+                    sort,
+                    language
                 })}`)
                 const { data } = await response.json()
                 setSavedProviders(data)
@@ -57,7 +59,7 @@ const SavedProviders = ({ providers, mainCategories }) => {
                 setLoading(false);
             }
         },
-        [ ]
+        [ language ]
     )
 
     useEffect(() => {

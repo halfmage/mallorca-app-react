@@ -1,7 +1,7 @@
 import React from 'react'
 import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
-import { ProviderService } from '@/app/api/utils/provider'
+import ProviderService from '@/app/api/utils/services/ProviderService'
 
 export default async function PaymentSuccessPage({ params, searchParams }) {
     const { lng } = await params

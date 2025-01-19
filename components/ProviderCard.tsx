@@ -12,10 +12,10 @@ const ProviderCard = ({ provider }) => {
   return (
     <Link
       href={`/${language}/provider/${provider.slug || provider.id}`}
-      className=""
+      className="group"
     >
       {/* Provider Image */}
-      <div className="aspect-[6/5] w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
+      <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
         {provider?.mainImage?.publicUrl ? (
           <img
             src={provider.mainImage.publicUrl}
@@ -31,9 +31,9 @@ const ProviderCard = ({ provider }) => {
 
       {/* Provider Details */}
       <div className="mt-2">
-        <div className="font-semibold">{provider.name}</div>
-        <div className='flex items-center gap-1 text-sm'>
-          <Icon path={IconSaved} size={.75} className='text-primary relative top-px' />
+        <div className="font-bold group-hover:underline">{provider.name}</div>
+        <div className='flex items-center gap-1 text-sm overflow-hidden'>
+          <Icon path={IconSaved} size={.75} className='text-primary relative top-px shrink-0' />
           <span className='font-semibold text-primary'>{provider.savedCount || 0} </span>
           <span>·</span>
           <span className='text-gray-500 dark:text-gray-400'>{provider.maincategories?.name || t('home.noCategory')}</span>
@@ -42,12 +42,13 @@ const ProviderCard = ({ provider }) => {
                   (subcategory) => (
                       <span key={subcategory.id}>
                         <span>·</span>
-                        <span className='text-gray-500 dark:text-gray-400'>{subcategory?.name}</span>
+                        <span className='text-gray-500 dark:text-gray-400 whitespace-nowrap'> {subcategory?.name}</span>
                       </span>
                   )
               )
           }
         </div>
+        <div className="text-sm text-gray-500 dark:text-gray-400">{provider.address}</div>
       </div>
     </Link>
   );

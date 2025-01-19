@@ -5,7 +5,7 @@ import Home from '@/components/Home'
 export default async function Homepage({ params }) {
     const { lng } = await params
     const providerService = await ProviderService.init()
-    const categories = await providerService.getProvidersGroupedByCategories(lng)
+    const categories = await providerService.getProvidersGroupedByCategories(lng, 5)
 
     return (
         <Home categories={categories} lng={lng}/>

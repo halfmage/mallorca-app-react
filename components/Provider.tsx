@@ -2,63 +2,18 @@
 
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from '@/app/i18n/client'
-import { parseHtmlMessage } from '@/app/api/utils/helpers'
 import Link from 'next/link'
+import Markdown from 'react-markdown'
+import SaveButton from '@/components/shared/SaveButton'
 
-
-const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
-    const [isSaved, setIsSaved] = useState(isSavedInitially);
-    const [savingStatus, setSavingStatus] = useState('idle');
-    const [activeImageIndex, setActiveImageIndex] = useState(0);
+const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
+    const [activeImageIndex, setActiveImageIndex] = useState(0)
     const providerImages = provider.provider_images || []
     const { t, i18n: { language } } = useTranslation()
-    const descriptionHtml = useMemo(
-        () => provider?.provider_translations?.[0]?.description ?
-            {
-                __html: provider?.provider_translations?.[0]?.description
-            } :
-            null,
+    const texts = useMemo(
+        () => provider?.provider_translations?.[0],
         [ provider ]
     )
-    const advantagesHtml = useMemo(
-        () => {
-            return provider?.provider_translations?.[0]?.advantages_list ? {
-                __html: parseHtmlMessage(provider.provider_translations[0].advantages_list)
-            } : null
-        },
-        [ provider ]
-    )
-    const tipsHtml = useMemo(
-        () => {
-            return provider?.provider_translations?.[0]?.tips_list ? {
-                __html: parseHtmlMessage(provider.provider_translations[0].tips_list)
-            } : null
-        },
-        [ provider ]
-    )
-
-    const handleSaveToggle = async () => {
-        try {
-            if (!userId) {
-                alert(t('providerDetail.saveButton.loginRequired'))
-                return
-            }
-
-            setSavingStatus('loading')
-
-            const response = await fetch(
-                `/api/saved/${provider.id}`,
-                { method: 'PUT' }
-            )
-            const { data: isSaved } = await response.json()
-
-            setIsSaved(isSaved)
-        } catch (error) {
-            console.error(t('providerDetail.error.saveProvider'), error.message);
-        } finally {
-            setSavingStatus('idle')
-        }
-    }
 
     if (!provider) {
         return <div className="max-w-6xl mx-auto p-6">{t('providerDetail.error.fetchProvider')}</div>
@@ -116,27 +71,22 @@ const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
                             <span>
                                 {provider?.maincategories?.name}
                             </span>
-                            <span>
-                                {provider?.subcategories?.name}
-                            </span>
+                            {provider?.subcategories?.length > 0 && provider?.subcategories.map(
+                                (subcategory) => (
+                                    <span key={subcategory.id}>
+                                        {subcategory.name}
+                                    </span>
+                                )
+                            )}
                         </h2>
                     </div>
 
-                    <button
-                        onClick={handleSaveToggle}
-                        disabled={savingStatus === 'loading'}
-                        className={`${
-                            isSaved
-                                ? 'bg-red-500 hover:bg-red-600'
-                                : 'bg-blue-500 hover:bg-blue-600'
-                        } text-white px-4 py-2 rounded transition-colors`}
-                    >
-                        {savingStatus === 'loading'
-                            ? t('common.loading')
-                            : isSaved
-                                ? t('providerDetail.saveButton.remove')
-                                : t('providerDetail.saveButton.save')}
-                    </button>
+                    {showSaveButton &&
+                      <SaveButton
+                        provider={provider}
+                        isSaved={isSavedInitially}
+                      />
+                    }
                     <div>
                         <div className="grid md:grid-cols-12 gap-12 max-w-screen-lg mx-auto">
                             <div className="md:col-span-8">
@@ -144,24 +94,25 @@ const Provider = ({ provider, userId, isSaved: isSavedInitially }) => {
                                     { provider?.address || '' }
                                 </p>
                                 <div className="grid md:grid-cols-12 gap-12">
-                                    {advantagesHtml &&
-                                      <div
-                                        className="md:col-span-6 border rounded p-4"
-                                        dangerouslySetInnerHTML={advantagesHtml}
-                                      />
+                                    {texts?.advantages_list &&
+                                      <div className="md:col-span-6 border rounded p-4">
+                                        <Markdown>
+                                            {texts.advantages_list}
+                                        </Markdown>
+                                      </div>
                                     }
-                                    {tipsHtml &&
-                                      <div
-                                        className="md:col-span-6 border rounded p-4"
-                                        dangerouslySetInnerHTML={tipsHtml}
-                                      />
+                                    {texts?.tips_list &&
+                                      <div className="md:col-span-6 border rounded p-4">
+                                        <Markdown>
+                                            {texts.tips_list}
+                                        </Markdown>
+                                      </div>
                                     }
                                 </div>
-                                {descriptionHtml &&
-                                  <div
-                                    className="prose prose-sm md:prose-base max-w-none"
-                                    dangerouslySetInnerHTML={descriptionHtml}
-                                  />
+                                {texts?.description &&
+                                  <Markdown>
+                                      {texts.description}
+                                  </Markdown>
                                 }
                             </div>
                             <div className="md:col-span-4">

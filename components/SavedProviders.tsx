@@ -139,6 +139,16 @@ const SavedProviders = ({ providers, mainCategories }) => {
                                         {provider.maincategories && (
                                             <p className="text-gray-600 mb-4">{provider.maincategories.name}</p>
                                         )}
+                                        {provider?.subcategories?.length > 0 &&
+                                            provider?.subcategories?.length && provider?.subcategories.map(
+                                                (subcategory) => (
+                                                    <span key={subcategory.id}>
+                                                        <span>·</span>
+                                                        <span className='text-gray-500 dark:text-gray-400'>{subcategory?.name}</span>
+                                                    </span>
+                                                )
+                                            )
+                                        }
 
                                         <div className="flex justify-between items-center">
                                             <Link

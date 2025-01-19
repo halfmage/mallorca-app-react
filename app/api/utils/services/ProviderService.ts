@@ -35,10 +35,13 @@ class ProviderService extends EntityService {
                     name
                   )
                 ),
-                subcategories (
-                  name,
-                  subcategory_translations (
-                    name
+                provider_subcategories (
+                  subcategories (
+                    id,
+                    name,
+                    subcategory_translations (
+                      name
+                    )
                   )
                 ),
                 address,
@@ -57,7 +60,7 @@ class ProviderService extends EntityService {
             `)
             .eq('provider_translations.language', language)
             .eq('maincategories.maincategory_translations.language', language)
-            .eq('subcategories.subcategory_translations.language', language)
+            .eq('provider_subcategories.subcategories.subcategory_translations.language', language)
             .eq(isUUID(idOrSlug) ? 'id' : 'slug', idOrSlug)
             .single()
 
@@ -67,7 +70,9 @@ class ProviderService extends EntityService {
         return {
             ...data,
             maincategories: categoryService.mapCategory(data?.maincategories),
-            subcategories: categoryService.mapCategory(data?.subcategories),
+            subcategories: (data?.provider_subcategories || []).map(
+                item => categoryService.mapCategory(item?.subcategories)
+            ),
             'provider_images': await Promise.all((data?.provider_images || []).map(this.getImageWithUrl))
         }
     }
@@ -195,12 +200,22 @@ class ProviderService extends EntityService {
                         name
                     )
                   ),
+                  provider_subcategories (
+                    subcategories (
+                      id,
+                      name,
+                      subcategory_translations (
+                        name
+                      )
+                    )
+                  ),
                   user_id,
                   ${IMAGES_FRAGMENT}
                 )
             `)
             .eq('user_id', userId)
             .eq('providers.maincategories.maincategory_translations.language', language)
+            .eq('providers.provider_subcategories.subcategories.subcategory_translations.language', language)
         if (categories.length) {
             query.in('providers.maincategory_id', categories)
         }
@@ -216,9 +231,12 @@ class ProviderService extends EntityService {
             .map((item) => item?.providers)
             .filter(Boolean)
             .map(
-                ({ maincategories, ...item }) => ({
+                ({ maincategories, provider_subcategories, ...item }) => ({
                     ...item,
-                    maincategories: categoryService.mapCategory(maincategories)
+                    maincategories: categoryService.mapCategory(maincategories),
+                    subcategories: (provider_subcategories || []).map(
+                        item => categoryService.mapCategory(item?.subcategories)
+                    ),
                 })
             )
 
@@ -311,14 +329,25 @@ class ProviderService extends EntityService {
                     name
                   )
                 ),
+                provider_subcategories (
+                  subcategories (
+                    id,
+                    name,
+                    subcategory_translations (
+                      name
+                    )
+                  )
+                ),
+                saved_providers (count),
                 ${IMAGES_FRAGMENT}
             `)
             .in('status', [STATUS_ACTIVE, STATUS_PENDING])
             .eq('maincategory_id', categoryId)
             .eq('maincategories.maincategory_translations.language', language)
+            .eq('provider_subcategories.subcategories.subcategory_translations.language', language)
 
-        if (subCategories.length) {
-            query.in('providers.subcategory_id', subCategories)
+        if (userId) {
+            query.eq('saved_providers.user_id', userId)
         }
 
         this.applySortAndLimitToQuery(query, sort, limit)
@@ -328,15 +357,26 @@ class ProviderService extends EntityService {
         if (!data) {
             return []
         }
+        let items = data
+
+        // As we still need to show all subcategories for provider and not only the selected ones we are filtering them here
+        if (subCategories.length) {
+            items = items.filter(provider => provider?.provider_subcategories?.some(
+                providerSubcategory => subCategories.includes(providerSubcategory?.subcategories?.id))
+            )
+        }
 
         const providers = await Promise.all(
-            data.map(provider => this.processProviderImages(provider))
+            items.map(provider => this.processProviderImages(provider))
         )
         const categoryService = new CategoryService(this.supabase)
         const providersWithCategories = providers.map(
-            ({ maincategories, ...item }) => ({
+            ({ maincategories, provider_subcategories, ...item }) => ({
                 ...item,
-                maincategories: categoryService.mapCategory(maincategories)
+                maincategories: categoryService.mapCategory(maincategories),
+                subcategories: (provider_subcategories || []).map(
+                    item => categoryService.mapCategory(item?.subcategories)
+                ),
             })
         )
 
@@ -595,10 +635,13 @@ class ProviderService extends EntityService {
                     maincategories (
                       id
                     ),
-                    subcategories (
-                      name,
-                      subcategory_translations (
-                        name
+                    provider_subcategories (
+                      subcategories (
+                        id,
+                        name,
+                        subcategory_translations (
+                          name
+                        )
                       )
                     ),
                     saved_providers(count),
@@ -606,6 +649,7 @@ class ProviderService extends EntityService {
                 )
             `)
             .eq('maincategory_translations.language', language)
+            .eq('providers.provider_subcategories.subcategories.subcategory_translations.language', language)
             .in('providers.status', [STATUS_ACTIVE, STATUS_PENDING])
             .order('created_at', { referencedTable: 'providers', ascending: false })
             .limit(limit, { referencedTable: 'providers' })
@@ -618,13 +662,15 @@ class ProviderService extends EntityService {
                 const providers = await Promise.all(
                     mainCategory.providers.map(
                         async ({ saved_providers: savedCount, ...provider }) => {
-                            const { subcategories, ...providerWithImages } = await this.processProviderImages(provider)
+                            const { provider_subcategories, ...providerWithImages } = await this.processProviderImages(provider)
 
                             return {
                                 ...providerWithImages,
                                 savedCount: savedCount?.[0]?.count,
                                 maincategories: category,
-                                subcategories: categoryService.mapCategory(subcategories)
+                                subcategories: (provider_subcategories || []).map(
+                                    item => categoryService.mapCategory(item?.subcategories)
+                                ),
                             }
                         }
                     )
@@ -652,6 +698,13 @@ class ProviderService extends EntityService {
     }
 
     private getImageWithUrl = async (image) => {
+        if (image?.image_url && image.image_url.startsWith('http')) {
+            return {
+                ...image,
+                publicUrl: image.image_url
+            }
+        }
+
         const { data: publicUrlData } = await this.supabase.storage
             .from('provider-images')
             .getPublicUrl(image.image_url)

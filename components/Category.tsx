@@ -6,37 +6,15 @@ import { useTranslation } from '@/app/i18n/client'
 import { stringifyParams } from '@/app/api/utils/helpers'
 import CategoryFilter from '@/components/Filters/CategoryFilter'
 import SortingControl from '@/components/Filters/SortingControl'
+import SaveButton from '@/components/shared/SaveButton'
 
-const Category = ({ providers, category, subCategories }) => {
+const Category = ({ providers, category, subCategories, showSaveButton }) => {
     const [ savedProviders, setSavedProviders ] = useState(providers)
     const [ loading, setLoading ] = useState(false)
     const [ selectedCategories, setSelectedCategories ] = useState([])
     const [ sort, setSort ] = useState('new')
     const { t, i18n: { language } } = useTranslation()
     const isFirstRender = useRef(true)
-
-    const handleUnsave = useCallback(
-        async (providerId) => {
-            setLoading(true)
-            try {
-                const response = await fetch(
-                    `/api/saved/${providerId}${stringifyParams({
-                        subcategory: selectedCategories,
-                        sort,
-                        language
-                    })}`,
-                    { method: 'DELETE' }
-                )
-                const { data } = await response.json()
-                setSavedProviders(data)
-            } catch (error) {
-                console.error('Error removing provider:', error.message);
-            } finally {
-                setLoading(false)
-            }
-        },
-        [ selectedCategories, sort, language ]
-    )
 
     const fetchProviders = useCallback(
         async (subCategory, sort) => {
@@ -137,12 +115,24 @@ const Category = ({ providers, category, subCategories }) => {
                                         {provider.maincategories && (
                                             <p className="text-gray-600 mb-4">{provider.maincategories.name}</p>
                                         )}
-                                        <button
-                                            onClick={() => handleUnsave(provider.id)}
-                                            className="text-red-500 hover:text-red-600"
-                                        >
-                                            {t('category.unsave')}
-                                        </button>
+                                        {provider?.subcategories?.length > 0 &&
+                                            provider?.subcategories?.length && provider?.subcategories.map(
+                                                (subcategory) => (
+                                                    <span key={subcategory.id}>
+                                                        <span>·</span>
+                                                        <span className='text-gray-500 dark:text-gray-400'>{subcategory?.name}</span>
+                                                    </span>
+                                                )
+                                            )
+                                        }
+                                        <div>
+                                            {showSaveButton &&
+                                              <SaveButton
+                                                provider={provider}
+                                                isSaved={provider?.saved_providers?.[0]?.count}
+                                              />
+                                            }
+                                        </div>
                                     </div>
                                 </Link>
                             ))}

@@ -20,6 +20,6 @@ export default async function ProviderPage({ params }) {
     await providerService.addProviderView(provider.id, user?.id)
 
     return (
-        <Provider provider={provider} userId={user?.id} isSaved={isSaved} />
+        <Provider provider={provider} showSaveButton={!!user?.id} isSaved={isSaved} />
     )
 }

@@ -37,11 +37,15 @@ const ProviderCard = ({ provider }) => {
           <span className='font-semibold text-primary'>{provider.savedCount || 0} </span>
           <span>·</span>
           <span className='text-gray-500 dark:text-gray-400'>{provider.maincategories?.name || t('home.noCategory')}</span>
-          {provider.subcategories &&
-            <>
-              <span>·</span>
-              <span className='text-gray-500 dark:text-gray-400'>{provider.subcategories?.name}</span>
-            </>
+          {provider?.subcategories?.length > 0 &&
+              provider?.subcategories?.length && provider?.subcategories.map(
+                  (subcategory) => (
+                      <span key={subcategory.id}>
+                        <span>·</span>
+                        <span className='text-gray-500 dark:text-gray-400'>{subcategory?.name}</span>
+                      </span>
+                  )
+              )
           }
         </div>
       </div>

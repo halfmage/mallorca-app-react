@@ -23,5 +23,3 @@ export const isUUID = (value: string) =>
 
 export const translateStatus = (t: (key: string) => string, status: string) =>
     TRANSLATABLE_STATUSES.includes(status) ? t(`common.status.${status}`) : status
-
-export const parseHtmlMessage = (message: string) => message.replaceAll(/\\n/g, '<br />')

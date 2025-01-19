@@ -49,9 +49,13 @@ const ClaimBusiness = ({ provider }) => {
                             <span>
                                 {provider?.maincategories?.name}
                             </span>
-                            <span>
-                                {provider?.subcategories?.name}
-                            </span>
+                            {provider?.subcategories?.length > 0 && provider?.subcategories.map(
+                                (subcategory) => (
+                                    <span key={subcategory.id}>
+                                        {subcategory.name}
+                                    </span>
+                                )
+                            )}
                         </h3>
                     </div>
 

@@ -11,8 +11,10 @@ const CategoryButton = ({ category, isSelected, onClick }) => {
     return (
         <button
             onClick={handleClick}
-            className={`block w-full text-center px-1 py-2 rounded transition-colors ${
-                isSelected ? 'text-white bg-blue-500 hover:bg-blue-600' : ''
+            className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm/5 font-medium transition-colors ${
+                isSelected 
+                ? 'bg-primary text-white hover:bg-primary/90' 
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
         >
             {category.name}

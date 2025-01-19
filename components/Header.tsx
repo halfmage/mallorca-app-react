@@ -36,7 +36,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }) => {
   );
 
   return (
-    <header className="bg-white dark:bg-gray-900 shadow-sm">
+    <header className="bg-white dark:bg-gray-900 shadow-sm relative z-50">
       <div className="container">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}

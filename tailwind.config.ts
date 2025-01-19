@@ -10,7 +10,7 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: '1rem', // this is equivalent to px-4
+      padding: '1rem',
     },
     extend: {
       colors: {

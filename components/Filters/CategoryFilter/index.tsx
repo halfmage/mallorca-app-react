@@ -16,7 +16,7 @@ const CategoryFilter = ({ value, options, onChange }: Props) => {
     )
 
     return (
-        <ul className="flex flex-row gap-3 flex-wrap">
+        <ul className="flex flex-row gap-2 flex-wrap">
             {options.map((category: { id: number|string, name: string }) => (
                 <li key={category.id}>
                     <CategoryButton

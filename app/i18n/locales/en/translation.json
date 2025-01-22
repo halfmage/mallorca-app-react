@@ -7,7 +7,7 @@
       "signOut": "Sign Out",
       "signIn": "Sign In",
       "messages": "Messages",
-      "myMessages": "My messages",
+      "myMessages": "Inbox",
       "userRole": {
         "admin": "Admin",
         "member": "Member"

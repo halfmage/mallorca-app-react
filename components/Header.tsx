@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from './LanguageSwitcher'
 
+import { CircleUserRound, Heart, Inbox, MessagesSquare, LayoutDashboard, Settings } from 'lucide-react';
+
+
 const Header = ({ user, isAdmin, newMessagesCount, hasProviders }) => {
   const { t, i18n: { language } } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -20,7 +23,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }) => {
   }
 
   const AvatarDisplay = () => (
-    <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+    <div className="w-6 h-6 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
       {avatarUrl ? (
         <img
           src={avatarUrl}
@@ -68,53 +71,49 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }) => {
           </button>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-4">
-            <LanguageSwitcher />
+          <nav className="hidden md:flex items-center gap-1 text-xs *:opacity-70 *:p-1.5 *:px-2.5 *:rounded-lg *:flex *:flex-col *:items-center">
             {user ? (
               <>
                 {isAdmin && (
-                  <Link
-                    href={`/${language}/admin`}
-                    className="text-gray-600 dark:text-gray-400 hover:opacity-75"
-                  >
+                  <Link href={`/${language}/admin`} className="hover:bg-gray-50 hover:opacity-100">
+                    <Settings size={24} strokeWidth={1.5} />
                     {t('header.admin')}
                   </Link>
                 )}
                 {hasProviders && (
-                    <Link
-                        href={`/${language}/messages`}
-                        className="text-gray-600 dark:text-gray-400 hover:opacity-75"
-                    >
+                    <Link href={`/${language}/dashboard`} className="hover:bg-gray-50 hover:opacity-100">
+                      <LayoutDashboard size={24} strokeWidth={1.5} />
+                      Dashboard
+                    </Link>
+                )}
+                {hasProviders && (
+                    <Link href={`/${language}/messages`} className="hover:bg-gray-50 hover:opacity-100">
+                      <MessagesSquare size={24} strokeWidth={1.5} />
                       {t('header.messages')}
                     </Link>
                 )}
-                <Link
-                    href={`/${language}/my-messages`}
-                    className="text-gray-600 dark:text-gray-400 hover:opacity-75"
-                >
+                <Link href={`/${language}/my-messages`} className="hover:bg-gray-50 hover:opacity-100">
+                  <Inbox size={24} strokeWidth={1.5} />
                   {t('header.myMessages')} {newMessagesCount > 0 && `(${newMessagesCount})`}
                 </Link>
-                <Link
-                  href={`/${language}/saved`}
-                  className="text-gray-600 dark:text-gray-400 hover:opacity-75"
-                >
+                <Link href={`/${language}/saved`} className="hover:bg-gray-50 hover:opacity-100">
+                  <Heart size={24} strokeWidth={1.5} />
                   {t('header.savedProviders')}
                 </Link>
-                <Link
-                  href={`/${language}/profile`}
-                  className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:opacity-75"
-                >
-                  <span>{t('header.profile')}</span>
+                <LanguageSwitcher />
+                <Link href={`/${language}/profile`} className="hover:bg-gray-50 hover:opacity-100">
                   <AvatarDisplay />
+                  <span>{t('header.profile')}</span>
                 </Link>
               </>
             ) : (
-              <Link
-                href={`/${language}/login`}
-                className="text-gray-600 dark hover:opacity-75"
-              >
-                {t('header.signIn')}
-              </Link>
+              <>  
+                <LanguageSwitcher />
+                <Link href={`/${language}/login`} className="hover:bg-gray-50 hover:opacity-100">
+                  <CircleUserRound size={24} strokeWidth={1.5} />
+                  {t('header.signIn')}
+                </Link>
+              </>
             )}
           </nav>
         </div>

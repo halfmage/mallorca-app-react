@@ -87,7 +87,7 @@ const SavedProviders = ({ providers, mainCategories }) => {
                 {t('savedProviders.title')}
             </h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-6">
                 <CategoryFilter value={selectedCategories} options={mainCategories} onChange={handleCategorySelect} />
                 <SearchControl onChange={setKeyword} />
                 <SortingControl value={sort} onChange={setSort} />

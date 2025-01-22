@@ -3,8 +3,7 @@
 import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import Link from 'next/link';
-import { Icon } from '@mdi/react';
-import { mdiHeart as IconSaved } from '@mdi/js';
+import { Heart } from 'lucide-react';
 
 const ProviderCard = ({ provider }) => {
   const { t, i18n: { language } } = useTranslation();
@@ -31,14 +30,16 @@ const ProviderCard = ({ provider }) => {
 
       {/* Provider Details */}
       <div className="mt-2">
-        <div className="font-bold group-hover:underline">{provider.name}</div>
+        <div className="font-bold group-hover:underline text-lg tracking-tight truncate flex items-center gap-1">
+          {provider.name}
+        </div>
         <div className='flex items-center gap-1 text-sm overflow-hidden'>
-          <Icon path={IconSaved} size={.75} className='text-primary relative top-px shrink-0' />
-          <span className='font-semibold text-primary'>{provider.savedCount || 0} </span>
+          <Heart size={16} strokeWidth={3} className='text-primary relative top-px shrink-0' />
+          <span className='font-bold text-primary'>{provider.savedCount || 0} </span>
           <span>·</span>
           <span className='text-gray-500 dark:text-gray-400'>{provider.maincategories?.name || t('home.noCategory')}</span>
           {provider?.subcategories?.length > 0 &&
-              provider?.subcategories?.length && provider?.subcategories.map(
+              provider?.subcategories?.slice(0, 2).map(
                   (subcategory) => (
                       <span key={subcategory.id}>
                         <span>·</span>

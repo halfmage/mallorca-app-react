@@ -2,6 +2,8 @@ import React, { useCallback } from 'react'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter, usePathname } from 'next/navigation'
 
+import { Globe } from 'lucide-react';
+
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation()
   const { push } = useRouter()
@@ -17,11 +19,13 @@ const LanguageSwitcher = () => {
   )
 
   return (
-    <div className="flex items-center">
+    <div className="p-1.5 px-2.5 rounded-lg flex flex-col items-center hover:bg-gray-50 relative opacity-70 hover:opacity-100">
+      <Globe size={24} strokeWidth={1.5} />
+      {i18n.language === 'en' ? 'English' : i18n.language === 'de' ? 'Deutsch' : 'Español'}
       <select
         onChange={handleChange}
         value={i18n.language}
-        className="bg-transparent border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-blue-500"
+        className="appearance-none bg-transparent absolute inset-0 w-full h-full text-transparent text-sm cursor-pointer"
       >
         <option value="en">English</option>
         <option value="de">Deutsch</option>

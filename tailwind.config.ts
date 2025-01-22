@@ -14,11 +14,13 @@ export default {
     },
     extend: {
       colors: {
-        primary: "#FF4405",
+        primary: "#FF7700",
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 } satisfies Config;

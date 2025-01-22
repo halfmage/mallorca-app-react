@@ -10,7 +10,7 @@ const Home = async ({ categories, lng }) => {
       <div className="h1 text-center p-12">
         {t('home.title')}
       </div>
-      <div className='flex flex-col gap-12'>
+      <div className='flex flex-col'>
         {categories.length === 0 ? (
           <div className="text-center text-gray-600">
             <p>{t('home.noProviders')}</p>

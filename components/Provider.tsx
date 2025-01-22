@@ -28,10 +28,10 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
     return (
         <div className="mt-6">
             {provider ? (
-                <div className='container'>
-                    <div className='grid md:grid-cols-2 gap-12'>
+                <div className='max-w-screen-xl mx-auto'>
+                    <div className='grid md:grid-cols-2 gap-24'>
                         <div>
-                            <h1 className="text-2xl font-bold mb-4 tracking-tight">{provider.name}</h1>
+                            <h1 className="text-2xl md:text-4xl font-bold mb-4 tracking-tight">{provider.name}</h1>
                             <div className="mb-4">
                                 <h2 className="flex items-center gap-2">
                                     <span>
@@ -50,7 +50,7 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
                                 <SaveButton provider={provider} isSaved={isSavedInitially} />
                             }
 
-                            <div className='flex gap-2'>
+                            <div className='flex gap-2 my-6'>
                             {
                                         provider?.phone &&
                                         <a
@@ -111,24 +111,26 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
                                 <p className="text-gray-700 text-sm">
                                     {provider?.address || ''}
                                 </p>
-                                <div className="grid md:grid-cols-12 gap-12">
+                                <div className="grid md:grid-cols-12 my-6">
                                     {texts?.advantages_list &&
-                                        <div className="md:col-span-6 border rounded p-4">
-                                            <Markdown>
+                                        <div className="md:col-span-6 rounded-l-lg p-3 border-2 border-gray-200">
+                                            <div className='pl-1 text-sm font-semibold'>Advantages:</div>
+                                            <Markdown className="prose prose-sm prose-li:p-0 prose-li:leading-5 prose-ul:pl-6 prose-li:my-1">
                                                 {texts.advantages_list}
                                             </Markdown>
                                         </div>
                                     }
                                     {texts?.tips_list &&
-                                        <div className="md:col-span-6 border rounded p-4">
-                                            <Markdown>
+                                        <div className="md:col-span-6 rounded-r-lg p-3 border-2 border-l-0 border-gray-200">
+                                            <div className='pl-1 text-sm font-semibold'><span className='bg-primary text-white px-1 rounded'>Xclusive</span> Tips:</div>
+                                            <Markdown className="prose prose-sm prose-li:p-0 prose-li:leading-5 prose-ul:pl-6 prose-li:my-1">
                                                 {texts.tips_list}
                                             </Markdown>
                                         </div>
                                     }
                                 </div>
                                 {texts?.description &&
-                                    <Markdown>
+                                    <Markdown className="prose prose-sm max-w-none">
                                         {texts.description}
                                     </Markdown>
                                 }
@@ -150,13 +152,13 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
 
                                         {/* Thumbnail Navigation */}
                                         {providerImages.length > 1 && (
-                                            <div className="flex space-x-2 overflow-x-auto" key="thumbnails">
+                                            <div className="flex gap-3 flex-wrap justify-center items-center" key="thumbnails">
                                                 {providerImages.map((image, index) => (
                                                     <button
                                                         key={image.id}
                                                         onClick={() => setActiveImageIndex(index)}
-                                                        className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 
-                            ${index === activeImageIndex ? 'border-blue-500' : 'border-transparent'}`}
+                                                        className={`flex-shrink-0 w-20 h-16 rounded-md overflow-hidden 
+                            ${index === activeImageIndex ? 'opacity-100' : 'opacity-50 hover:opacity-75'}`}
                                                     >
                                                         <img
                                                             src={image.publicUrl}

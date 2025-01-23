@@ -32,27 +32,27 @@ const ProviderDashboard = ({ provider, savedUsers, stats, subscriptionLink }) =>
                 </p>
             </div>
 
-            <Link href={subscriptionLink}>
-                <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                >
-                    {t('providerDashboard.subscription.subscribe')}
-                </button>
-            </Link>
-
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('providerDashboard.stats.totalSaves')}</h3>
-                    <p className="text-3xl font-bold text-blue-600">{stats.totalSaves}</p>
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('providerDashboard.stats.uniqueViews')}</h3>
+                    <p className="text-3xl font-bold text-blue-600">{stats.uniqueViews}</p>
                 </div>
                 <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
                     <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('providerDashboard.stats.totalViews')}</h3>
                     <p className="text-3xl font-bold text-blue-600">{stats.totalViews}</p>
                 </div>
                 <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('providerDashboard.stats.recentViews')}</h3>
-                    <p className="text-3xl font-bold text-blue-600">{stats.recentViews}</p>
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('providerDashboard.stats.totalSaves')}</h3>
+                    <p className="text-3xl font-bold text-blue-600">{stats.totalSaves}</p>
+                </div>
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('providerDashboard.stats.messagesSent')}</h3>
+                    <p className="text-3xl font-bold text-blue-600">{stats.messagesSent}</p>
+                </div>
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('providerDashboard.stats.reachedUsers')}</h3>
+                    <p className="text-3xl font-bold text-blue-600">{stats.reachedUsers}</p>
                 </div>
             </div>
 
@@ -97,6 +97,14 @@ const ProviderDashboard = ({ provider, savedUsers, stats, subscriptionLink }) =>
                     <p className="text-gray-500">{t('providerDashboard.savedUsers.noUsers')}</p>
                 )}
             </div>
+
+            <Link href={subscriptionLink}>
+                <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+                >
+                    {t('providerDashboard.subscription.subscribe')}
+                </button>
+            </Link>
 
             {/* Action Buttons */}
             <div className="mt-6 flex space-x-4">

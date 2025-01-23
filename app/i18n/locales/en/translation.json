@@ -193,9 +193,12 @@
     },
     "providerDashboard": {
       "stats": {
-        "totalSaves": "Total Saves",
+        "totalSaves": "Fans",
         "totalViews": "Total Views",
-        "recentViews": "Views (Last 30 Days)"
+        "recentViews": "Views (Last 30 Days)",
+        "uniqueViews": "Unique Views",
+        "messagesSent": "Messages Sent",
+        "reachedUsers": "Reached Users"
       },
       "subscription": {
         "title": "Subscription Status",

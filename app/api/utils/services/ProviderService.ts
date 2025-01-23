@@ -166,29 +166,50 @@ class ProviderService extends EntityService {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-        const [savesData, recentViewsData, totalViewsData] = await Promise.all([
+        const [
+            savesData, /* recentViewsData, */ totalViewsData, uniqueViewsData, messagesSentData, reachedUsersData
+        ] = await Promise.all([
             this.supabase
                 .from('saved_providers')
                 .select('*', { count: 'exact' })
                 .eq('provider_id', providerId),
 
-            this.supabase
-                .from('provider_views')
-                .select('*', { count: 'exact' })
-                .eq('provider_id', providerId)
-                .gte('viewed_at', thirtyDaysAgo.toISOString()),
+            // this.supabase
+            //     .from('provider_views')
+            //     .select('*', { count: 'exact' })
+            //     .eq('provider_id', providerId)
+            //     .gte('viewed_at', thirtyDaysAgo.toISOString()),
 
             this.supabase
                 .from('provider_views')
                 .select('*', { count: 'exact' })
-                .eq('provider_id', providerId)
-        ]);
+                .eq('provider_id', providerId),
+
+            // todo: check possibility to enable aggregate functions https://github.com/orgs/supabase/discussions/19517
+            this.supabase
+                .from('provider_views')
+                .select('user_id')
+                .eq('provider_id', providerId),
+
+            this.supabase
+                .from('messages')
+                .select('*', { count: 'exact' })
+                .eq('provider_id', providerId),
+
+            this.supabase
+                .from('sent_messages')
+                .select('message_id(id)', { count: 'exact' })
+                .eq('message_id.provider_id', providerId),
+        ])
 
         return {
             totalSaves: savesData.count || 0,
-            recentViews: recentViewsData.count || 0,
-            totalViews: totalViewsData.count || 0
-        };
+            // recentViews: recentViewsData.count || 0,
+            totalViews: totalViewsData.count || 0,
+            uniqueViews: (new Set((uniqueViewsData?.data || []).map(({ user_id }) => user_id))).size || 0,
+            messagesSent: messagesSentData.count || 0,
+            reachedUsers: reachedUsersData.count || 0
+        }
     }
 
     // Save/unsave provider

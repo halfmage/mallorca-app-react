@@ -51,6 +51,13 @@ const UserMessagesView = ({ providers }) => {
                             {selectedProvider?.maincategories && (
                                 <p className="text-gray-600 mb-4">{selectedProvider?.maincategories?.name}</p>
                             )}
+                            {selectedProvider?.subcategories?.length > 0 && selectedProvider?.subcategories.map(
+                                (subcategory) => (
+                                    <span key={subcategory.id}>
+                                        {subcategory.name}
+                                    </span>
+                                )
+                            )}
                         </div>
                     </div>
                     {selectedProvider?.messages?.length > 0 &&

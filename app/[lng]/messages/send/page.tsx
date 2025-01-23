@@ -18,7 +18,7 @@ export default async function MessageSendPage({ params }) {
         redirect(`/${lng}/login`)
     }
     const providerService = new ProviderService(supabase)
-    const provider = await providerService.getProviderByUserId(user.id)
+    const provider = await providerService.getProviderByUserId(user.id, lng)
     const messageService = new MessageService(supabase)
     const latestEmailDate = await messageService.getLatestEmailDate(provider.id)
 

@@ -1,12 +1,15 @@
-"use client"
+'use client'
 
-import React from 'react';
-import { useTranslation } from '@/app/i18n/client';
-import Link from 'next/link';
-import { Heart } from 'lucide-react';
+import React from 'react'
+import { useTranslation } from '@/app/i18n/client'
+import Link from 'next/link'
+import { Heart } from 'lucide-react'
+import SaveButton from '@/components/shared/SaveButton'
 
-const ProviderCard = ({ provider }) => {
-  const { t, i18n: { language } } = useTranslation();
+const ProviderCard = ({
+  provider, showSaveButton, isSaved, onSaveChange
+}) => {
+  const { t, i18n: { language } } = useTranslation()
 
   return (
     <Link
@@ -50,6 +53,15 @@ const ProviderCard = ({ provider }) => {
           }
         </div>
         <div className="text-sm text-gray-500 dark:text-gray-400">{provider.address}</div>
+        <div>
+          {showSaveButton &&
+              <SaveButton
+                  provider={provider}
+                  isSaved={isSaved}
+                  onClick={onSaveChange}
+              />
+          }
+        </div>
       </div>
     </Link>
   );

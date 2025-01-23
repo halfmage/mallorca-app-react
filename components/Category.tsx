@@ -6,7 +6,7 @@ import { useTranslation } from '@/app/i18n/client'
 import { stringifyParams } from '@/app/api/utils/helpers'
 import CategoryFilter from '@/components/Filters/CategoryFilter'
 import SortingControl from '@/components/Filters/SortingControl'
-import SaveButton from '@/components/shared/SaveButton'
+import ProviderCard from '@/components/ProviderCard'
 
 const Category = ({ providers, category, subCategories, showSaveButton }) => {
     const [ savedProviders, setSavedProviders ] = useState(providers)
@@ -15,6 +15,21 @@ const Category = ({ providers, category, subCategories, showSaveButton }) => {
     const [ sort, setSort ] = useState('new')
     const { t, i18n: { language } } = useTranslation()
     const isFirstRender = useRef(true)
+
+    const handleSaveChange = useCallback(
+        (providerId, isSaved) => {
+            setSavedProviders(
+                items => items.map(
+                    item => item.id === providerId ?
+                        {
+                            ...item,
+                            savedCount: (item?.savedCount || 0) + (isSaved ? 1 : -1)
+                        } : item
+                )
+            )
+        },
+        [ ]
+    )
 
     const fetchProviders = useCallback(
         async (subCategory, sort) => {
@@ -88,53 +103,12 @@ const Category = ({ providers, category, subCategories, showSaveButton }) => {
                     ) : (
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {savedProviders.map((provider) => (
-                                <Link
-                                    href={`/${language}/provider/${provider.slug || provider.id}`}
-                                    key={provider.id}
-                                    className="block bg-white dark:bg-gray-900 hover:bg-gray-100 hover:dark:bg-gray-800 rounded-lg shadow-md overflow-hidden group transition-colors"
-                                >
-                                    {/* Provider Image */}
-                                    <div className="h-48 w-full overflow-hidden bg-gray-100">
-                                        {provider?.mainImage?.publicUrl ? (
-                                            <img
-                                                src={provider?.mainImage?.publicUrl}
-                                                alt={provider.name}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <div
-                                                className="w-full h-full flex items-center justify-center text-gray-400">
-                                                {t('common.noImage')}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Provider Details */}
-                                    <div className="p-4">
-                                        <h3 className="text-xl font-semibold mb-2">{provider.name}</h3>
-                                        {provider.maincategories && (
-                                            <p className="text-gray-600 mb-4">{provider.maincategories.name}</p>
-                                        )}
-                                        {provider?.subcategories?.length > 0 &&
-                                            provider?.subcategories?.length && provider?.subcategories.map(
-                                                (subcategory) => (
-                                                    <span key={subcategory.id}>
-                                                        <span>·</span>
-                                                        <span className='text-gray-500 dark:text-gray-400'>{subcategory?.name}</span>
-                                                    </span>
-                                                )
-                                            )
-                                        }
-                                        <div>
-                                            {showSaveButton &&
-                                              <SaveButton
-                                                provider={provider}
-                                                isSaved={provider?.saved_providers?.[0]?.count}
-                                              />
-                                            }
-                                        </div>
-                                    </div>
-                                </Link>
+                                <ProviderCard
+                                    provider={provider}
+                                    isSaved={provider?.saved_providers?.[0]?.count}
+                                    showSaveButton={showSaveButton} key={provider.id}
+                                    onSaveChange={handleSaveChange}
+                                />
                             ))}
                         </div>
                     )

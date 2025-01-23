@@ -10,6 +10,7 @@ const BASIC_INFO_FRAGMENT = `
     id,
     name,
     slug,
+    address,
     maincategory_id
 `
 const IMAGES_FRAGMENT = `
@@ -78,13 +79,26 @@ class ProviderService extends EntityService {
     }
 
     // Get provider by user ID (for dashboard)
-    public async getProviderByUserId(userId: string) {
+    public async getProviderByUserId(userId: string, language: string = 'en') {
         const { data } = await this.supabase
             .from('providers')
             .select(`
                 *,
-                maincategory:maincategory_id(name),
-                subcategory:subcategory_id(name),
+                maincategories (
+                    name,
+                    maincategory_translations (
+                        name
+                    )
+                ),
+                provider_subcategories (
+                    subcategories (
+                        id,
+                        name,
+                        subcategory_translations (
+                            name
+                        )
+                    )
+                ),
                 business_claims (
                     id,
                     payment_status
@@ -92,10 +106,23 @@ class ProviderService extends EntityService {
                 saved_providers(count)
             `)
             .eq('user_id', userId)
-            .single();
-        
+            .eq('maincategories.maincategory_translations.language', language)
+            .eq('provider_subcategories.subcategories.subcategory_translations.language', language)
+            .single()
+
+        if (!data) {
+            return null
+        }
+        const categoryService = new CategoryService(this.supabase)
+
         // if (error) throw error;
-        return data
+        return {
+            ...data,
+            maincategory: categoryService.mapCategory(data.maincategories),
+            subcategories: (data.provider_subcategories || []).map(
+                item => categoryService.mapCategory(item?.subcategories)
+            ),
+        }
     }
 
     // todo: rely on a role inside user.app_metadata
@@ -210,6 +237,7 @@ class ProviderService extends EntityService {
                     )
                   ),
                   user_id,
+                  saved_providers(count),
                   ${IMAGES_FRAGMENT}
                 )
             `)
@@ -231,8 +259,9 @@ class ProviderService extends EntityService {
             .map((item) => item?.providers)
             .filter(Boolean)
             .map(
-                ({ maincategories, provider_subcategories, ...item }) => ({
+                ({ maincategories, saved_providers: savedCount, provider_subcategories, ...item }) => ({
                     ...item,
+                    savedCount: savedCount?.[0]?.count || 0,
                     maincategories: categoryService.mapCategory(maincategories),
                     subcategories: (provider_subcategories || []).map(
                         item => categoryService.mapCategory(item?.subcategories)

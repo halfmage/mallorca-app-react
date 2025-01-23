@@ -28,7 +28,7 @@ export default async function DashboardPage({ params }) {
     }
     const providerService = new ProviderService(supabase)
 
-    const provider = await providerService.getProviderByUserId(user.id)
+    const provider = await providerService.getProviderByUserId(user.id, lng)
 
     // Get provider stats
     const stats = await providerService.getProviderStats(provider.id)

@@ -7,6 +7,7 @@ import { stringifyParams } from '@/app/api/utils/helpers'
 import CategoryFilter from '@/components/Filters/CategoryFilter'
 import SearchControl from '@/components/Filters/SearchControl'
 import SortingControl from '@/components/Filters/SortingControl'
+import ProviderCard from '@/components/ProviderCard'
 
 const SavedProviders = ({ providers, mainCategories }) => {
     const [ savedProviders, setSavedProviders ] = useState(providers)
@@ -17,28 +18,13 @@ const SavedProviders = ({ providers, mainCategories }) => {
     const { t, i18n: { language } } = useTranslation()
     const isFirstRender = useRef(true)
 
-    const handleUnsave = useCallback(
-        async (providerId) => {
-            setLoading(true)
-            try {
-                const response = await fetch(
-                    `/api/saved/${providerId}${stringifyParams({
-                        maincategory: selectedCategories,
-                        keyword,
-                        sort,
-                        language
-                    })}`,
-                    { method: 'DELETE' }
-                )
-                const { data } = await response.json()
-                setSavedProviders(data)
-            } catch (error) {
-                console.error('Error removing provider:', error.message);
-            } finally {
-                setLoading(false)
+    const handleSaveChange = useCallback(
+        (providerId, isSaved) => {
+            if (!isSaved) {
+                setSavedProviders(items => items.filter(item => item.id !== providerId))
             }
         },
-        [ selectedCategories, keyword, sort, language ]
+        [ ]
     )
 
     const fetchProviders = useCallback(
@@ -113,59 +99,13 @@ const SavedProviders = ({ providers, mainCategories }) => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {savedProviders.map((provider) => (
-                                <div
+                                <ProviderCard
                                     key={provider.id}
-                                    className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
-                                >
-                                    {/* Provider Image */}
-                                    <div className="h-48 w-full overflow-hidden bg-gray-100">
-                                        {provider?.mainImage?.publicUrl ? (
-                                            <img
-                                                src={provider?.mainImage?.publicUrl}
-                                                alt={provider.name}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <div
-                                                className="w-full h-full flex items-center justify-center text-gray-400">
-                                                {t('common.noImage')}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Provider Details */}
-                                    <div className="p-4">
-                                        <h3 className="text-xl font-semibold mb-2">{provider.name}</h3>
-                                        {provider.maincategories && (
-                                            <p className="text-gray-600 mb-4">{provider.maincategories.name}</p>
-                                        )}
-                                        {provider?.subcategories?.length > 0 &&
-                                            provider?.subcategories?.length && provider?.subcategories.map(
-                                                (subcategory) => (
-                                                    <span key={subcategory.id}>
-                                                        <span>·</span>
-                                                        <span className='text-gray-500 dark:text-gray-400'>{subcategory?.name}</span>
-                                                    </span>
-                                                )
-                                            )
-                                        }
-
-                                        <div className="flex justify-between items-center">
-                                            <Link
-                                                href={`/${language}/provider/${provider.slug || provider.id}`}
-                                                className="text-blue-500 hover:text-blue-600"
-                                            >
-                                                {t('savedProviders.viewDetails')}
-                                            </Link>
-                                            <button
-                                                onClick={() => handleUnsave(provider.id)}
-                                                className="text-red-500 hover:text-red-600"
-                                            >
-                                                {t('savedProviders.unsave')}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                    provider={provider}
+                                    isSaved
+                                    showSaveButton
+                                    onSaveChange={handleSaveChange}
+                                />
                             ))}
                         </div>
                     )

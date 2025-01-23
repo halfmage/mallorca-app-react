@@ -1,33 +1,38 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, {useCallback, useState} from 'react'
 import { useTranslation } from '@/app/i18n/client'
 
 
-const SaveButton = ({ provider, isSaved: isSavedInitially }) => {
+const SaveButton = ({ provider, isSaved: isSavedInitially, onClick }) => {
     const [isSaved, setIsSaved] = useState(isSavedInitially)
     const [savingStatus, setSavingStatus] = useState('idle')
     const { t } = useTranslation()
-    console.log('111 provider= ', provider)
 
-    const handleSaveToggle = async (e) => {
-        try {
-            e.preventDefault()
-            setSavingStatus('loading')
+    const handleSaveToggle = useCallback(
+        async (e) => {
+            try {
+                e.preventDefault()
+                setSavingStatus('loading')
 
-            const response = await fetch(
-                `/api/saved/${provider.id}`,
-                { method: 'PUT' }
-            )
-            const { data: isSaved } = await response.json()
+                const response = await fetch(
+                    `/api/saved/${provider.id}`,
+                    { method: 'PUT' }
+                )
+                const { data: isSaved } = await response.json()
 
-            setIsSaved(isSaved)
-        } catch (error) {
-            console.error(t('providerDetail.error.saveProvider'), error.message);
-        } finally {
-            setSavingStatus('idle')
-        }
-    }
+                setIsSaved(isSaved)
+                if (onClick) {
+                    onClick(provider.id, isSaved)
+                }
+            } catch (error) {
+                console.error(t('providerDetail.error.saveProvider'), error.message);
+            } finally {
+                setSavingStatus('idle')
+            }
+        },
+        [ provider.id, t, onClick ]
+    )
 
     return (
         <button

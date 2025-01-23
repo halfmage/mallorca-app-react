@@ -16,7 +16,7 @@ export default async function MessagesPage({ params }) {
         redirect(`/${lng}/login`)
     }
     const providerService = new ProviderService(supabase)
-    const provider = await providerService.getProviderByUserId(user.id)
+    const provider = await providerService.getProviderByUserId(user.id, lng)
     const messageService = new MessageService(supabase)
 
     if (provider?.id) {

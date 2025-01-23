@@ -12,7 +12,7 @@ const ProviderDashboard = ({ provider, savedUsers, stats, subscriptionLink }) =>
             <div className="max-w-6xl mx-auto p-6">
                 <p className="text-red-500">{t('providerDashboard.error.notFound')}</p>
             </div>
-        );
+        )
     }
 
     return (
@@ -21,7 +21,14 @@ const ProviderDashboard = ({ provider, savedUsers, stats, subscriptionLink }) =>
             <div className="mb-8">
                 <h1 className="text-3xl font-bold mb-2">{provider.name}</h1>
                 <p className="text-gray-600">
-                    {provider.maincategory?.name} {provider.subcategory?.name && `• ${provider.subcategory.name}`}
+                    {provider.maincategory?.name}
+                    {provider?.subcategories?.length > 0 && provider?.subcategories.map(
+                        (subcategory) => (
+                            <span key={subcategory.id}>
+                                {subcategory.name}
+                            </span>
+                        )
+                    )}
                 </p>
             </div>
 

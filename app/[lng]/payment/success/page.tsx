@@ -1,7 +1,8 @@
 import React from 'react'
 import { redirect } from 'next/navigation'
-import Stripe from 'stripe'
-import ProviderService from '@/app/api/utils/services/ProviderService'
+import { cookies } from 'next/headers'
+import { createClient } from '@/utils/supabase/server'
+import PaymentService from '@/app/api/utils/services/PaymentService'
 
 export default async function PaymentSuccessPage({ params, searchParams }) {
     const { lng } = await params
@@ -9,13 +10,15 @@ export default async function PaymentSuccessPage({ params, searchParams }) {
     if (!sessionId) {
         redirect(`/${lng}/404`)
     }
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
-    const { subscription: paymentId, client_reference_id: claimId } = await stripe.checkout.sessions.retrieve(sessionId)
-    if (!paymentId || !claimId) {
+    const cookieStore = await cookies()
+    const supabase = createClient(cookieStore)
+    const paymentService = new PaymentService(supabase)
+    const { paymentId, claimId, customer } = await paymentService.getPaymentSession(sessionId)
+    if (!paymentId || !claimId || !customer) {
         redirect(`/${lng}/404`)
     }
-    const providerService = await ProviderService.init()
-    await providerService.addPayment(claimId, paymentId as string)
+
+    await paymentService.addPayment(claimId, paymentId as string, customer)
 
     return (
         <div>

@@ -6,7 +6,15 @@ import { initReactI18next, useTranslation as useTranslationOrg } from 'react-i18
 import { useCookies } from 'react-cookie'
 import resourcesToBackend from 'i18next-resources-to-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
+import countries from 'i18n-iso-countries'
+import enLocalizedCountries from 'i18n-iso-countries/langs/en.json'
+import esLocalizedCountries from 'i18n-iso-countries/langs/es.json'
+import deLocalizedCountries from 'i18n-iso-countries/langs/de.json'
 import { getOptions, languages, cookieName } from './settings'
+
+countries.registerLocale(enLocalizedCountries)
+countries.registerLocale(esLocalizedCountries)
+countries.registerLocale(deLocalizedCountries)
 
 const runsOnServerSide = typeof window === 'undefined'
 

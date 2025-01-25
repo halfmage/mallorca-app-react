@@ -5,9 +5,10 @@ import moment from 'moment'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
+import Link from 'next/link'
 
 
-const Send = ({ savedCount, limit, latestEmailDate, isBlocked }) => {
+const Send = ({ savedCount, limit, latestEmailDate, isBlocked, providerId }) => {
     const [ savingStatus, setSavingStatus ] = useState('idle')
     const { push } = useRouter()
     const { register, handleSubmit } = useForm()
@@ -35,6 +36,7 @@ const Send = ({ savedCount, limit, latestEmailDate, isBlocked }) => {
                     const formData = new FormData()
                     formData.append('title', title)
                     formData.append('text', text)
+                    formData.append('providerId', providerId)
                     if (image?.[0]) {
                         formData.append('image', image[0])
                     }
@@ -49,7 +51,7 @@ const Send = ({ savedCount, limit, latestEmailDate, isBlocked }) => {
                     const { data } = await response.json()
 
                     if (data) {
-                        push(`/${language}/messages`)
+                        push(`/${language}/messages/${providerId}`)
                     }
                 } catch (error) {
                     console.error(t('messages.form.error.send'), error.message);
@@ -58,11 +60,14 @@ const Send = ({ savedCount, limit, latestEmailDate, isBlocked }) => {
                 }
             }
         ),
-        [ handleSubmit, language, t, push]
+        [ handleSubmit, language, t, push, providerId]
     )
 
     return (
         <div className="max-w-4xl mx-auto p-4">
+            <Link href={`/${language}/messages/${providerId}`}>
+                {t('common.back')}
+            </Link>
             <div className="border-2 border-gray-300 p-4">
                 <form onSubmit={onSubmit}>
                     <h1 className="text-3xl font-bold mb-4">{t('messages.form.title')}</h1>

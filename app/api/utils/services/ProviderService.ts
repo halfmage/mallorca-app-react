@@ -1,5 +1,5 @@
 import {
-    SORTING_ORDER_NEW, STATUS_PENDING, STATUS_ACTIVE, STATUS_PAYMENT_COMPLETED
+    SORTING_ORDER_NEW, STATUS_PENDING, STATUS_ACTIVE
 } from '@/app/api/utils/constants'
 import { isUUID } from '@/app/api/utils/helpers'
 import EntityService from '@/app/api/utils/services/EntityService'
@@ -21,6 +21,18 @@ const IMAGES_FRAGMENT = `
     )
 `
 
+const SUBCATEGORIES_FRAGMENT = `
+    provider_subcategories (
+        subcategories (
+            id,
+            name,
+            subcategory_translations (
+                name
+            )
+        )
+    )
+`
+
 class ProviderService extends EntityService {
     // Get a single provider by ID or by slug with full details
     public async get(idOrSlug: string, language: string = 'en') {
@@ -36,15 +48,7 @@ class ProviderService extends EntityService {
                     name
                   )
                 ),
-                provider_subcategories (
-                  subcategories (
-                    id,
-                    name,
-                    subcategory_translations (
-                      name
-                    )
-                  )
-                ),
+                ${SUBCATEGORIES_FRAGMENT},
                 address,
                 phone,
                 mail,
@@ -79,7 +83,7 @@ class ProviderService extends EntityService {
     }
 
     // Get provider by user ID (for dashboard)
-    public async getProviderByUserId(userId: string, language: string = 'en') {
+    public async getDetailedProviderByUserId(userId: string, providerId: string, language: string = 'en') {
         const { data } = await this.supabase
             .from('providers')
             .select(`
@@ -90,24 +94,19 @@ class ProviderService extends EntityService {
                         name
                     )
                 ),
-                provider_subcategories (
-                    subcategories (
-                        id,
-                        name,
-                        subcategory_translations (
-                            name
-                        )
-                    )
-                ),
+                ${SUBCATEGORIES_FRAGMENT},
                 business_claims (
                     id,
                     payment_status
                 ),
-                saved_providers(count)
+                saved_providers(count),
+                ${IMAGES_FRAGMENT}
             `)
             .eq('user_id', userId)
+            .eq('id', providerId)
             .eq('maincategories.maincategory_translations.language', language)
             .eq('provider_subcategories.subcategories.subcategory_translations.language', language)
+            .limit(1)
             .single()
 
         if (!data) {
@@ -122,15 +121,43 @@ class ProviderService extends EntityService {
             subcategories: (data.provider_subcategories || []).map(
                 item => categoryService.mapCategory(item?.subcategories)
             ),
+            mainImage: await this.getProviderMainImage(data)
         }
+    }
+
+    public async getProviderByUserId(userId: string, providerId: string) {
+        const { data } = await this.supabase
+            .from('providers')
+            .select(`
+                id,
+                name,
+                saved_providers(count)
+            `)
+            .eq('user_id', userId)
+            .eq('id', providerId)
+            .limit(1)
+            .single()
+
+        return data
+    }
+
+    // Get providers by user ID (for dashboard)
+    public async getProvidersByUserId(userId: string) {
+        const { data } = await this.supabase
+            .from('providers')
+            .select('id, name')
+            .eq('user_id', userId)
+
+        return data
     }
 
     // todo: rely on a role inside user.app_metadata
     public async hasProviders(userId: string): Promise<boolean> {
         const { data } = await this.supabase
             .from('providers')
-            .select(`*`)
+            .select('id')
             .eq('user_id', userId)
+            .limit(1)
             .single()
 
         return !!data
@@ -142,6 +169,7 @@ class ProviderService extends EntityService {
             .select('id')
             .eq('user_id', userId)
             .eq('id', providerId)
+            .limit(1)
             .single()
 
         return !error && !!data
@@ -152,6 +180,7 @@ class ProviderService extends EntityService {
             .from('provider_images')
             .select('provider_id')
             .eq('id', id)
+            .limit(1)
             .single()
 
         if (error) {
@@ -169,6 +198,7 @@ class ProviderService extends EntityService {
         const [
             savesData, /* recentViewsData, */ totalViewsData, uniqueViewsData, messagesSentData, reachedUsersData
         ] = await Promise.all([
+            // saved count
             this.supabase
                 .from('saved_providers')
                 .select('*', { count: 'exact' })
@@ -180,25 +210,30 @@ class ProviderService extends EntityService {
             //     .eq('provider_id', providerId)
             //     .gte('viewed_at', thirtyDaysAgo.toISOString()),
 
+            // views count
             this.supabase
                 .from('provider_views')
                 .select('*', { count: 'exact' })
                 .eq('provider_id', providerId),
 
+            // unique views count
             // todo: check possibility to enable aggregate functions https://github.com/orgs/supabase/discussions/19517
             this.supabase
                 .from('provider_views')
                 .select('user_id')
                 .eq('provider_id', providerId),
 
+            // messages sent
             this.supabase
                 .from('messages')
                 .select('*', { count: 'exact' })
                 .eq('provider_id', providerId),
 
+            // reached users
             this.supabase
                 .from('sent_messages')
                 .select('message_id(id)', { count: 'exact' })
+                .not('message_id', 'is', null)
                 .eq('message_id.provider_id', providerId),
         ])
 
@@ -248,15 +283,7 @@ class ProviderService extends EntityService {
                         name
                     )
                   ),
-                  provider_subcategories (
-                    subcategories (
-                      id,
-                      name,
-                      subcategory_translations (
-                        name
-                      )
-                    )
-                  ),
+                  ${SUBCATEGORIES_FRAGMENT},
                   user_id,
                   saved_providers(count),
                   ${IMAGES_FRAGMENT}
@@ -306,22 +333,13 @@ class ProviderService extends EntityService {
         return data
     }
 
-    // Get saved users for a provider
-    public async getSavedUsersForProvider(providerId: string) {
+    public async getUserIdsByProvider(providerId: string) {
         const { data } = await this.supabase
             .from('saved_providers')
-            .select(`
-                created_at,
-                user:user_id (
-                  id,
-                  email,
-                  raw_user_meta_data->full_name as full_name
-                )
-              `)
+            .select('user_id')
             .eq('provider_id', providerId)
-            .order('created_at', { ascending: false });
-        // if (error) throw error;
-        return data || [];
+
+        return (data || []).map(({ user_id }) => user_id)
     }
 
     public async isProviderSaved(providerId: string, userId: string): Promise<boolean> {
@@ -330,6 +348,7 @@ class ProviderService extends EntityService {
             .select('provider_id')
             .eq('user_id', userId)
             .eq('provider_id', providerId)
+            .limit(1)
             .single()
 
         return !!data
@@ -379,15 +398,7 @@ class ProviderService extends EntityService {
                     name
                   )
                 ),
-                provider_subcategories (
-                  subcategories (
-                    id,
-                    name,
-                    subcategory_translations (
-                      name
-                    )
-                  )
-                ),
+                ${SUBCATEGORIES_FRAGMENT},
                 saved_providers (count),
                 ${IMAGES_FRAGMENT}
             `)
@@ -523,18 +534,6 @@ class ProviderService extends EntityService {
                     payment_status: STATUS_PENDING
                 }
             ])
-
-        return !error
-    }
-
-    public async addPayment(id: string, paymentId: string): Promise<boolean> {
-        const { error } = await this.supabase
-            .from('business_claims')
-            .update({
-                payment_id: paymentId,
-                payment_status: STATUS_PAYMENT_COMPLETED
-            })
-            .eq('id', id)
 
         return !error
     }
@@ -685,15 +684,7 @@ class ProviderService extends EntityService {
                     maincategories (
                       id
                     ),
-                    provider_subcategories (
-                      subcategories (
-                        id,
-                        name,
-                        subcategory_translations (
-                          name
-                        )
-                      )
-                    ),
+                    ${SUBCATEGORIES_FRAGMENT},
                     saved_providers(count),
                     ${IMAGES_FRAGMENT}
                 )

@@ -4,7 +4,11 @@ import React, { useCallback } from 'react'
 
 const Tab = ({ isActive, tabKey, onClick, children }) => {
     const handleClick = useCallback(
-        () => onClick(tabKey),
+        () => {
+            if (onClick) {
+                onClick(tabKey)
+            }
+        },
         [ tabKey, onClick ]
     )
 

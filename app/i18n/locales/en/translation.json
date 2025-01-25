@@ -193,6 +193,7 @@
     },
     "providerDashboard": {
       "stats": {
+        "title": "Analytics",
         "totalSaves": "Fans",
         "totalViews": "Total Views",
         "recentViews": "Views (Last 30 Days)",
@@ -201,14 +202,24 @@
         "reachedUsers": "Reached Users"
       },
       "subscription": {
-        "title": "Subscription Status",
+        "title": "Payment settings",
         "manage": "Manage Subscription",
         "subscribe": "Subscribe Now",
         "status": "Your subscription is {{status}} and will renew on {{date}}",
-        "noSubscription": "You don't have an active subscription. Subscribe now to access all provider features."
+        "noSubscription": "You don't have an active subscription. Subscribe now to access all provider features.",
+        "perMonth": "month",
+        "nextPayment": "Next payment",
+        "proposal": "To get full access please subscribe",
+        "notPayed": "Not payed yet"
       },
       "savedUsers": {
-        "title": "Saved by Users",
+        "title": "Fans Target groups",
+        "country": "Countries",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other",
+        "age": "Age",
         "noUsers": "No users have saved your profile yet.",
         "table": {
           "user": "User",

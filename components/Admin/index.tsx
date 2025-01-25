@@ -4,7 +4,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddProvider from './AddProvider'
 import Providers from './Providers'
-import Tab from './Tabs/Tab'
+import Tab from '@/components/shared/Tabs/Tab'
 import Users from './Users'
 
 const Admin = ({

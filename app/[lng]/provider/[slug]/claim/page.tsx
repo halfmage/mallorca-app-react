@@ -21,9 +21,7 @@ export default async function ClaimBusinessPage({ params }) {
         redirect('/404')
     }
 
-    const isSaved = await providerService.isProviderSaved(provider.id, user?.id)
-
     return (
-        <ClaimBusiness provider={provider} userId={user?.id} isSaved={isSaved} />
+        <ClaimBusiness provider={provider} />
     );
 }

@@ -88,11 +88,64 @@ class UserService extends EntityService {
 
         return users
             .filter(user => ids.includes(user.id))
-            .map(({ id, email, user_metadata }) => ({
+            .map(({ id, email, user_metadata, app_metadata }) => ({
                 id,
                 email,
-                name: user_metadata?.display_name
+                name: user_metadata?.display_name,
+                role: app_metadata?.role,
+                gender: user_metadata?.gender,
+                age: user_metadata?.age,
+                country: user_metadata?.country
             }))
+    }
+
+    public async getUserStats(ids: string[]) {
+        const users = await this.getUsersByIds(ids)
+        const countryStats = users.reduce((acc, user) => {
+            acc[user.country] = (acc[user.country] || 0) + 1
+            return acc
+        }, {})
+        const genderStats = users.reduce((acc, user) => {
+            acc[user.gender] = (acc[user.gender] || 0) + 1;
+            return acc;
+        }, {})
+
+        const genderPercentages = Object.keys(genderStats).map((gender) => ({
+            label: gender,
+            value: (genderStats[gender] / users.length) * 100,
+        }))
+
+        const countryPercentages = Object.keys(countryStats).map((country) => ({
+            label: country,
+            value: (countryStats[country] / users.length) * 100,
+        }))
+
+        const ageGroups = {
+            '18-25': 0,
+            '25-50': 0,
+            '50+': 0,
+        }
+
+        users.forEach((user) => {
+            if (user.age >= 18 && user.age <= 25) {
+                ageGroups['18-25']++
+            } else if (user.age > 25 && user.age <= 50) {
+                ageGroups['25-50']++
+            } else if (user.age > 50) {
+                ageGroups['50+']++
+            }
+        })
+
+        const agePercentages = Object.keys(ageGroups).map((group) => ({
+            label: group,
+            value: (ageGroups[group] / users.length) * 100,
+        }))
+
+        return {
+            gender: genderPercentages,
+            age: agePercentages,
+            country: countryPercentages
+        }
     }
 
     private sortBy(sort: string) {

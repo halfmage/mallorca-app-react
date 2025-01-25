@@ -10,7 +10,7 @@ import Send from '@/components/Messages/Send'
 const DEFAULT_RATE_LIMIT = 12
 
 export default async function MessageSendPage({ params }) {
-    const { lng } = await params
+    const { id, lng } = await params
     const cookieStore = await cookies()
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
@@ -18,13 +18,12 @@ export default async function MessageSendPage({ params }) {
         redirect(`/${lng}/login`)
     }
     const providerService = new ProviderService(supabase)
-    const provider = await providerService.getProviderByUserId(user.id, lng)
+    const provider = await providerService.getProviderByUserId(user.id, id)
+    if (!provider?.id) {
+        redirect(`/${lng}/messages`)
+    }
     const messageService = new MessageService(supabase)
     const latestEmailDate = await messageService.getLatestEmailDate(provider.id)
-
-    if (!provider?.id) {
-        return redirect(`/${lng}/not-logged`)
-    }
 
     const limit = process.env.MESSAGE_RATE_LIMIT || DEFAULT_RATE_LIMIT
     const isBlocked = latestEmailDate && moment().diff(moment(latestEmailDate)) <= limit * 60 * 60 * 1000
@@ -35,6 +34,7 @@ export default async function MessageSendPage({ params }) {
             limit={limit}
             latestEmailDate={latestEmailDate}
             isBlocked={isBlocked}
+            providerId={id}
         />
     )
 }

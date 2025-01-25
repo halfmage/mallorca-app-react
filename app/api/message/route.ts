@@ -8,6 +8,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData()
     const title = formData.get('title') || ''
     const text = formData.get('text') || ''
+    const providerId = formData.get('providerId') || ''
     const image = formData.get('image')
     const cookieStore = await cookies()
     const supabase = await createClient(cookieStore)
@@ -17,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     const providerService = new ProviderService(supabase)
-    const provider = await providerService.getProviderByUserId(user.id)
+    const provider = await providerService.getProviderByUserId(user.id, providerId)
 
     if (!provider?.id) {
         return Response.json(null, { status: 400 })

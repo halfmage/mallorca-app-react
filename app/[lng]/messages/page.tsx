@@ -1,10 +1,9 @@
-import React from 'react'
+// import React from 'react'
 import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import ProviderService from '@/app/api/utils/services/ProviderService'
-import MessageService from '@/app/api/utils/services/MessageService'
-import ProviderMessagesView from '@/components/Messages/ProviderMessagesView'
+// import MessageService from '@/app/api/utils/services/MessageService'
 // import UserMessagesView from '@/components/Messages/UserMessagesView'
 
 export default async function MessagesPage({ params }) {
@@ -16,17 +15,15 @@ export default async function MessagesPage({ params }) {
         redirect(`/${lng}/login`)
     }
     const providerService = new ProviderService(supabase)
-    const provider = await providerService.getProviderByUserId(user.id, lng)
-    const messageService = new MessageService(supabase)
+    const providers = await providerService.getProvidersByUserId(user.id, lng)
 
-    if (provider?.id) {
-        const messages = await messageService.getProviderMessages(provider.id)
-
-        return (
-            <ProviderMessagesView messages={messages} lng={lng} />
-        )
+    if (!providers?.length) {
+        return redirect(`/${lng}`)
+    } else {
+        return redirect(`/${lng}/messages/${providers[0].id}`)
     }
 
+    // const messageService = new MessageService(supabase)
     // const messages = await messageService.getUserMessages(user.id)
     // const savedProviders = await providerService.getSavedProviders(user.id, lng)
     // const providers = savedProviders.map((provider) => ({

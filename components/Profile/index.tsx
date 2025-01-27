@@ -2,13 +2,24 @@
 
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useForm } from 'react-hook-form'
+import countries from 'i18n-iso-countries'
 import { useRouter } from 'next/navigation'
 
 const Profile = ({ userData }) => {
     const { push, refresh } = useRouter()
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+            displayName: userData?.display_name || '',
+            avatarUrl: userData?.avatar_url || '',
+            birthdate: userData?.birthdate || '',
+            gender: userData?.gender || '',
+            country: (userData?.country || '').toUpperCase(),
+        },
+    })
 
     const { t, i18n: { language } } = useTranslation()
-    const [displayName, setDisplayName] = useState(userData?.display_name || '')
+    const [displayName] = useState(userData?.display_name || '')
     const [avatarUrl, setAvatarUrl] = useState(userData?.avatar_url || '')
     const [updating, setUpdating] = useState(false)
     const [uploading, setUploading] = useState(false)
@@ -16,31 +27,47 @@ const Profile = ({ userData }) => {
         () => userData?.user_type || '',
         [ userData ]
     )
-
-    const handleUpdateProfile = async (e) => {
-        e.preventDefault()
-
-        try {
-            setUpdating(true)
-
-            // Update auth user metadata
-            const response = await fetch(
-                '/api/profile',
-                {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        displayName,
-                        avatarUrl
-                    })
-                }
+    const countryOptions = useMemo(
+        () => {
+            const options = countries.getNames(language, { select: 'official' })
+            return Object.keys(options).map(
+                (countryCode) => ({
+                    value: countryCode,
+                    label: options[countryCode],
+                })
             )
-            await response.json()
-        } catch (error) {
-            console.error('Error updating profile:', error)
-        } finally {
-            setUpdating(false)
-        }
-    }
+        },
+        [ language ]
+    )
+
+    const onSubmit = useCallback(
+        handleSubmit(async ({ displayName, avatarUrl, country, birthdate, gender }) => {
+            try {
+                setUpdating(true)
+
+                // Update auth user metadata
+                const response = await fetch(
+                    '/api/profile',
+                    {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            displayName,
+                            avatarUrl,
+                            country,
+                            birthdate,
+                            gender
+                        })
+                    }
+                )
+                await response.json()
+            } catch (error) {
+                console.error('Error updating profile:', error)
+            } finally {
+                setUpdating(false)
+            }
+        }),
+        [ handleSubmit ]
+    )
 
     const handleAvatarUpload = async (event) => {
         try {
@@ -155,17 +182,59 @@ const Profile = ({ userData }) => {
                 </div>
             </div>
 
-            <form onSubmit={handleUpdateProfile} className="mb-8">
+            <form onSubmit={onSubmit} className="mb-8">
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-1">
                         {t('profile.displayName')}
                     </label>
                     <input
                         type="text"
-                        value={displayName}
-                        onChange={(e) => setDisplayName(e.target.value)}
-                        className="w-full p-2 border rounded"
+                        {...register('displayName', {required: true})}
+                        className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                     />
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-1">
+                        {t('profile.birthdate')}
+                    </label>
+                    <input
+                        type="date"
+                        {...register('birthdate')}
+                        className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-1">
+                        {t('profile.country')}
+                    </label>
+                    <select
+                        {...register('country')}
+                        className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+                    >
+                        <option value="">{t('common.select.placeholder')}</option>
+                        {countryOptions.map((country) => (
+                            <option key={country.value} value={country.value}>
+                                {country.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-1">
+                        {t('profile.gender')}
+                    </label>
+                    <select
+                        {...register('gender')}
+                        className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+                    >
+                        <option value="">{t('common.select.placeholder')}</option>
+                        <option value="male">{t('common.gender.male')}</option>
+                        <option value="female">{t('common.gender.female')}</option>
+                        <option value="other">{t('common.gender.other')}</option>
+                    </select>
                 </div>
 
                 <button
@@ -187,4 +256,4 @@ const Profile = ({ userData }) => {
     );
 };
 
-export default Profile;
+export default Profile

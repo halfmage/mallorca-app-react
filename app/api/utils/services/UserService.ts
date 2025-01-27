@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { cookies } from 'next/headers'
 import EntityService from '@/app/api/utils/services/EntityService'
 import MessageService from '@/app/api/utils/services/MessageService'
@@ -94,7 +95,7 @@ class UserService extends EntityService {
                 name: user_metadata?.display_name,
                 role: app_metadata?.role,
                 gender: user_metadata?.gender,
-                age: user_metadata?.age,
+                birthdate: user_metadata?.birthdate,
                 country: user_metadata?.country
             }))
     }
@@ -127,11 +128,15 @@ class UserService extends EntityService {
         }
 
         users.forEach((user) => {
-            if (user.age >= 18 && user.age <= 25) {
+            if (!user?.birthdate) {
+                return
+            }
+            const age = moment().diff(moment(user.birthdate), 'years')
+            if (age >= 18 && age <= 25) {
                 ageGroups['18-25']++
-            } else if (user.age > 25 && user.age <= 50) {
+            } else if (age > 25 && age <= 50) {
                 ageGroups['25-50']++
-            } else if (user.age > 50) {
+            } else if (age > 50) {
                 ageGroups['50+']++
             }
         })

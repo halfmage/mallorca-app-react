@@ -287,6 +287,14 @@
         "verified": "Verified",
         "rejected": "Rejected",
         "completed": "Completed"
+      },
+      "select": {
+        "placeholder": "Select..."
+      },
+      "gender": {
+        "other": "Other",
+        "male": "Male",
+        "female": "Female"
       }
     }
 }

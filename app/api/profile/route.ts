@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 
 export async function POST(request: NextRequest) {
-    const { displayName, avatarUrl } = await request.json()
+    const { displayName, avatarUrl, birthdate, gender, country } = await request.json()
     const cookieStore = await cookies()
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
@@ -15,7 +15,10 @@ export async function POST(request: NextRequest) {
     const { error } = await supabase.auth.updateUser({
         data: {
             display_name: displayName,
-            avatar_url: avatarUrl
+            avatar_url: avatarUrl,
+            birthdate,
+            gender,
+            country
         }
     })
 

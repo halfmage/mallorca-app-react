@@ -4,6 +4,7 @@ import React from 'react'
 import { useTranslation } from '@/app/i18n/client'
 import Link from 'next/link'
 import { Heart } from 'lucide-react'
+import Image from '@/components/shared/Image'
 import SaveButton from '@/components/shared/SaveButton'
 
 const ProviderCard = ({
@@ -19,9 +20,11 @@ const ProviderCard = ({
       {/* Provider Image */}
       <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
         {provider?.mainImage?.publicUrl ? (
-          <img
+          <Image
             src={provider.mainImage.publicUrl}
-            alt={provider.name} 
+            alt={provider.name}
+            width={716}
+            height={537}
             className="w-full h-full object-cover"
           />
         ) : (

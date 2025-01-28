@@ -5,6 +5,7 @@ import { isUUID } from '@/app/api/utils/helpers'
 import EntityService from '@/app/api/utils/services/EntityService'
 import UserService from '@/app/api/utils/services/UserService'
 import CategoryService from '@/app/api/utils/services/CategoryService'
+import FileUploadService, { DEFAULT_IMAGE_SOURCE } from '@/app/api/utils/services/FileUploadService'
 
 const BASIC_INFO_FRAGMENT = `
     id,
@@ -666,6 +667,48 @@ class ProviderService extends EntityService {
         }
 
         return true
+    }
+
+    public async moveProviderImagesToCloudinary(providers) {
+        const images = this.getExternalProvidersImages(providers)
+
+        const fileUploadService = new FileUploadService()
+        await Promise.all(
+            images.map(
+                async (image) => {
+                    const imageUrl = await fileUploadService.uploadByUrl(image.url)
+
+                    if (imageUrl) {
+                        return this.updateImageUrl(image.id, imageUrl)
+                    }
+                }
+            )
+        )
+    }
+
+    protected getExternalProvidersImages(providers) {
+        return providers
+            .flatMap(provider => (provider?.provider_images || [])
+                .filter(
+                    image => image?.image_url && image.image_url.startsWith('http') &&
+                        !image.image_url.startsWith(DEFAULT_IMAGE_SOURCE)
+                )
+                .map(
+                    image => ({
+                        id: image?.id,
+                        url: image?.image_url
+                    })
+                )
+            )
+    }
+
+    public updateImageUrl = async (imageId: number, imageUrl: string): Promise<boolean> => {
+        const { error } = await this.supabase
+            .from('provider_images')
+            .update({ image_url: imageUrl })
+            .eq('id', imageId)
+
+        return !error
     }
 
     public async getProvidersGroupedByCategories(language: string, limit: number = 4) {

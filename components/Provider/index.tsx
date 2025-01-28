@@ -1,9 +1,10 @@
 "use client"
 
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from '@/app/i18n/client'
 import Link from 'next/link'
 import Markdown from 'react-markdown'
+import Gallery from './Gallery'
 import SaveButton from '@/components/shared/SaveButton'
 import { Icon } from '@mdi/react'
 import { mdiPhone as IconCall } from '@mdi/js'
@@ -12,9 +13,10 @@ import { mdiWeb as IconWebsite } from '@mdi/js'
 import { mdiMapMarker as IconMap } from '@mdi/js'
 import { mdiHeart as IconSaved } from '@mdi/js'
 
+const EMPTY_ARRAY = []
+
 const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
-    const [activeImageIndex, setActiveImageIndex] = useState(0)
-    const providerImages = provider.provider_images || []
+    const providerImages = provider.provider_images || EMPTY_ARRAY
     const { t, i18n: { language } } = useTranslation()
     const texts = useMemo(
         () => provider?.provider_translations?.[0],
@@ -139,38 +141,8 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
                         <div>
                             {/* Image Gallery */}
                             <div className="mb-6">
-                                {providerImages.length > 0 ? (
-                                    <div>
-                                        {/* Main Image Display */}
-                                        <div className="relative aspect-w-16 aspect-h-9 mb-4">
-                                            <img
-                                                src={providerImages[activeImageIndex].publicUrl}
-                                                alt={`${provider.name} - ${activeImageIndex + 1}`}
-                                                className="object-cover w-full h-full rounded-lg"
-                                            />
-                                        </div>
-
-                                        {/* Thumbnail Navigation */}
-                                        {providerImages.length > 1 && (
-                                            <div className="flex gap-3 flex-wrap justify-center items-center" key="thumbnails">
-                                                {providerImages.map((image, index) => (
-                                                    <button
-                                                        key={image.id}
-                                                        onClick={() => setActiveImageIndex(index)}
-                                                        className={`flex-shrink-0 w-20 h-16 rounded-md overflow-hidden 
-                            ${index === activeImageIndex ? 'opacity-100' : 'opacity-50 hover:opacity-75'}`}
-                                                    >
-                                                        <img
-                                                            src={image.publicUrl}
-                                                            alt={`${provider.name} thumbnail ${index + 1}`}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                ) : (
+                                {providerImages.length > 0 ?
+                                    <Gallery providerName={provider?.name} images={providerImages}/> : (
                                     <div
                                         className="bg-gray-100 dark:bg-gray-800 aspect-w-16 aspect-h-9 rounded-lg flex items-center justify-center">
                                         <span className="text-gray-400">{t('providerDetail.noImages')}</span>

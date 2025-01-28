@@ -1,11 +1,11 @@
 import {
-    SORTING_ORDER_NEW, STATUS_PENDING, STATUS_ACTIVE
+    SORTING_ORDER_NEW, STATUS_PENDING, STATUS_ACTIVE, DEFAULT_IMAGE_SOURCE
 } from '@/app/api/utils/constants'
 import { isUUID } from '@/app/api/utils/helpers'
 import EntityService from '@/app/api/utils/services/EntityService'
 import UserService from '@/app/api/utils/services/UserService'
 import CategoryService from '@/app/api/utils/services/CategoryService'
-import FileUploadService, { DEFAULT_IMAGE_SOURCE } from '@/app/api/utils/services/FileUploadService'
+import FileUploadService from '@/app/api/utils/services/FileUploadService'
 
 const BASIC_INFO_FRAGMENT = `
     id,

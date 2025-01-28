@@ -7,8 +7,11 @@ import { Heart } from 'lucide-react'
 import Image from '@/components/shared/Image'
 import SaveButton from '@/components/shared/SaveButton'
 
+const DEFAULT_WIDTH = 358
+const DEFAULT_HEIGHT = 268
+
 const ProviderCard = ({
-  provider, showSaveButton, isSaved, onSaveChange
+  provider, showSaveButton, isSaved, onSaveChange, imageWidth = DEFAULT_WIDTH, imageHeight = DEFAULT_HEIGHT
 }) => {
   const { t, i18n: { language } } = useTranslation()
 
@@ -23,8 +26,8 @@ const ProviderCard = ({
           <Image
             src={provider.mainImage.publicUrl}
             alt={provider.name}
-            width={716}
-            height={537}
+            width={imageWidth}
+            height={imageHeight}
             className="w-full h-full object-cover"
           />
         ) : (

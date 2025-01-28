@@ -2,15 +2,18 @@
 
 import React from 'react'
 import { useTranslation } from '@/app/i18n/client'
+import Image from '@/components/shared/Image'
 
 const ProviderImage = ({ provider }) => {
     const { t } = useTranslation()
 
     return provider?.mainImage?.publicUrl ? (
-        <img
+        <Image
             src={provider.mainImage.publicUrl}
             alt={provider.name}
             className="h-16 w-16 object-cover rounded-full"
+            width={64}
+            height={64}
         />
     ) : (
         <div className="h-16 w-16 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded">

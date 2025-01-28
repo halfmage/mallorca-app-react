@@ -34,6 +34,8 @@ const CategoryRow = async ({category, providers, lng}) => {
                         <ProviderCard
                             key={provider.id}
                             provider={provider}
+                            imageWidth={285}
+                            imageHeight={214}
                         />
                     ))}
                 </div>

@@ -4,6 +4,7 @@ import React, { useMemo } from 'react'
 import moment from 'moment'
 import { useTranslation } from '@/app/i18n/client'
 import Link from 'next/link'
+import Image from '@/components/shared/Image'
 import Tab from '@/components/shared/Tabs/Tab'
 import StatsCard from './StatsCard'
 import countries from 'i18n-iso-countries'
@@ -41,10 +42,12 @@ const ProviderDashboard = ({
                 <div className="flex">
                     <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
                         {provider?.mainImage?.publicUrl ? (
-                            <img
+                            <Image
                                 src={provider.mainImage.publicUrl}
                                 alt={provider.name}
                                 className="w-full h-full object-cover"
+                                width={48}
+                                height={48}
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-gray-400">

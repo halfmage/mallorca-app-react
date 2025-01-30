@@ -68,6 +68,28 @@ class CategoryService extends EntityService {
         return data.map(this.mapCategory)
     }
 
+    public async getAllSubCategories(language: string) {
+        const query = this.supabase
+            .from('subcategories')
+            .select(`
+                id,
+                name,
+                slug,
+                subcategory_translations (
+                    name
+                )
+            `)
+            .eq('subcategory_translations.language', language)
+
+        const { data } = await query
+
+        if (!data) {
+            return []
+        }
+
+        return data.map(this.mapCategory)
+    }
+
     public mapCategory(category) {
         return category ?
             {

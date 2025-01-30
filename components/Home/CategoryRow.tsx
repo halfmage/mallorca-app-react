@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from '@/app/i18n'
-import ProviderCard from './ProviderCard'
+import ProviderCard from '@/components/ProviderCard'
 import Link from "next/link"
 
 import { HandPlatter, BedDouble, Tickets, ShoppingBag } from 'lucide-react';

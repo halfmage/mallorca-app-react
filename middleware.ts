@@ -8,9 +8,16 @@ acceptLanguage.languages(languages)
 
 export async function middleware(request: NextRequest) {
     let lng
-    if (request.cookies.has(cookieName)) lng = acceptLanguage.get(request.cookies.get(cookieName).value)
-    if (!lng) lng = acceptLanguage.get(request.headers.get('Accept-Language'))
-    if (!lng) lng = fallbackLng
+
+    if (request.cookies.has(cookieName)) {
+        lng = acceptLanguage.get(request.cookies.get(cookieName).value)
+    }
+    if (!lng) {
+        lng = acceptLanguage.get(request.headers.get('Accept-Language'))
+    }
+    if (!lng) {
+        lng = fallbackLng
+    }
 
     // Redirect if lng in path is not supported
     if (

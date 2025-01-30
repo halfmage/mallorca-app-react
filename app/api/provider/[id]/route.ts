@@ -9,7 +9,7 @@ export async function PATCH(request: NextRequest, { params }) {
     const formData = await request.formData()
     const name = formData.get('name')
     const mainCategoryId = formData.get('mainCategoryId')
-    const subCategoryId = formData.get('subCategoryId')
+    const subCategoryIds = (formData.get('subCategoryIds') || '').split(',').map(Number)
     const images = formData.getAll('images')
     const cookieStore = await cookies()
     const supabase = await createClient(cookieStore)
@@ -22,7 +22,7 @@ export async function PATCH(request: NextRequest, { params }) {
     if (!isAdmin(user) && !isProviderAdmin) {
         return Response.json(null, { status: 403 })
     }
-    const data = await providerService.update(id, name, mainCategoryId, subCategoryId, images)
+    const data = await providerService.update(id, name, mainCategoryId, subCategoryIds, images)
 
     return Response.json({ data })
 }

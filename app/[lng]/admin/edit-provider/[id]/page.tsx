@@ -19,8 +19,9 @@ export default async function EditProviderPage({ params }) {
     const provider = await providerService.get(id)
     const categoryService = new CategoryService(supabase)
     const mainCategories = await categoryService.getMainCategories(lng)
+    const subCategories = await categoryService.getAllSubCategories(lng)
 
     return (
-        <EditProvider provider={provider} mainCategories={mainCategories} />
+        <EditProvider provider={provider} mainCategories={mainCategories} subCategories={subCategories} />
     )
 }

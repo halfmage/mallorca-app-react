@@ -40,7 +40,7 @@ const Profile = ({ userData }) => {
         [ language ]
     )
 
-    const onSubmit = useCallback(
+    const onSubmit = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
         handleSubmit(async ({ displayName, avatarUrl, country, birthdate, gender }) => {
             try {
                 setUpdating(true)

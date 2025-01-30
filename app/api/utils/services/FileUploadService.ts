@@ -21,4 +21,20 @@ export default class FileUploadService {
 
         return uploadResult?.secure_url || null
     }
+
+    public async upload(file: File) {
+        const arrayBuffer = await file.arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer)
+        const uploadResult = await new Promise(
+            (resolve) => {
+                cloudinary.uploader
+                    .upload_stream(
+                        (error, uploadResult) => resolve(uploadResult)
+                    )
+                    .end(buffer)
+            }
+        )
+
+        return uploadResult?.secure_url || null
+    }
 }

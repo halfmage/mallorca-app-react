@@ -585,16 +585,42 @@ class ProviderService extends EntityService {
     }
 
     public update = async (
-        id: string, name: string, mainCategoryId: string, subCategoryId: string|number|undefined|null, images: Array<File>
+        id: string, name: string, mainCategoryId: string, subCategoryIds: Array<number>, images: Array<File>
     ): Promise<boolean> => {
-        const { error: providerError } = await this.supabase
+        const { data, error: providerError } = await this.supabase
             .from('providers')
             .update({
                 name,
-                maincategory_id: mainCategoryId,
-                ...(subCategoryId && { subcategory_id: subCategoryId }),
+                maincategory_id: mainCategoryId
             })
             .eq('id', id)
+            .select('provider_subcategories(subcategory_id)')
+
+        const currentSubcategoryIds = (data?.[0]?.provider_subcategories || []).map(
+            item => item?.subcategory_id
+        )
+        const itemsToRemove = currentSubcategoryIds.filter(id => !subCategoryIds.includes(id));
+        const itemsToAdd = subCategoryIds.filter(id => !currentSubcategoryIds.includes(id));
+
+        if (itemsToRemove.length) {
+            await this.supabase
+                .from('provider_subcategories')
+                .delete()
+                .in('subcategory_id', itemsToRemove)
+        }
+
+        if (itemsToAdd.length) {
+            await this.supabase
+                .from('provider_subcategories')
+                .insert(
+                    itemsToAdd.map(
+                        subCategoryId => ({
+                            provider_id: id,
+                            subcategory_id: subCategoryId
+                        })
+                    )
+                )
+        }
 
         if (providerError) {
             return false
@@ -602,23 +628,22 @@ class ProviderService extends EntityService {
 
         const uploadedImages = []
 
-        for (let i = 0; i < images.length; i++) {
-            const file = images[i]
-            const fileName = `${Date.now()}-${file.name}`
+        if (images.length) {
+            const fileUploadService = new FileUploadService()
+            for (let i = 0; i < images.length; i++) {
+                try {
+                    const file = images[i]
+                    const url = await fileUploadService.upload(file)
 
-            const { data, error: uploadError } = await this.supabase.storage
-                .from('provider-images')
-                .upload(fileName, file)
-
-            if (uploadError) {
-                console.error('Error uploading image:', uploadError.message)
-                continue
+                    uploadedImages.push({
+                        provider_id: id,
+                        image_url: url
+                    })
+                } catch (uploadError) {
+                    console.error('Error uploading image:', uploadError.message)
+                    continue
+                }
             }
-
-            uploadedImages.push({
-                provider_id: id,
-                image_url: data.path
-            })
         }
 
         await this.supabase

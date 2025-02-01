@@ -10,7 +10,7 @@ const CategoryRow = async ({category, providers, lng}) => {
 
     return (
         <div className="flex flex-col gap-3 py-6">
-            <div className="flex flex-row items-center justify-between">
+            <div className="flex items-center justify-between">
                 <h1 className="h4 flex items-center gap-2">
                     {
                         category.slug === 'hotel' ? <BedDouble className='text-primary' size={32} strokeWidth={1.5} /> :
@@ -22,14 +22,14 @@ const CategoryRow = async ({category, providers, lng}) => {
                 </h1>
                 <Link
                     href={`/${lng}/category/${category.slug || category.id}`}
-                    className="button-outline"
+                    className="underline text-gray-500 dark:text-gray-400"
                 >
                     {t('home.showAll')}
                 </Link>
             </div>
 
             {providers.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+                <div className="flex overflow-x-auto md:grid md:grid-cols-3 lg:grid-cols-5 gap-5 pb-4 md:pb-0 *:max-w-[250px] *:md:max-w-none *:shrink-0">
                     {providers.map((provider) => (
                         <ProviderCard
                             key={provider.id}

@@ -7,7 +7,7 @@ const Home = async ({ categories, lng }) => {
 
   return (
     <>
-      <div className="h1 text-center p-12">
+      <div className="h1 py-6 md:py-12">
         {t('home.title')}
       </div>
       <div className='flex flex-col'>

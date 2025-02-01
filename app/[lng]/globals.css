@@ -8,25 +8,25 @@
     /* Main page title or hero heading - Use for the most important heading on a page
      * Examples: Landing page hero, Main article title, Welcome screen */
     .h1 {
-        @apply text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-5xl;
+        @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-100;
     }
 
     /* Section titles - Use for major sections within a page
      * Examples: Feature sections, Main content areas, Form sections */
     .h2 {
-        @apply text-3xl font-semibold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl;
+        @apply text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight text-gray-900 dark:text-gray-100;
     }
 
     /* Subsection headings - Use for content divisions within major sections
      * Examples: Card titles, Group headings, Sidebar sections */
     .h3 {
-        @apply text-2xl font-semibold text-gray-900 dark:text-gray-100 sm:text-3xl;
+        @apply text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 dark:text-gray-100;
     }
 
     /* Minor headings - Use for smaller content blocks or UI elements
      * Examples: Widget titles, List headings, Modal titles */
     .h4 {
-        @apply text-xl font-semibold text-gray-900 dark:text-gray-100 sm:text-2xl;
+        @apply text-lg md:text-xl lg:text-2xl font-semibold text-gray-900 dark:text-gray-100;
     }
 
     /* Standard body text - Use for main content and general paragraphs

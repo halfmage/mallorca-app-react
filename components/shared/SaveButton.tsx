@@ -2,6 +2,7 @@
 
 import React, {useCallback, useState} from 'react'
 import { useTranslation } from '@/app/i18n/client'
+import { Heart, HeartCrack, LoaderCircle } from 'lucide-react'
 
 
 const SaveButton = ({ provider, isSaved: isSavedInitially, onClick }) => {
@@ -38,17 +39,14 @@ const SaveButton = ({ provider, isSaved: isSavedInitially, onClick }) => {
         <button
             onClick={handleSaveToggle}
             disabled={savingStatus === 'loading'}
-            className={`${
-                isSaved
-                    ? 'bg-red-500 hover:bg-red-600'
-                    : 'bg-blue-500 hover:bg-blue-600'
-            } text-white px-4 py-2 rounded transition-colors`}
         >
-            {savingStatus === 'loading'
-                ? t('common.loading')
-                : isSaved
-                    ? t('providerDetail.saveButton.remove')
-                    : t('providerDetail.saveButton.save')}
+            {savingStatus === 'loading' ? (
+                <LoaderCircle className="size-6 animate-spin" />
+            ) : isSaved ? (
+                <HeartCrack className="size-6" />
+            ) : (
+                <Heart className="size-6" />
+            )}
         </button>
     )
 }

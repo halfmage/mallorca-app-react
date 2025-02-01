@@ -42,9 +42,8 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }) => {
     <header className="bg-white dark:bg-gray-900 shadow-sm relative z-50">
       <div className="container">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
           <Link href={`/${language}`} className="text-xl font-bold" onClick={closeMenu}>
-            {t('header.title')}
+            <img src="/logo.svg" alt={t('header.title')} className="h-10" />
           </Link>
 
           {/* Hamburger Menu Button (Mobile) */}

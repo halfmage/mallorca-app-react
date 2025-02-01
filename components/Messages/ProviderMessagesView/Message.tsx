@@ -1,15 +1,13 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import moment from 'moment'
+import Markdown from 'react-markdown'
 import { useTranslation } from '@/app/i18n/client'
+import Image from '@/components/shared/Image'
 
 const Message = ({ message }) => {
     const { t } = useTranslation()
-    const textHtml = useMemo(
-        () => ({ __html: message.text }),
-        [ message.text ]
-    )
     const readPercent = Math.round(100/(message.receivedCount || 1) * (message.viewedCount || 0))
 
     return (
@@ -22,8 +20,17 @@ const Message = ({ message }) => {
                     {moment(message.created_at).format('LLL')}
                 </span>
             </div>
-            {message.publicUrl && <img src={message.publicUrl} alt={message.title} />}
-            <div dangerouslySetInnerHTML={textHtml}/>
+            {message.publicUrl &&
+              <Image
+                src={message.publicUrl}
+                alt={message.title}
+                width={200}
+                height={120}
+              />
+            }
+            <Markdown>
+                {message.text}
+            </Markdown>
             <div className="flex flex-row gap-3">
                 <div className="flex flex-row gap-1">
                     <span>

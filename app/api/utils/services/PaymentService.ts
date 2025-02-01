@@ -114,10 +114,18 @@ export default class PaymentService extends EntityService {
                 subscription: paymentId, client_reference_id: claimId, customer
             } = await this.stripe.checkout.sessions.retrieve(sessionId)
 
+            const { data } = await this.supabase
+                .from('business_claims')
+                .select('provider_id (id, slug)')
+                .eq('id', claimId)
+                .limit(1)
+                .single()
+
             return {
                 paymentId,
                 claimId,
-                customer
+                customer,
+                provider: data?.provider_id
             }
         } catch (err) {
             console.log('err = ', err)

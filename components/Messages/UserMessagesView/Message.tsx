@@ -1,15 +1,13 @@
 'use client'
 
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import Markdown from 'react-markdown'
 import moment from 'moment'
+import Image from '@/components/shared/Image'
 
 const Message = ({ message }) => {
     const [ isRead, setIsRead ] = useState(false)
-    const textHtml = useMemo(
-        () => ({ __html: message?.message?.text }),
-        [ message?.message?.text ]
-    )
     const markAsRead = useCallback(
         async (value) => {
             if (value) {
@@ -39,8 +37,17 @@ const Message = ({ message }) => {
                     {message?.message?.title}
                 </h2>
             </div>
-            {message?.message?.publicUrl && <img src={message?.message?.publicUrl} alt={message?.message?.title}/>}
-            <div dangerouslySetInnerHTML={textHtml} className={`${message?.read ? '' : 'font-bold'}`}/>
+            {message?.message?.publicUrl &&
+              <Image
+                src={message?.message?.publicUrl}
+                alt={message?.message?.title}
+                width={500}
+                height={300}
+              />
+            }
+            <Markdown className={`${message?.read ? '' : 'font-bold'}`}>
+                {message?.message?.text}
+            </Markdown>
             <div>
                 {moment(message.created_at).format('LLL')}
             </div>

@@ -14,6 +14,6 @@ export default async function ProfilePage({ params }) {
     }
 
     return (
-        <Profile userData={user?.user_metadata} />
+        <Profile userData={user?.user_metadata} role={user?.app_metadata?.role} />
     );
 };

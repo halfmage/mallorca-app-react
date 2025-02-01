@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
+import FileUploadService from '@/app/api/utils/services/FileUploadService'
 
 export async function POST(request: NextRequest) {
     const formData = await request.formData()
@@ -12,33 +13,24 @@ export async function POST(request: NextRequest) {
         return Response.json(null, { status: 403 })
     }
 
-    const fileExt = image.name.split('.').pop()
-    const filePath = `${user.id}-${Math.random()}.${fileExt}`
-
-    // Upload the file to Supabase storage
-    const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, image)
-
-    if (uploadError) {
+    const fileUploadService = new FileUploadService()
+    let imageUrl
+    try {
+        imageUrl = await fileUploadService.upload(image)
+    } catch {
         return Response.json(null, { status: 400 })
     }
 
-    // Get the public URL
-    const { data: publicUrlData } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath)
-
     // Update the user metadata
     const { error: updateError } = await supabase.auth.updateUser({
-        data: { avatar_url: publicUrlData.publicUrl }
+        data: { avatar_url: imageUrl }
     })
 
     if (updateError) {
         return Response.json(null, { status: 400 })
     }
 
-    return Response.json({ data: publicUrlData.publicUrl })
+    return Response.json({ data: imageUrl })
 }
 
 export async function DELETE() {
@@ -52,7 +44,7 @@ export async function DELETE() {
     const filePath = user.user_metadata.avatar_url.split('/').pop()
 
     // Remove the file from storage if it exists
-    if (filePath) {
+    if (filePath && !filePath.startsWith('http')) {
         const { error: removeError } = await supabase.storage
             .from('avatars')
             .remove([filePath])

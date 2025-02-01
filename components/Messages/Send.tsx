@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import Link from 'next/link'
 
-
 const Send = ({ savedCount, limit, latestEmailDate, isBlocked, providerId }) => {
     const [ savingStatus, setSavingStatus ] = useState('idle')
     const { push } = useRouter()
@@ -64,49 +63,57 @@ const Send = ({ savedCount, limit, latestEmailDate, isBlocked, providerId }) => 
     )
 
     return (
-        <div className="max-w-4xl mx-auto p-4">
-            <Link href={`/${language}/messages/${providerId}`}>
-                {t('common.back')}
-            </Link>
+        <div className="max-w-2xl mx-auto p-4">
             <div className="border-2 border-gray-300 p-4">
                 <form onSubmit={onSubmit}>
                     <h1 className="text-3xl font-bold mb-4">{t('messages.form.title')}</h1>
                     {timeLeft &&
-                      <div className="bg-gray-200 px-5 py-5 mb-6">
+                      <div className="bg-white dark:bg-gray-900 rounded-lg shadow px-5 py-5 mb-6">
                             <div>
                                 {t('messages.form.blockedMessage')}
                             </div>
                             <span>{timeLeft}</span>
                         </div>
                     }
-                    <label className="w-full bg-gray-200 px-5 py-5 mb-6 text-center block cursor-pointer">
-                        <input
-                            type="file"
-                            accept="image/*"
-                            {...register('image', {required: false})}
-                            className="hidden"
-                        />
-                        {t('messages.form.addImageButton')}
-                    </label>
+                    <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6 my-2 text-center">
+                        <label className="p-2 my-2 text-center border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white cursor-pointer">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                {...register('image', {required: false})}
+                                className="hidden"
+                            />
+                            {t('messages.form.addImageButton')}
+                        </label>
+                    </div>
 
                     <div>
                         <div>
-                            <input {...register('title', {required: true})} className="px-3 py-2 border rounded"
+                            <input {...register('title', {required: true})}
+                                   className="w-full p-2 my-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                                    type="text"
                                    placeholder={t('messages.form.messageTitle.placeholder')}/>
                         </div>
                         <div>
-                        <textarea {...register('text', {required: true})} className="px-3 py-2 border rounded"
+                        <textarea {...register('text', {required: true})}
+                                  className="w-full p-2 my-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                                   placeholder={t('messages.form.messageText.placeholder')}></textarea>
                         </div>
                         <p dangerouslySetInnerHTML={{ __html: t('messages.form.infoText', { count: savedCount, limit })}} />
                     </div>
                     <input
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
+                        className="w-full my-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
                         disabled={savingStatus === 'loading' || !savedCount}
                         type="submit"
                         value={t('messages.form.sendButton')}
                     />
+                    <Link href={`/${language}/messages/${providerId}`}>
+                        <button
+                            className="w-full my-2 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
+                        >
+                            {t('common.back')}
+                        </button>
+                    </Link>
                 </form>
             </div>
         </div>

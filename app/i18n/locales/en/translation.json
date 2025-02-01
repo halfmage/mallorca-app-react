@@ -255,6 +255,15 @@
         "submitButton": "Send claim request"
       }
     },
+    "paymentSuccess":  {
+      "title": "Payment Successful",
+      "subtitle": "You now can take the advantages of our MallorcaXclusive Provider Access",
+      "message": "The easiest and fastest solution to start in our advertising network to be found immediately.",
+      "line1": "Get analytical insights of your business",
+      "line2": "Send bulk messages to your fans",
+      "line3": "Edit and update your business data",
+      "button": "Provider detail page"
+    },
     "common": {
       "loading": "Loading...",
       "updating": "Updating...",

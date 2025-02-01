@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 import ProviderService from '@/app/api/utils/services/ProviderService'
 import MessageService from '@/app/api/utils/services/MessageService'
+import FileUploadService from '@/app/api/utils/services/FileUploadService'
 
 export async function POST(request: NextRequest) {
     const formData = await request.formData()
@@ -24,24 +25,15 @@ export async function POST(request: NextRequest) {
         return Response.json(null, { status: 400 })
     }
 
-    let filePath = ''
+    let imageUrl = ''
 
     if (image) {
-        const fileExt = image.name.split('.').pop()
-        filePath = `${provider.id}-${Math.random()}.${fileExt}`
-
-        // Upload the file to Supabase storage
-        const { error: uploadError } = await supabase.storage
-            .from('message-images')
-            .upload(filePath, image)
-
-        if (uploadError) {
-            return Response.json(null, { status: 400 })
-        }
+        const fileUploadService = new FileUploadService()
+        imageUrl = await fileUploadService.upload(image)
     }
 
     const messageService = new MessageService(supabase)
-    const data = await messageService.send(provider.id, user.id, title, text, filePath)
+    const data = await messageService.send(provider.id, user.id, title, text, imageUrl)
 
     return Response.json({ data })
 }

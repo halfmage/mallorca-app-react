@@ -5,8 +5,10 @@ import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import countries from 'i18n-iso-countries'
 import { useRouter } from 'next/navigation'
+import { ROLE_USER } from '@/app/api/utils/constants'
+import Image from '@/components/shared/Image'
 
-const Profile = ({ userData }) => {
+const Profile = ({ userData, role }) => {
     const { push, refresh } = useRouter()
     const { register, handleSubmit } = useForm({
         defaultValues: {
@@ -23,10 +25,6 @@ const Profile = ({ userData }) => {
     const [avatarUrl, setAvatarUrl] = useState(userData?.avatar_url || '')
     const [updating, setUpdating] = useState(false)
     const [uploading, setUploading] = useState(false)
-    const userType = useMemo(
-        () => userData?.user_type || '',
-        [ userData ]
-    )
     const countryOptions = useMemo(
         () => {
             const options = countries.getNames(language, { select: 'official' })
@@ -133,7 +131,7 @@ const Profile = ({ userData }) => {
 
             <div className="mb-4">
                 <p className="text-sm text-gray-600">
-                    {t('profile.userType')}: <span className="font-semibold capitalize">{userType || 'user'}</span>
+                    {t('profile.userType')}: <span className="font-semibold capitalize">{role || ROLE_USER}</span>
                 </p>
             </div>
 
@@ -142,11 +140,14 @@ const Profile = ({ userData }) => {
                 <div className="flex items-center space-x-4">
                     <div className="relative">
                         {avatarUrl ? (
-                            <img
-                                src={avatarUrl}
-                                alt="Profile"
-                                className="w-24 h-24 rounded-full object-cover"
-                            />
+                            <div className="w-24 h-24 rounded-full object-cover overflow-hidden">
+                                <Image
+                                    src={avatarUrl}
+                                    alt="Profile"
+                                    width={96}
+                                    height={96}
+                                />
+                            </div>
                         ) : (
                             <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
                                 <span className="text-gray-500 text-xl">

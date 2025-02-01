@@ -196,6 +196,10 @@ class MessageService extends EntityService {
     }
 
     private getImagePublicUrl = async (imageUrl) => {
+        if (imageUrl && imageUrl.startsWith('http')) {
+            return imageUrl
+        }
+
         const { data: publicUrlData } = await this.supabase.storage
             .from('message-images')
             .getPublicUrl(imageUrl)

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from './LanguageSwitcher'
 
 import { CircleUserRound, Heart, Inbox, MessagesSquare, LayoutDashboard, Settings } from 'lucide-react';
-
+import ProviderSearch from '@/components/ProviderSearch'
 
 const Header = ({ user, isAdmin, newMessagesCount, hasProviders }) => {
   const { t, i18n: { language } } = useTranslation()
@@ -68,6 +68,8 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }) => {
               )}
             </svg>
           </button>
+
+          <ProviderSearch />
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1 text-xs *:opacity-70 *:p-1.5 *:px-2.5 *:rounded-lg *:flex *:flex-col *:items-center">

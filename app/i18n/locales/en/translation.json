@@ -11,6 +11,10 @@
       "userRole": {
         "admin": "Admin",
         "member": "Member"
+      },
+      "providerSearch": {
+        "placeholder": "Search restaurants, cuisines, etc.",
+        "noOptions": "No results found"
       }
     },
     "home": {

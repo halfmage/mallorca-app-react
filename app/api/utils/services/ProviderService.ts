@@ -1,5 +1,10 @@
 import {
-    SORTING_ORDER_NEW, STATUS_PENDING, STATUS_ACTIVE, DEFAULT_IMAGE_SOURCE
+    SORTING_ORDER_NEW,
+    STATUS_PENDING,
+    STATUS_ACTIVE,
+    DEFAULT_IMAGE_SOURCE,
+    SEARCH_TYPE_SUBCATEGORY,
+    SEARCH_TYPE_PROVIDER
 } from '@/app/api/utils/constants'
 import { isUUID } from '@/app/api/utils/helpers'
 import EntityService from '@/app/api/utils/services/EntityService'
@@ -804,6 +809,76 @@ class ProviderService extends EntityService {
             ])
 
         return !error
+    }
+
+    public async search(keyword: string, language: string) {
+        const providers = await this.searchProvidersByName(keyword, language)
+        const subcategories = await this.searchSubcategoriesByName(keyword, language)
+
+        return [
+            {
+                options: subcategories,
+                type: SEARCH_TYPE_SUBCATEGORY
+            },
+            {
+                options: providers,
+                type: SEARCH_TYPE_PROVIDER
+            }
+        ]
+    }
+
+    private async searchProvidersByName(keyword: string, language: string) {
+        try {
+            const { data } = await this.supabase
+                .from('providers')
+                .select(`
+                    id,
+                    slug,
+                    name,
+                    maincategories (
+                        name,
+                        maincategory_translations (
+                            name
+                        )
+                    ),
+                    ${SUBCATEGORIES_FRAGMENT},
+                    ${IMAGES_FRAGMENT}
+                `)
+                .ilike('name', `%${keyword}%`)
+                .eq('maincategories.maincategory_translations.language', language)
+                .eq('provider_subcategories.subcategories.subcategory_translations.language', language)
+
+            return await Promise.all(
+                data.map(provider => this.processProviderImages(provider))
+            )
+        } catch {
+            return []
+        }
+    }
+
+    private async searchSubcategoriesByName(keyword: string, language: string) {
+        try {
+            const { data } = await this.supabase
+                .from('subcategories')
+                .select(`
+                    id,
+                    name,
+                    slug,
+                    subcategory_translations (
+                        name
+                    ),
+                    maincategories (
+                        id,
+                        slug
+                    )
+                `)
+                .eq('subcategory_translations.language', language)
+                .ilike('name', `%${keyword}%`)
+
+            return data
+        } catch {
+            return []
+        }
     }
 
     private getImageWithUrl = async (image) => {

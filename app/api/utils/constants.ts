@@ -10,3 +10,6 @@ export const ROLE_USER = 'user'
 export const ROLE_PROVIDER = 'provider'
 export const ROLE_ADMIN = 'admin'
 export const DEFAULT_IMAGE_SOURCE = 'https://res.cloudinary.com'
+
+export const SEARCH_TYPE_PROVIDER = 'provider'
+export const SEARCH_TYPE_SUBCATEGORY = 'subcategory'

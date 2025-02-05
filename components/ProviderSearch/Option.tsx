@@ -6,8 +6,7 @@ import { SEARCH_TYPE_PROVIDER }  from '@/app/api/utils/constants'
 
 const Option = (props) => {
     const { data: { label, data: { type: optionType, ...item } } } = props
-    console.log('props = ', props)
-    console.log('item = ', item)
+
     return (
         <components.Option {...props}>
             {optionType === SEARCH_TYPE_PROVIDER ?

@@ -6,8 +6,12 @@ import Category from '@/components/Category'
 import ProviderService from '@/app/api/utils/services/ProviderService'
 import CategoryService from '@/app/api/utils/services/CategoryService'
 
-export default async function CategoryPage({ params }) {
+export default async function CategoryPage({ params, searchParams }) {
   const { slug, lng } = await params
+  const { subcategories: selectedSubcategories } = await searchParams
+  const selectedSubcategoriesSlugs = selectedSubcategories ?
+      selectedSubcategories.split(',').filter(Boolean) :
+      []
   const cookieStore = await cookies()
   const supabase = await createClient(cookieStore)
   const { data: { user } } = await supabase.auth.getUser()
@@ -18,10 +22,22 @@ export default async function CategoryPage({ params }) {
   if (!category) {
       return redirect('/')
   }
-  const providers = await providerService.getProvidersByCategory(category.id, lng, user?.id)
+
+  const providers = await providerService.getProvidersByCategory(
+      category.id,
+      lng,
+      user?.id,
+      selectedSubcategoriesSlugs
+  )
   const subCategories = await categoryService.getSubCategories(category.id, lng)
 
   return (
-    <Category providers={providers} category={category} subCategories={subCategories} showSaveButton={!!user?.id} />
+    <Category
+        providers={providers}
+        category={category}
+        subCategories={subCategories}
+        showSaveButton={!!user?.id}
+        selectedSubcategories={selectedSubcategoriesSlugs}
+    />
   );
 };

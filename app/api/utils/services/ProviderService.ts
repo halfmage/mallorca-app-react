@@ -31,6 +31,7 @@ const SUBCATEGORIES_FRAGMENT = `
     provider_subcategories (
         subcategories (
             id,
+            slug,
             name,
             subcategory_translations (
                 name
@@ -429,8 +430,9 @@ class ProviderService extends EntityService {
         // As we still need to show all subcategories for provider and not only the selected ones we are filtering them here
         if (subCategories.length) {
             items = items.filter(provider => provider?.provider_subcategories?.some(
-                providerSubcategory => subCategories.includes(providerSubcategory?.subcategories?.id))
-            )
+                providerSubcategory => subCategories.includes(providerSubcategory?.subcategories?.id) ||
+                    subCategories.includes(providerSubcategory?.subcategories?.slug)
+            ))
         }
 
         const providers = await Promise.all(
@@ -812,8 +814,19 @@ class ProviderService extends EntityService {
     }
 
     public async search(keyword: string, language: string) {
-        const providers = await this.searchProvidersByName(keyword, language)
         const subcategories = await this.searchSubcategoriesByName(keyword, language)
+        const providerIds = subcategories.reduce(
+            (acc, subcategory) => (
+                acc.push(
+                ...(subcategory?.provider_subcategories || [])?.map(
+                    ({ provider_id }) => provider_id)
+                ),
+                acc
+            ),
+            []
+        )
+
+        const providers = await this.searchProvidersByName(keyword, language, [...(new Set(providerIds))])
 
         return [
             {
@@ -827,7 +840,7 @@ class ProviderService extends EntityService {
         ]
     }
 
-    private async searchProvidersByName(keyword: string, language: string) {
+    private async searchProvidersByName(keyword: string, language: string, providerIds: string[] = []) {
         try {
             const { data } = await this.supabase
                 .from('providers')
@@ -844,7 +857,7 @@ class ProviderService extends EntityService {
                     ${SUBCATEGORIES_FRAGMENT},
                     ${IMAGES_FRAGMENT}
                 `)
-                .ilike('name', `%${keyword}%`)
+                .or(`id.in.(${providerIds.join(',')}),name.ilike.%${keyword}%`)
                 .eq('maincategories.maincategory_translations.language', language)
                 .eq('provider_subcategories.subcategories.subcategory_translations.language', language)
 
@@ -870,6 +883,9 @@ class ProviderService extends EntityService {
                     maincategories (
                         id,
                         slug
+                    ),
+                    provider_subcategories (
+                        provider_id
                     )
                 `)
                 .eq('subcategory_translations.language', language)

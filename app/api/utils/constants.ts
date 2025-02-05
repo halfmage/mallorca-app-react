@@ -13,3 +13,6 @@ export const DEFAULT_IMAGE_SOURCE = 'https://res.cloudinary.com'
 
 export const SEARCH_TYPE_PROVIDER = 'provider'
 export const SEARCH_TYPE_SUBCATEGORY = 'subcategory'
+export const CATEGORY_HOTEL_SLUG = 'hotel'
+export const CATEGORY_LEISURE_SLUG = 'leisure'
+export const CATEGORY_SHOPPING_SLUG = 'shopping'

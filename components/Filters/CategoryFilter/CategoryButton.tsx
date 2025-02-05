@@ -4,8 +4,8 @@ import React, { useCallback } from 'react'
 
 const CategoryButton = ({ category, isSelected, onClick }) => {
     const handleClick = useCallback(
-        () => onClick(category.id),
-        [ category.id, onClick ]
+        () => onClick(category.slug || category.id),
+        [ category.id, category.slug, onClick ]
     )
 
     return (

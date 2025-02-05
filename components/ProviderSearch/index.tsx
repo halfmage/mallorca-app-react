@@ -15,12 +15,11 @@ const ProviderSearch = () => {
   const { t, i18n: { language } } = useTranslation()
   const handleSelect = useCallback(
     ({ value, data: { type, ...data } }) => {
-      console.log('value = ', value, data)
       if (value) {
         push(
             type === SEARCH_TYPE_PROVIDER ?
                 `/${language}/provider/${data?.slug || data?.id}` :
-                `/${language}/category/${data?.maincategories?.slug || data?.maincategories?.id}`
+                `/${language}/category/${data?.maincategories?.slug || data?.maincategories?.id}?subcategories=${data?.slug || data?.id}`
         )
       }
     },
@@ -36,7 +35,7 @@ const ProviderSearch = () => {
         cacheOptions
         loadOptions={loadOptions}
         onChange={handleSelect}
-        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors w-full"
+        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors w-full min-w-96"
         placeholder={t('header.providerSearch.placeholder')}
         noOptionsMessage={noOptionsMessage}
         components={{ Group, Option }}

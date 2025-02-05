@@ -1,9 +1,9 @@
 import React from 'react'
 import { useTranslation } from '@/app/i18n'
 import ProviderCard from '@/components/ProviderCard'
-import Link from "next/link"
+import Link from 'next/link'
+import CategoryIcon from '@/components/shared/CategoryIcon'
 
-import { HandPlatter, BedDouble, Tickets, ShoppingBag } from 'lucide-react';
 
 const CategoryRow = async ({category, providers, lng}) => {
     const { t } = await useTranslation(lng) // eslint-disable-line react-hooks/rules-of-hooks
@@ -12,12 +12,7 @@ const CategoryRow = async ({category, providers, lng}) => {
         <div className="flex flex-col gap-3 py-6">
             <div className="flex items-center justify-between">
                 <h1 className="h4 flex items-center gap-2">
-                    {
-                        category.slug === 'hotel' ? <BedDouble className='text-primary' size={32} strokeWidth={1.5} /> :
-                        category.slug === 'leisure' ? <Tickets className='text-primary' size={32} strokeWidth={1.5} /> :
-                        category.slug === 'shopping' ? <ShoppingBag className='text-primary' size={32} strokeWidth={1.5} /> :
-                        <HandPlatter className='text-primary' size={32} strokeWidth={1.5} />
-                    }
+                    <CategoryIcon slug={category.slug} />
                     {t('category.title', {category: category.name})}
                 </h1>
                 <Link

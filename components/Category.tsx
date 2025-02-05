@@ -8,10 +8,12 @@ import CategoryFilter from '@/components/Filters/CategoryFilter'
 import SortingControl from '@/components/Filters/SortingControl'
 import ProviderCard from '@/components/ProviderCard'
 
-const Category = ({ providers, category, subCategories, showSaveButton }) => {
+const Category = ({
+    providers, category, subCategories, showSaveButton, selectedSubcategories
+}) => {
     const [ savedProviders, setSavedProviders ] = useState(providers)
     const [ loading, setLoading ] = useState(false)
-    const [ selectedCategories, setSelectedCategories ] = useState([])
+    const [ selectedCategories, setSelectedCategories ] = useState(selectedSubcategories)
     const [ sort, setSort ] = useState('new')
     const { t, i18n: { language } } = useTranslation()
     const isFirstRender = useRef(true)

@@ -14,7 +14,6 @@ const EditProvider = ({
   const [loading, setLoading] = useState(false)
   const [provider, setProvider] = useState(initialProvider)
   const [saving, setSaving] = useState(false)
-  console.log('initialProvider = ', initialProvider)
   const { register, handleSubmit } = useForm({
     defaultValues: {
       name: provider?.name,

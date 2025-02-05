@@ -15,7 +15,7 @@ export async function GET(request: NextRequest, { params }) {
         id,
         searchParams.get('language'),
         user?.id,
-        (searchParams.get('subcategory') || '').split(',').filter(Boolean).map(Number),
+        (searchParams.get('subcategory') || '').split(',').filter(Boolean).map(String),
         searchParams.get('sort'),
         searchParams.get('limit')
     )

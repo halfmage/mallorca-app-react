@@ -28,7 +28,7 @@ const SortingControl = ({ value, options: passedOptions, onChange }: Props) => {
         <select
             onChange={handleCallback}
             value={value}
-            className="bg-transparent border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-blue-500"
+            className="bg-transparent border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-blue-500 w-full md:w-auto"
         >
             {options.map(
                 (option) => (

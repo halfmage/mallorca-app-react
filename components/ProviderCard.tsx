@@ -37,14 +37,8 @@ const ProviderCard = ({
           </div>
         )}
         {showSaveButton && (
-          <div className="absolute top-3 right-3">
-            <div className="bg-black/50 hover:bg-black/60 backdrop-blur-lg rounded-full size-12 flex items-center justify-center text-white">
-              <SaveButton
-                provider={provider}
-                isSaved={isSaved}
-                onClick={onSaveChange}
-              />
-            </div>
+          <div className='absolute top-3 right-3'>
+            <SaveButton provider={provider} isSaved={isSaved} onClick={onSaveChange}/>
           </div>
         )}
       </div>
@@ -70,7 +64,7 @@ const ProviderCard = ({
               )
           }
         </div>
-        <div className="text-sm text-gray-500 dark:text-gray-400">{provider.address}</div>
+        <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{provider.address}</div>
       </div>
     </Link>
   );

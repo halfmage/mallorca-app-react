@@ -3,44 +3,97 @@
 import React, { useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import AsyncSelect from 'react-select/async'
+import { SingleValue, ActionMeta } from 'react-select'
 import { useTranslation } from '@/app/i18n/client'
 import useProviderSearch from './useProviderSearch'
 import { SEARCH_TYPE_PROVIDER } from '@/app/api/utils/constants'
 import Group from './Group'
 import Option from './Option'
 
+interface OptionData {
+  label: string
+  value: string
+  data: {
+    type: string
+    slug?: string
+    id?: string
+    maincategories?: {
+      slug?: string
+      id?: string
+    }
+    [key: string]: any
+  }
+}
+
 const ProviderSearch = () => {
   const { push } = useRouter()
   const { loadOptions } = useProviderSearch()
-  const { t, i18n: { language } } = useTranslation()
+  const { t, i18n: { language } } = useTranslation(undefined, 'translation', {})
+  
   const handleSelect = useCallback(
-    ({ value, data: { type, ...data } }) => {
-      if (value) {
-        push(
-            type === SEARCH_TYPE_PROVIDER ?
-                `/${language}/provider/${data?.slug || data?.id}` :
-                `/${language}/category/${data?.maincategories?.slug || data?.maincategories?.id}?subcategories=${data?.slug || data?.id}`
-        )
+    (newValue: SingleValue<OptionData>, actionMeta: ActionMeta<OptionData>) => {
+      if (newValue?.value && newValue.data) {
+        const { type, ...data } = newValue.data
+        const baseUrl = `/${language}`
+        
+        const url = type === SEARCH_TYPE_PROVIDER
+          ? `${baseUrl}/provider/${data?.slug || data?.id}`
+          : `${baseUrl}/category/${data?.maincategories?.slug || data?.maincategories?.id}?subcategories=${data?.slug || data?.id}`
+        
+        push(url)
       }
     },
     [ push, language ]
   )
+  
   const noOptionsMessage = useCallback(
     () => t('header.providerSearch.noOptions'),
     [ t ]
   )
 
-  return <div className="flex items-center justify-end">
-    <AsyncSelect
+  return (
+    <AsyncSelect<OptionData, false>
         cacheOptions
         loadOptions={loadOptions}
         onChange={handleSelect}
-        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors w-full min-w-96"
         placeholder={t('header.providerSearch.placeholder')}
         noOptionsMessage={noOptionsMessage}
-        components={{ Group, Option }}
+        components={{ Group, Option, DropdownIndicator: null }}
+        classNames={{
+          container: () => 'w-full transition-all duration-300',
+          control: (state) => `!min-h-10 ${state.isFocused ? 'shadow-md' : ''} !border-gray-200 dark:!border-gray-800`,
+          menu: () => 'shadow-lg !rounded-lg !border !border-gray-200 dark:!border-gray-800 !mt-1 !z-50',
+          menuList: () => '!p-1',
+          input: () => '!text-base md:!text-sm',
+          placeholder: () => '!text-gray-500 dark:!text-gray-400',
+          option: (state) => `!text-base md:!text-sm !p-2 !rounded-md ${
+            state.isFocused 
+              ? '!bg-gray-50 dark:!bg-gray-800' 
+              : '!bg-transparent'
+          } hover:!bg-gray-50 dark:hover:!bg-gray-800 !text-gray-700 dark:!text-gray-200`,
+          noOptionsMessage: () => '!p-2 !text-gray-500 dark:!text-gray-400',
+        }}
+        styles={{
+          menu: (base) => ({
+            ...base,
+            width: '100%'
+          }),
+          menuList: (base) => ({
+            ...base,
+            maxHeight: '60vh',
+            '@media (min-width: 768px)': {
+              maxHeight: '40vh'
+            }
+          }),
+          option: (base) => ({
+            ...base,
+            backgroundColor: 'transparent',
+            cursor: 'pointer',
+            transition: 'all 200ms ease'
+          })
+        }}
     />
-  </div>
+  )
 }
 
 export default ProviderSearch

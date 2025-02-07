@@ -76,11 +76,11 @@ const Category = ({
 
     return (
         <div className="">
-            <h1 className="h1 text-center p-12">
+            <h1 className="h1 py-6">
                 {t('category.title', { category: category.name })}
             </h1>
 
-            <div className="flex justify-between mb-4">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-4">
                 <CategoryFilter value={selectedCategories} options={subCategories} onChange={handleCategorySelect} />
                 <SortingControl value={sort} onChange={setSort} />
             </div>
@@ -103,7 +103,7 @@ const Category = ({
                             </Link>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                             {savedProviders.map((provider) => (
                                 <ProviderCard
                                     provider={provider}

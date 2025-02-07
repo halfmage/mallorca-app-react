@@ -11,7 +11,42 @@ import { mdiPhone as IconCall } from '@mdi/js'
 import { mdiEmail as IconEmail } from '@mdi/js' 
 import { mdiWeb as IconWebsite } from '@mdi/js'
 import { mdiMapMarker as IconMap } from '@mdi/js'
-import { mdiHeart as IconSaved } from '@mdi/js'
+import { mdiOpenInNew as IconExternal } from '@mdi/js'
+
+interface ProviderTranslation {
+    advantages_list?: string;
+    tips_list?: string;
+    description?: string;
+}
+
+interface Subcategory {
+    id: number | string;
+    name: string;
+}
+
+interface ProviderImage {
+    url: string;
+    alt?: string;
+}
+
+interface ProviderProps {
+    provider: {
+        id?: number | string;
+        slug?: string;
+        name: string;
+        address?: string;
+        phone?: string;
+        mail?: string;
+        website?: string;
+        google_maps_url?: string;
+        maincategories?: { name: string };
+        subcategories?: Subcategory[];
+        provider_images?: ProviderImage[];
+        provider_translations?: ProviderTranslation[];
+    };
+    showSaveButton?: boolean;
+    isSaved?: boolean;
+}
 
 const EMPTY_ARRAY = []
 
@@ -24,139 +59,168 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
     )
 
     if (!provider) {
-        return <div className="">{t('providerDetail.error.fetchProvider')}</div>
+        return <div className="min-h-screen flex items-center justify-center">{t('providerDetail.error.fetchProvider')}</div>
     }
 
     return (
-        <div className="mt-6">
-            {provider ? (
-                <div className='max-w-screen-xl mx-auto'>
-                    <div className='grid md:grid-cols-2 gap-24'>
-                        <div>
-                            <h1 className="text-2xl md:text-4xl font-bold mb-4 tracking-tight">{provider.name}</h1>
-                            <div className="mb-4">
-                                <h2 className="flex items-center gap-2">
-                                    <span>
-                                        {provider?.maincategories?.name}
-                                    </span>
-                                    {provider?.subcategories?.length > 0 && provider?.subcategories.map(
-                                        (subcategory) => (
-                                            <span key={subcategory.id}>
-                                                {subcategory.name}
-                                            </span>
-                                        )
-                                    )}
-                                </h2>
-                            </div>
-                            {showSaveButton &&
-                                <SaveButton provider={provider} isSaved={isSavedInitially} />
-                            }
+        <div className="min-h-screen">
+            {/* Sticky Header */}
+            <div className="sticky top-0 z-10 bg-white dark:bg-gray-900">
+                <div className="max-w-screen-xl mx-auto px-4 md:px-6 lg:px-8 py-4">
+                    <div className="flex items-center justify-between">
+                        <h1 className="text-xl font-semibold text-gray-900 dark:text-white truncate">{provider.name}</h1>
+                        <div className="flex items-center gap-4">
+                            {showSaveButton && (
+                                <SaveButton 
+                                    provider={provider} 
+                                    isSaved={isSavedInitially}
+                                    onClick={() => {}} 
+                                />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                            <div className='flex gap-2 my-6'>
-                            {
-                                        provider?.phone &&
+            {/* Gallery Section */}
+            <div className="w-full">
+                <div className="max-w-screen-xl mx-auto">
+                    {providerImages.length > 0 ? (
+                        <Gallery providerName={provider?.name} images={providerImages}/>
+                    ) : (
+                        <div className="aspect-[16/9] md:aspect-[2/1] bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                            <span className="text-gray-400">{t('providerDetail.noImages')}</span>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="max-w-screen-xl mx-auto px-4 md:px-6 lg:px-8 py-8">
+                <div className="grid lg:grid-cols-3 gap-12">
+                    {/* Left Column - Main Content */}
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* Categories */}
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-sm font-medium">
+                                {provider?.maincategories?.name}
+                            </span>
+                            {provider?.subcategories?.map(
+                                (subcategory) => (
+                                    <span key={subcategory.id} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                                        {subcategory.name}
+                                    </span>
+                                )
+                            )}
+                        </div>
+
+                        {/* Info Boxes */}
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {texts?.advantages_list && (
+                                <div className="space-y-4">
+                                    <div className='flex items-center gap-2'>
+                                        <div className='w-1 h-6 bg-primary-500 rounded-full'></div>
+                                        <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>Advantages</h3>
+                                    </div>
+                                    <Markdown className="prose prose-sm dark:prose-invert prose-li:p-0 prose-li:leading-6 prose-ul:pl-6 prose-li:my-1.5 prose-ul:marker:text-primary-500">
+                                        {texts.advantages_list}
+                                    </Markdown>
+                                </div>
+                            )}
+                            {texts?.tips_list && (
+                                <div className="space-y-4">
+                                    <div className='flex items-center gap-2'>
+                                        <div className='w-1 h-6 bg-primary-500 rounded-full'></div>
+                                        <h3 className='text-lg font-semibold flex items-center gap-1'>
+                                            <span className='bg-primary-600 text-white px-2 py-0.5 rounded-md text-sm'>Xclusive</span>
+                                            <span className="text-gray-900 dark:text-white">Tips</span>
+                                        </h3>
+                                    </div>
+                                    <Markdown className="prose prose-sm dark:prose-invert prose-li:p-0 prose-li:leading-6 prose-ul:pl-6 prose-li:my-1.5 prose-ul:marker:text-primary-500">
+                                        {texts.tips_list}
+                                    </Markdown>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Description */}
+                        {texts?.description && (
+                            <div className="prose prose-base dark:prose-invert max-w-none">
+                                <h2 className="text-xl font-semibold mb-4">About this place</h2>
+                                <Markdown>{texts.description}</Markdown>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Right Column - Contact Info */}
+                    <div className="lg:col-span-1">
+                        <div className="sticky top-24 space-y-6">
+                            {/* Contact Card */}
+                            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                                <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Contact Information</h2>
+                                
+                                {/* Address */}
+                                {provider?.address && (
+                                    <div className="mb-6">
+                                        <p className="text-gray-700 dark:text-gray-300 text-sm flex items-start">
+                                            <Icon path={IconMap} size={1} className="mr-2 text-gray-400 shrink-0" />
+                                            {provider.address}
+                                        </p>
+                                    </div>
+                                )}
+
+                                {/* Contact Buttons */}
+                                <div className='flex flex-col gap-3'>
+                                    {provider?.phone && (
                                         <a
-                                            className="button-outline"
+                                            className="button-outline w-full justify-between hover:bg-primary-50 transition-colors"
                                             href={`tel:${provider.phone}`}
                                         >
                                             <Icon path={IconCall} size={.75} className='text-primary relative top-px shrink-0' />
                                             {t('providerDetail.sidebar.callButton')}
+                                            <Icon path={IconExternal} size={.65} className='text-gray-400 ml-1 relative top-px shrink-0' />
                                         </a>
-                                    }
-                                    {
-                                        provider?.mail &&
+                                    )}
+                                    {provider?.mail && (
                                         <a
-                                            className="button-outline"
+                                            className="button-outline w-full justify-between hover:bg-primary-50 transition-colors"
                                             href={`mailto:${provider.mail}`}
                                         >
                                             <Icon path={IconEmail} size={.75} className='text-primary relative top-px shrink-0' />
                                             {t('providerDetail.sidebar.sendEmailButton')}
+                                            <Icon path={IconExternal} size={.65} className='text-gray-400 ml-1 relative top-px shrink-0' />
                                         </a>
-                                    }
-                                    {provider?.website &&
+                                    )}
+                                    {provider?.website && (
                                         <a
-                                            className="button-outline"
-                                            href={
-                                                provider.website.includes('//') ?
-                                                    provider.website :
-                                                    `https://${provider.website}`
-                                            }
+                                            className="button-outline w-full justify-between hover:bg-primary-50 transition-colors"
+                                            href={provider.website.includes('//') ? provider.website : `https://${provider.website}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
                                         >
                                             <Icon path={IconWebsite} size={.75} className='text-primary relative top-px shrink-0' />
                                             {t('providerDetail.sidebar.websiteButton')}
+                                            <Icon path={IconExternal} size={.65} className='text-gray-400 ml-1 relative top-px shrink-0' />
                                         </a>
-                                    }
-                                    {provider?.google_maps_url &&
+                                    )}
+                                    {provider?.google_maps_url && (
                                         <a
-                                            className="button-outline"
-                                            href={
-                                                provider.google_maps_url.includes('//') ?
-                                                    provider.google_maps_url :
-                                                    `https://${provider.google_maps_url}`
-                                            }
+                                            className="button-outline w-full justify-between hover:bg-primary-50 transition-colors"
+                                            href={provider.google_maps_url.includes('//') ? provider.google_maps_url : `https://${provider.google_maps_url}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
                                         >
                                             <Icon path={IconMap} size={.75} className='text-primary relative top-px shrink-0' />
                                             {t('providerDetail.sidebar.directionsButton')}
+                                            <Icon path={IconExternal} size={.65} className='text-gray-400 ml-1 relative top-px shrink-0' />
                                         </a>
-                                    }
-                                    {(provider?.id || provider?.slug) &&
-                                        <Link
-                                            className="button-outline"
-                                            href={`/${language}/provider/${provider.slug || provider.id}/claim`}
-                                        >
-                                            {t('providerDetail.sidebar.claim')}
-                                        </Link>
-                                    }
-                            </div>
-
-                            <div className="md:col-span-8">
-                                <p className="text-gray-700 text-sm">
-                                    {provider?.address || ''}
-                                </p>
-                                <div className="grid md:grid-cols-12 my-6">
-                                    {texts?.advantages_list &&
-                                        <div className="md:col-span-6 rounded-l-lg p-3 border-2 border-gray-200">
-                                            <div className='pl-1 text-sm font-semibold'>Advantages:</div>
-                                            <Markdown className="prose prose-sm prose-li:p-0 prose-li:leading-5 prose-ul:pl-6 prose-li:my-1">
-                                                {texts.advantages_list}
-                                            </Markdown>
-                                        </div>
-                                    }
-                                    {texts?.tips_list &&
-                                        <div className="md:col-span-6 rounded-r-lg p-3 border-2 border-l-0 border-gray-200">
-                                            <div className='pl-1 text-sm font-semibold'><span className='bg-primary text-white px-1 rounded'>Xclusive</span> Tips:</div>
-                                            <Markdown className="prose prose-sm prose-li:p-0 prose-li:leading-5 prose-ul:pl-6 prose-li:my-1">
-                                                {texts.tips_list}
-                                            </Markdown>
-                                        </div>
-                                    }
+                                    )}
                                 </div>
-                                {texts?.description &&
-                                    <Markdown className="prose prose-sm max-w-none">
-                                        {texts.description}
-                                    </Markdown>
-                                }
-                            </div>
-                        </div>
-                        <div>
-                            {/* Image Gallery */}
-                            <div className="mb-6">
-                                {providerImages.length > 0 ?
-                                    <Gallery providerName={provider?.name} images={providerImages}/> : (
-                                    <div
-                                        className="bg-gray-100 dark:bg-gray-800 aspect-w-16 aspect-h-9 rounded-lg flex items-center justify-center">
-                                        <span className="text-gray-400">{t('providerDetail.noImages')}</span>
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
                 </div>
-            ) : (
-                <div className="text-center text-red-500">
-                    {t('providerDetail.error.notFound')}
-                </div>
-            )}
+            </div>
         </div>
     );
 };

@@ -26,7 +26,7 @@
     /* Minor headings - Use for smaller content blocks or UI elements
      * Examples: Widget titles, List headings, Modal titles */
     .h4 {
-        @apply text-lg md:text-xl lg:text-2xl font-semibold text-gray-900 dark:text-gray-100;
+        @apply text-lg md:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100;
     }
 
     /* Standard body text - Use for main content and general paragraphs
@@ -76,13 +76,13 @@
     }
 
     .button-primary {
-        @apply button bg-blue-600 text-white hover:bg-blue-700
-            dark:bg-blue-500 dark:hover:bg-blue-600
-            focus:ring-blue-500 dark:focus:ring-blue-400;
+        @apply button bg-primary-600 text-white hover:bg-primary-600/90
+            dark:bg-primary-600 dark:hover:bg-primary-600/90
+            focus:ring-primary-600 dark:focus:ring-primary-600;
     }
 
     .button-outline {
-        @apply button bg-transparent border border-gray-300 hover:bg-gray-100
+        @apply button bg-white border border-gray-300 hover:bg-gray-100
             dark:border-gray-600 dark:hover:bg-gray-800 dark:text-gray-200
             focus:ring-gray-400 dark:focus:ring-gray-500;
     }

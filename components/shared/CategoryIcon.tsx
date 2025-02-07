@@ -3,7 +3,7 @@ import { BedDouble, HandPlatter, ShoppingBag, Tickets } from 'lucide-react'
 import { CATEGORY_HOTEL_SLUG, CATEGORY_LEISURE_SLUG, CATEGORY_SHOPPING_SLUG } from '@/app/api/utils/constants'
 
 const SubcategoryOption = ({
-    slug, className = 'text-primary', size = 32, strokeWidth = 1.5
+    slug, className = 'text-primary', size = 24, strokeWidth = 1.5
 }) => {
     const iconProps = useMemo(() => ({ className, size, strokeWidth }), [className, size, strokeWidth])
     return slug === CATEGORY_HOTEL_SLUG ? <BedDouble {...iconProps} /> :

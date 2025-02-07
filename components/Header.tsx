@@ -5,21 +5,36 @@ import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from './LanguageSwitcher'
 
-import { CircleUserRound, Heart, Inbox, MessagesSquare, LayoutDashboard, Settings } from 'lucide-react';
+import { CircleUserRound, Heart, Inbox, MessagesSquare, LayoutDashboard, Settings, Search, X } from 'lucide-react';
 import ProviderSearch from '@/components/ProviderSearch'
 
-const Header = ({ user, isAdmin, newMessagesCount, hasProviders }) => {
+type HeaderProps = {
+    user: any
+    isAdmin: boolean
+    newMessagesCount: number
+    hasProviders: boolean
+}
+
+const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) => {
   const { t, i18n: { language } } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const avatarUrl = user?.user_metadata?.avatar_url
   const displayName = user?.user_metadata?.display_name
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
+    if (isSearchOpen) setIsSearchOpen(false)
+  }
+
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen)
+    if (isMenuOpen) setIsMenuOpen(false)
   }
 
   const closeMenu = () => {
     setIsMenuOpen(false)
+    setIsSearchOpen(false)
   }
 
   const AvatarDisplay = () => (
@@ -39,37 +54,45 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }) => {
   );
 
   return (
-    <header className="bg-white dark:bg-gray-900 shadow-sm relative z-50">
+    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 relative z-40">
       <div className="container">
-        <div className="flex justify-between items-center h-16">
-          <Link href={`/${language}`} className="text-xl font-bold" onClick={closeMenu}>
-            <img src="/logo.svg" alt={t('header.title')} className="h-10" />
+        <div className="flex justify-between items-center h-16 gap-2">
+          <Link href={`/${language}`} className="text-xl font-bold shrink-0 text-black dark:text-white transition-colors" onClick={closeMenu}>
+            <img src="/logo.svg" alt={t('header.title')} className="h-8 md:h-10" />
           </Link>
 
-          {/* Hamburger Menu Button (Mobile) */}
-          <button
-            className="md:hidden p-2"
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              {isMenuOpen ? (
-                <path d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
+          {/* Desktop Search */}
+          <div className="hidden md:block flex-1 max-w-xl mx-4">
+            <ProviderSearch />
+          </div>
 
-          <ProviderSearch />
+          {/* Mobile Search & Menu Buttons */}
+          <div className="flex items-center gap-2 md:hidden">
+            <button 
+              className="p-2" 
+              onClick={toggleSearch} 
+              aria-label={isSearchOpen ? "Close search" : "Open search"}
+            >
+              {isSearchOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Search className="w-6 h-6" />
+              )}
+            </button>
+            <button 
+              className="p-2" 
+              onClick={toggleMenu} 
+              aria-label="Toggle menu"
+            >
+              <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                {isMenuOpen ? (
+                  <path d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1 text-xs *:opacity-70 *:p-1.5 *:px-2.5 *:rounded-lg *:flex *:flex-col *:items-center">
@@ -119,49 +142,101 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }) => {
           </nav>
         </div>
 
+        {/* Mobile Search Overlay */}
+        {isSearchOpen && (
+          <div className="md:hidden pb-4">
+            <ProviderSearch />
+          </div>
+        )}
+
         {/* Mobile Navigation */}
         <div
-          className={`md:hidden ${
-            isMenuOpen ? 'block' : 'hidden'
-          } pb-4`}
+          className={`md:hidden fixed inset-x-0 top-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 transition-all duration-200 ease-in-out ${
+            isMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0 pointer-events-none'
+          }`}
         >
-          <nav className="flex flex-col space-y-3">
-            <LanguageSwitcher />
+          <nav className="container py-4 flex flex-col space-y-1">
             {user ? (
               <>
-                <Link
-                  href={`/${language}/saved`}
-                  className="text-gray-600 dark hover:opacity-75 py-2"
-                  onClick={closeMenu}
-                >
-                  {t('header.savedProviders')}
-                </Link>
-                <Link
-                  href={`/${language}/profile`}
-                  className="flex items-center space-x-2 text-gray-600 dark hover:opacity-75 py-2"
-                  onClick={closeMenu}
-                >
-                  <span>{t('header.profile')}</span>
-                  <AvatarDisplay />
-                </Link>
                 {isAdmin && (
                   <Link
                     href={`/${language}/admin`}
-                    className="text-gray-600 dark hover:opacity-75 py-2"
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
                     onClick={closeMenu}
                   >
-                    {t('header.admin')}
+                    <Settings size={20} strokeWidth={1.5} />
+                    <span>{t('header.admin')}</span>
                   </Link>
                 )}
+                {hasProviders && (
+                  <>
+                    <Link
+                      href={`/${language}/dashboard`}
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                      onClick={closeMenu}
+                    >
+                      <LayoutDashboard size={20} strokeWidth={1.5} />
+                      <span>Dashboard</span>
+                    </Link>
+                    <Link
+                      href={`/${language}/messages`}
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                      onClick={closeMenu}
+                    >
+                      <MessagesSquare size={20} strokeWidth={1.5} />
+                      <span>{t('header.messages')}</span>
+                    </Link>
+                  </>
+                )}
+                <Link
+                  href={`/${language}/my-messages`}
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                  onClick={closeMenu}
+                >
+                  <div className="relative">
+                    <Inbox size={20} strokeWidth={1.5} />
+                    {newMessagesCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                        {newMessagesCount}
+                      </span>
+                    )}
+                  </div>
+                  <span>{t('header.myMessages')}</span>
+                </Link>
+                <Link
+                  href={`/${language}/saved`}
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                  onClick={closeMenu}
+                >
+                  <Heart size={20} strokeWidth={1.5} />
+                  <span>{t('header.savedProviders')}</span>
+                </Link>
+                <div className="p-3">
+                  <LanguageSwitcher />
+                </div>
+                <Link
+                  href={`/${language}/profile`}
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                  onClick={closeMenu}
+                >
+                  <AvatarDisplay />
+                  <span>{t('header.profile')}</span>
+                </Link>
               </>
             ) : (
-              <Link
-                href={`/${language}/login`}
-                className="text-gray-600 dark hover:opacity-75 py-2"
-                onClick={closeMenu}
-              >
-                {t('header.signIn')}
-              </Link>
+              <>
+                <div className="p-3">
+                  <LanguageSwitcher />
+                </div>
+                <Link
+                  href={`/${language}/login`}
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                  onClick={closeMenu}
+                >
+                  <CircleUserRound size={20} strokeWidth={1.5} />
+                  <span>{t('header.signIn')}</span>
+                </Link>
+              </>
             )}
           </nav>
         </div>

@@ -29,43 +29,45 @@ const UserMessagesView = ({ providers }) => {
                         )
                     }
                 </div>
-                <div className="md:col-span-7 border-2 border-gray-300 p-4">
+                {selectedProvider &&
+                  <div className="md:col-span-7 border-2 border-gray-300 p-4">
                     <div className="border-2 border-gray-300 p-4 flex flex-row">
-                        <div>
-                            <div className="flex-shrink-0 h-16 w-16 mr-4">
-                                <ProviderImage provider={selectedProvider} />
-                            </div>
+                      <div>
+                        <div className="flex-shrink-0 h-16 w-16 mr-4">
+                          <ProviderImage provider={selectedProvider} />
                         </div>
-                        <div>
-                            <Link href={`/${language}/provider/${selectedProvider?.slug || selectedProvider?.id}`}
-                                  className="font-bold underline">
-                                {selectedProvider?.name}
-                            </Link>
-                            {selectedProvider?.isOwnProvider && (
-                                <span
-                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                                >
+                      </div>
+                      <div>
+                        <Link href={`/${language}/provider/${selectedProvider?.slug || selectedProvider?.id}`}
+                              className="font-bold underline">
+                            {selectedProvider?.name}
+                        </Link>
+                          {selectedProvider?.isOwnProvider && (
+                              <span
+                                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                              >
                                     {t('messages.user.ownProvider')}
                                 </span>
-                            )}
-                            {selectedProvider?.maincategories && (
-                                <p className="text-gray-600 mb-4">{selectedProvider?.maincategories?.name}</p>
-                            )}
-                            {selectedProvider?.subcategories?.length > 0 && selectedProvider?.subcategories.map(
-                                (subcategory) => (
-                                    <span key={subcategory.id}>
+                          )}
+                          {selectedProvider?.maincategories && (
+                              <p className="text-gray-600 mb-4">{selectedProvider?.maincategories?.name}</p>
+                          )}
+                          {selectedProvider?.subcategories?.length > 0 && selectedProvider?.subcategories.map(
+                              (subcategory) => (
+                                  <span key={subcategory.id}>
                                         {subcategory.name}
                                     </span>
-                                )
-                            )}
-                        </div>
+                              )
+                          )}
+                      </div>
                     </div>
-                    {selectedProvider?.messages?.length > 0 &&
-                        selectedProvider.messages.map(
-                            (message) => (<Message message={message} key={message.id}/>)
-                        )
-                    }
-                </div>
+                      {selectedProvider?.messages?.length > 0 &&
+                          selectedProvider.messages.map(
+                              (message) => (<Message message={message} key={message.id}/>)
+                          )
+                      }
+                  </div>
+                }
             </div>
         </div>
     )

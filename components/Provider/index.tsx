@@ -2,7 +2,6 @@
 
 import React, { useMemo } from 'react'
 import { useTranslation } from '@/app/i18n/client'
-import Link from 'next/link'
 import Markdown from 'react-markdown'
 import Gallery from './Gallery'
 import SaveButton from '@/components/shared/SaveButton'
@@ -52,7 +51,7 @@ const EMPTY_ARRAY = []
 
 const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
     const providerImages = provider.provider_images || EMPTY_ARRAY
-    const { t, i18n: { language } } = useTranslation()
+    const { t } = useTranslation()
     const texts = useMemo(
         () => provider?.provider_translations?.[0],
         [provider]

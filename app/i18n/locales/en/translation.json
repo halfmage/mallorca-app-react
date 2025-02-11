@@ -105,6 +105,9 @@
       "email": "Email",
       "fullName": "Full Name",
       "displayName": "Display Name",
+      "birthdate": "Birthday",
+      "country": "Country",
+      "gender": "Gender",
       "save": "Save Changes",
       "logout": "Logout",
       "logoutSuccess": "You have been successfully logged out",
@@ -244,6 +247,28 @@
       "password": "Password",
       "button": "Login"
     },
+    "signUp": {
+      "main": {
+        "title": "Sign Up",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "password": "Password",
+        "passwordHint": "Password must be at least 6 characters",
+        "repeatPassword": "Repeat Password",
+        "submit": "Register",
+        "error": {
+          "count": "Password must be at least {{count}} characters",
+          "passwordNotMatch": "Passwords do not match"
+        }
+      },
+      "additional": {
+        "title": "About you",
+        "skip": "Skip",
+        "info": "This information helps us to provide a better service for you and tailor a better experience on out platform.",
+        "submit": "Finish"
+      }
+    },
     "claimBusiness": {
       "form": {
         "title": "Claim business",
@@ -281,7 +306,8 @@
       "error": {
         "generic": "An error occurred",
         "unauthorized": "You are not authorized to view this page",
-        "notFound": "Page not found"
+        "notFound": "Page not found",
+        "required": "This field is required"
       },
       "success": {
         "saved": "Changes saved successfully",

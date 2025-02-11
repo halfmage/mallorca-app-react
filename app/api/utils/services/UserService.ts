@@ -1,10 +1,13 @@
 import moment from 'moment'
 import { cookies } from 'next/headers'
+import { v4 as uuidv4 } from 'uuid'
 import EntityService from '@/app/api/utils/services/EntityService'
 import MessageService from '@/app/api/utils/services/MessageService'
 import ProviderService from '@/app/api/utils/services/ProviderService'
 import { createClient } from '@/utils/supabase/server'
 import { ROLE_ADMIN, ROLE_USER, SORTING_ORDER_NEW, SORTING_ORDER_OLD } from '@/app/api/utils/constants'
+
+const DEFAULT_PAGE_SIZE = 1000
 
 export const isAdmin = user => ROLE_ADMIN === user?.app_metadata?.role
 
@@ -79,13 +82,68 @@ class UserService extends EntityService {
         return !error
     }
 
-    public async getUsersByIds(ids: string[]): Promise<Array<{ id: string; name: string; createdAt: Date; savedProviders: number; receiveMessages: number }>> {
-        // todo: consider default pagination
-        const { data: { users }, error } = await this.supabase.auth.admin.listUsers()
+    public async postSignUp(userId: string, displayName: string) {
+        const pendingId = uuidv4()
+        const { error } = await this.supabase.auth.admin.updateUserById(
+            userId,
+            {
+                app_metadata: { role: ROLE_USER },
+                user_metadata: { display_name: displayName, pending_id: pendingId }
+            }
+        )
 
-        if (error) {
-            return []
+        return !error ? pendingId : null
+    }
+
+    protected async getAllUsers() {
+        let page = 1
+        const perPage = DEFAULT_PAGE_SIZE
+        let allUsers = []
+        let hasMore = true
+
+        while (hasMore) {
+            const { data, error } = await this.supabase.auth.admin.listUsers({ page, perPage })
+            if (error) {
+                console.error('Error fetching users= ', error);
+                break
+            }
+
+            if (data?.users.length === 0) {
+                hasMore = false
+            } else {
+                allUsers = [...allUsers, ...data.users]
+                if (data?.nextPage) {
+                    page++
+                } else {
+                    hasMore = false
+                }
+            }
         }
+
+        return allUsers
+    }
+
+    public async getUserByPendingId(pendingId: string) {
+        const users = await this.getAllUsers()
+
+        return users.find(user => user?.user_metadata?.pending_id === pendingId)
+    }
+
+    public async updateUserByPendingId(pendingId: string, birthdate = null, gender = null, country = null): Promise<boolean> {
+        const user = await this.getUserByPendingId(pendingId)
+        if (!user?.id) {
+            return false
+        }
+        const { error } = await this.supabase.auth.admin.updateUserById(
+            user.id,
+            { user_metadata: { pending_id: null, birthdate, gender, country } }
+        )
+
+        return !error
+    }
+
+    public async getUsersByIds(ids: string[]): Promise<Array<{ id: string; name: string; createdAt: Date; savedProviders: number; receiveMessages: number }>> {
+        const users = await this.getAllUsers()
 
         return users
             .filter(user => ids.includes(user.id))

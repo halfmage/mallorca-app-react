@@ -63,6 +63,10 @@ const Category = ({
         }
     }, [ fetchProviders, selectedCategories, sort ])
 
+    useEffect(() => {
+        setSelectedCategories(selectedSubcategories)
+    }, [selectedSubcategories])
+
     const handleCategorySelect = useCallback(
         (categoryId) => setSelectedCategories(
             selectedIds => {

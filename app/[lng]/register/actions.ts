@@ -1,10 +1,10 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 
 import { createClient } from '@/utils/supabase/server'
+import UserService from '@/app/api/utils/services/UserService'
 
 export async function signup(formData: FormData) {
     const cookieStore = await cookies()
@@ -17,12 +17,20 @@ export async function signup(formData: FormData) {
         password: formData.get('password') as string,
     }
 
-    const { error } = await supabase.auth.signUp(data)
+    const { error, data: userData } = await supabase.auth.signUp(data)
+
+    console.log('error = ', error, 'userData = ', userData)
 
     if (error) {
         redirect('/error')
     }
 
-    revalidatePath('/', 'layout')
-    redirect('/')
+    if (userData?.user?.id) {
+        const userService = await UserService.init()
+        const pendingId = await userService.postSignUp(
+            userData.user.id,
+            `${formData.get('firstName') || ''} ${formData.get('lastName') || ''}`,
+        )
+        redirect(pendingId ? `/register/${pendingId}` : '/error')
+    }
 }

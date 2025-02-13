@@ -1,20 +1,22 @@
 'use client'
 
-import React, { useState, useCallback } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { useTranslation } from '@/app/i18n/client'
-import { useForm } from 'react-hook-form'
+import React, {useState, useCallback} from 'react'
+import {useParams, useRouter} from 'next/navigation'
+import {useTranslation} from '@/app/i18n/client'
+import {useForm} from 'react-hook-form'
+import Alert from '@/components/shared/Alert'
 
 const EditProvider = ({
   provider: initialProvider, mainCategories, subCategories
 }) => {
-  const { id } = useParams()
-  const { push } = useRouter()
-  const { t } = useTranslation()
+  const {id} = useParams()
+  const {push} = useRouter()
+  const {t} = useTranslation()
   const [loading, setLoading] = useState(false)
   const [provider, setProvider] = useState(initialProvider)
   const [saving, setSaving] = useState(false)
-  const { register, handleSubmit } = useForm({
+  const [alertText, setAlertText] = useState(null)
+  const {register, handleSubmit} = useForm({
     defaultValues: {
       name: provider?.name,
       mainCategory: provider?.maincategory_id,
@@ -28,7 +30,7 @@ const EditProvider = ({
     try {
       setLoading(true);
       const response = await fetch(`/api/edit-provider/${id}`)
-      const { data } = await response.json()
+      const {data} = await response.json()
       setProvider(data)
       setImages(data.provider_images);
     } catch (error) {
@@ -37,6 +39,10 @@ const EditProvider = ({
       setLoading(false)
     }
   }, [id, t])
+  const clearAlertText = useCallback(
+    () => setAlertText(null),
+    []
+  )
 
   const handleNewImageChange = (e) => {
     const files = Array.from(e.target.files)
@@ -46,14 +52,14 @@ const EditProvider = ({
   const handleImageDelete = async (imageId) => {
     try {
       const response = await fetch(
-          `/api/provider-images/${imageId}`,
-          { method: 'DELETE' }
+        `/api/provider-images/${imageId}`,
+        {method: 'DELETE'}
       )
-      const { data: success } = await response.json()
+      const {data: success} = await response.json()
       if (success) {
         // Update local state
         setImages(prev => prev.filter(img => img.id !== imageId))
-        alert(t('common.success.imageDeleted'))
+        setAlertText(t('common.success.imageDeleted'))
       }
     } catch (error) {
       console.error(t('admin.error.deleteImage'), error)
@@ -71,18 +77,18 @@ const EditProvider = ({
     try {
       setSaving(true);
       const response = await fetch(
-          `/api/provider-images`,
-          {
-            method: 'PATCH',
-            body: JSON.stringify({
-              images: images.map(image => image?.id)
-            })
-          }
+        `/api/provider-images`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify({
+            images: images.map(image => image?.id)
+          })
+        }
       )
-      const { data: success } = await response.json()
+      const {data: success} = await response.json()
       setReorderMode(false)
       if (success) {
-        alert(t('common.success.orderSaved'))
+        setAlertText(t('common.success.orderSaved'))
       }
     } catch (error) {
       console.error(t('admin.error.saveOrder'), error);
@@ -92,40 +98,40 @@ const EditProvider = ({
   }
 
   const onSubmit = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
-      handleSubmit(
-          async ({ name, mainCategory, subCategories }) => {
-            try {
-              setSaving(true)
+    handleSubmit(
+      async ({name, mainCategory, subCategories}) => {
+        try {
+          setSaving(true)
 
-              const preparedFormData = new FormData()
-              preparedFormData.append('name', name)
-              preparedFormData.append('mainCategoryId', mainCategory)
-              preparedFormData.append('subCategoryIds', subCategories)
-              for (let i = 0; i < newImages.length; i++) {
-                preparedFormData.append('images', newImages[i])
-              }
-
-              const response = await fetch(
-                  `/api/provider/${id}`,
-                  {
-                    method: 'PATCH',
-                    body: preparedFormData
-                  }
-              )
-              const {data: success} = await response.json()
-              if (success) {
-                alert(t('common.success.saved'))
-                fetchProvider()
-                setNewImages([])
-              }
-            } catch (error) {
-              console.error(t('admin.error.updateProvider'), error)
-            } finally {
-              setSaving(false)
-            }
+          const preparedFormData = new FormData()
+          preparedFormData.append('name', name)
+          preparedFormData.append('mainCategoryId', mainCategory)
+          preparedFormData.append('subCategoryIds', subCategories)
+          for (let i = 0; i < newImages.length; i++) {
+            preparedFormData.append('images', newImages[i])
           }
-      ),
-      [id, t, fetchProvider, newImages]
+
+          const response = await fetch(
+            `/api/provider/${id}`,
+            {
+              method: 'PATCH',
+              body: preparedFormData
+            }
+          )
+          const {data: success} = await response.json()
+          if (success) {
+            setAlertText(t('common.success.saved'))
+            fetchProvider()
+            setNewImages([])
+          }
+        } catch (error) {
+          console.error(t('admin.error.updateProvider'), error)
+        } finally {
+          setSaving(false)
+        }
+      }
+    ),
+    [id, t, fetchProvider, newImages]
   )
 
   if (loading) {
@@ -147,6 +153,7 @@ const EditProvider = ({
           {t('common.back')}
         </button>
       </div>
+      {alertText && <Alert delay={3000} onClose={clearAlertText} className="fixed right-4 top-20 w-64" show>{alertText}</Alert>}
 
       <form onSubmit={onSubmit} className="space-y-6">
         <div>
@@ -182,15 +189,15 @@ const EditProvider = ({
             {t('admin.subcategories')}
           </label>
           <select
-              {...register('subCategories')}
-              className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-              multiple
+            {...register('subCategories')}
+            className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+            multiple
           >
             <option value="">{t('admin.selectCategory')}</option>
             {subCategories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
             ))}
           </select>
         </div>

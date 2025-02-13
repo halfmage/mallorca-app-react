@@ -1,10 +1,10 @@
 import {
-    SORTING_ORDER_NEW,
-    STATUS_PENDING,
-    STATUS_ACTIVE,
-    DEFAULT_IMAGE_SOURCE,
-    SEARCH_TYPE_SUBCATEGORY,
-    SEARCH_TYPE_PROVIDER
+  SORTING_ORDER_NEW,
+  STATUS_PENDING,
+  STATUS_ACTIVE,
+  DEFAULT_IMAGE_SOURCE,
+  SEARCH_TYPE_SUBCATEGORY,
+  SEARCH_TYPE_PROVIDER, STATUS_VERIFIED, STATUS_REJECTED
 } from '@/app/api/utils/constants'
 import { isUUID } from '@/app/api/utils/helpers'
 import EntityService from '@/app/api/utils/services/EntityService'
@@ -528,22 +528,76 @@ class ProviderService extends EntityService {
     public async claimProvider(
         providerId: string,
         userId: string,
-        email: string, // eslint-disable-line @typescript-eslint/no-unused-vars
-        phone: string, // eslint-disable-line @typescript-eslint/no-unused-vars
-        message: string // eslint-disable-line @typescript-eslint/no-unused-vars
     ): Promise<boolean> {
-        const { error } = await this.supabase
-            .from('business_claims')
-            .insert([
-                {
-                    claimer_id: userId,
-                    provider_id: providerId,
-                    status: STATUS_PENDING,
-                    payment_status: STATUS_PENDING
-                }
-            ])
+      // Later might be selected directly on claim page
+      // or user might have access to choose subscription on his own
+      const { data } = await this.supabase
+        .from('subscription_plans')
+        .select('id')
+        .limit(1)
+        .single()
 
-        return !error
+      const { error: claimError } = await this.supabase
+        .from('business_claims')
+        .insert([
+          {
+            claimer_id: userId,
+            provider_id: providerId,
+            status: STATUS_VERIFIED,
+            payment_status: STATUS_PENDING,
+            subscription_plan_id: data?.id || null
+          }
+        ])
+      if (claimError) {
+        return false
+      }
+
+      const { error: providerError } = await this.supabase
+        .from('providers')
+        .update({ status: STATUS_VERIFIED, user_id: userId })
+        .eq('id', providerId)
+
+      return !providerError
+    }
+
+    public async revokeProviderAccess(providerId: string): Promise<boolean> {
+      const { error: claimError, data } = await this.supabase
+        .from('business_claims')
+        .delete()
+        .eq('provider_id', providerId)
+        .select('claimer_id')
+
+      if (claimError) {
+        return false
+      }
+
+      const { error: providerError } = await this.supabase
+        .from('providers')
+        .update({ status: STATUS_REJECTED, user_id: null })
+        .eq('id', providerId)
+
+      if (providerError) {
+        return false
+      }
+
+      const usersInfo = await Promise.all(
+        data.map(async (claim) => ({
+          id: claim?.claimer_id,
+          hasProviders: await this.hasProviders(claim?.claimer_id)
+        }))
+      )
+      const usersExpectsRoleChange = usersInfo
+        .filter(({ hasProviders }) => !hasProviders)
+        .map(({ id }) => id)
+
+      if (usersExpectsRoleChange.length) {
+        const userService = await UserService.init()
+        await Promise.all(
+          usersExpectsRoleChange.map(async (userId) => await userService.setRole(userId))
+        )
+      }
+
+      return !providerError
     }
 
     public add = async (

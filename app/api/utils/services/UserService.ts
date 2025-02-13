@@ -76,6 +76,12 @@ class UserService extends EntityService {
         return data
     }
 
+  public async getRole(userId: string): Promise<string|null> {
+    const { data, error } = await this.supabase.auth.admin.getUserById(userId)
+
+    return error ? null : (data?.app_metadata?.role || ROLE_USER)
+  }
+
     public async deleteUser(userId: string) {
         const { error } = await this.supabase.auth.admin.deleteUser(userId)
 

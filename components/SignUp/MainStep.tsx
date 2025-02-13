@@ -3,11 +3,11 @@
 import React, {useCallback, useState} from 'react'
 import {useTranslation} from '@/app/i18n/client'
 import {useForm} from 'react-hook-form'
-
-const MIN_CHARACTERS_NUMBER = 6
+import Link from "next/link";
+import { MIN_CHARACTERS_NUMBER } from '@/app/api/utils/constants'
 
 const SignUp = ({onSubmit: onSubmitAction}) => {
-  const {t} = useTranslation()
+  const {t, i18n: {language}} = useTranslation()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const {register, handleSubmit, formState: {errors}} = useForm()
@@ -143,6 +143,14 @@ const SignUp = ({onSubmit: onSubmitAction}) => {
         >
           {t('signUp.main.submit')}
         </button>
+        <div>
+          <p className="text-center">
+            {t('signUp.main.message')}
+            <Link href={`/${language}/login`} className="ml-3 font-bold">
+              {t('signUp.main.login')}
+            </Link>
+          </p>
+        </div>
       </form>
     </div>
   )

@@ -1,6 +1,10 @@
 import Stripe from 'stripe'
 import EntityService from '@/app/api/utils/services/EntityService'
-import { STATUS_PAYMENT_COMPLETED } from '@/app/api/utils/constants'
+import {
+  STATUS_PAYMENT_CANCELED,
+  STATUS_PAYMENT_COMPLETED,
+  STRIPE_STATUS_ACTIVE
+} from '@/app/api/utils/constants'
 
 export default class PaymentService extends EntityService {
     protected stripe
@@ -77,11 +81,20 @@ export default class PaymentService extends EntityService {
             subscription = await this.stripe.subscriptions.retrieve(data.payment_id)
         }
 
+        if (subscription && subscription?.status !== STRIPE_STATUS_ACTIVE) {
+          await this.supabase
+            .from('business_claims')
+            .update({ payment_status: STATUS_PAYMENT_CANCELED })
+            .eq('id', providerId)
+        }
+
         return {
             name: data?.subscription_plan_id?.name || '',
             amount: data?.subscription_plan_id?.amount || 0,
             currency: data?.subscription_plan_id?.currency || '',
-            nextPayment: subscription?.current_period_end ? subscription?.current_period_end * 1000 : 0
+            nextPayment: subscription?.current_period_end ? subscription?.current_period_end * 1000 : 0,
+            cancelAt: subscription?.cancel_at && subscription?.cancel_at_period_end ?
+              subscription?.cancel_at * 1000 : 0
         }
     }
 

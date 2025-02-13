@@ -1,6 +1,7 @@
 import { login } from './actions'
 import React from 'react'
 import { useTranslation } from '@/app/i18n'
+import Link from 'next/link'
 
 export default async function LoginPage({ params }) {
     const { lng } = await params
@@ -18,6 +19,7 @@ export default async function LoginPage({ params }) {
                             className="w-full p-2 my-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                             name="email"
                             required
+                            placeholder={t('login.email')}
                         />
                     </div>
                     <div className="mb-4">
@@ -27,7 +29,13 @@ export default async function LoginPage({ params }) {
                             className="w-full p-2 my-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                             name="password"
                             required
+                            placeholder={t('login.password')}
                         />
+                    </div>
+                    <div className="text-right my-4">
+                      <Link href={`/${lng}/forgot-password`}>
+                        {t('login.forgotPassword')}
+                      </Link>
                     </div>
                     <button
                         formAction={login}
@@ -36,6 +44,14 @@ export default async function LoginPage({ params }) {
                         {t('login.button')}
                     </button>
                 </form>
+                <div>
+                  <p className="text-center">
+                    {t('login.message')}
+                    <Link href={`/${lng}/register`} className="ml-3 font-bold">
+                      {t('login.register')}
+                    </Link>
+                  </p>
+                </div>
             </div>
         </div>
     )

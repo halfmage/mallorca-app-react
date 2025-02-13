@@ -137,6 +137,10 @@
         "remove": "Remove Avatar"
       },
       "userId": "User ID",
+      "aboutYou": {
+        "title": "About You",
+        "description": "This information helps us to provide a better service for you and tailor a better experience on out platform."
+      },
       "success": {
         "profile": "Profile updated successfully!"
       },
@@ -160,7 +164,10 @@
       "providerNotFound": "Provider not found",
       "viewDetails": "View Details",
       "edit": "Edit",
+      "revoke": "Revoke",
+      "access": "Access",
       "category": "Category",
+      "subcategories": "Subcategories",
       "selectCategory": "Select a category",
       "images": "Images",
       "reorderImages": "Reorder Images",
@@ -216,6 +223,7 @@
         "noSubscription": "You don't have an active subscription. Subscribe now to access all provider features.",
         "perMonth": "month",
         "nextPayment": "Next payment",
+        "cancelAt": "You subscription has been canceled and will end on",
         "proposal": "To get full access please subscribe",
         "notPayed": "Not payed yet"
       },
@@ -245,7 +253,10 @@
       "title": "Login",
       "email": "Email",
       "password": "Password",
-      "button": "Login"
+      "button": "Login",
+      "message": "Dont have an account yet?",
+      "register": "Register",
+      "forgotPassword": "Forgot password?"
     },
     "signUp": {
       "main": {
@@ -260,7 +271,9 @@
         "error": {
           "count": "Password must be at least {{count}} characters",
           "passwordNotMatch": "Passwords do not match"
-        }
+        },
+        "message": "Already have an account?",
+        "login": "Login"
       },
       "additional": {
         "title": "About you",
@@ -269,19 +282,33 @@
         "submit": "Finish"
       }
     },
+    "forgotPassword": {
+      "title": "Forgot Password?",
+      "email": "Email",
+      "emailPlaceholder": "Enter your email",
+      "button": "Send"
+    },
+    "resetPassword": {
+      "title": "Update Password",
+      "password": "Password",
+      "passwordHint": "Password must be at least 6 characters",
+      "repeatPassword": "Repeat Password",
+      "submit": "Update",
+      "notReady": "Technical error"
+    },
     "claimBusiness": {
       "form": {
-        "title": "Claim business",
-        "email": {
-          "placeholder": "Business contact email"
+        "title": "Give user access",
+        "user": {
+          "placeholder": "Select user"
         },
-        "phone": {
-          "placeholder": "Business contact phone"
-        },
-        "message": {
-          "placeholder": "Business contact message"
-        },
-        "submitButton": "Send claim request"
+        "button": {
+          "save": "Grant access",
+          "saving": "Granting access..."
+        }
+      },
+      "error": {
+        "saveProvider": "Error granting access"
       }
     },
     "paymentSuccess":  {

@@ -141,9 +141,15 @@ const ProviderDashboard = ({
                                 <h3 className="text-lg font-bold text-gray-700 mb-2">
                                     {paymentInfo.name}: {paymentInfo.amount}{paymentInfo.currency}/{t(`providerDashboard.subscription.perMonth`)}
                                 </h3>
+
+                              {paymentInfo.cancelAt ?
+                                <p className="text-red-600">
+                                  {t(`providerDashboard.subscription.cancelAt`)}: {moment(paymentInfo.cancelAt).format('DD.MM.YYYY')}
+                                </p> :
                                 <p className="text-blue-600">
-                                    {t(`providerDashboard.subscription.nextPayment`)}: {moment(paymentInfo.nextPayment).format('DD.MM.YYYY')}
+                                  {t(`providerDashboard.subscription.nextPayment`)}: {moment(paymentInfo.nextPayment).format('DD.MM.YYYY')}
                                 </p>
+                              }
                             </div> :
                             <div>
                                 <h3 className="text-lg font-bold text-gray-700 mb-2">
@@ -173,13 +179,6 @@ const ProviderDashboard = ({
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
                     >
                         {t('providerDashboard.viewPublicProfile')}
-                    </button>
-                </Link>
-                <Link href={`/${language}/admin/edit-provider/${provider.id}`}>
-                    <button
-                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
-                    >
-                        {t('providerDashboard.editProfile')}
                     </button>
                 </Link>
             </div>

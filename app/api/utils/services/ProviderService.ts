@@ -68,6 +68,13 @@ class ProviderService extends EntityService {
                     advantages_list,
                     tips_list
                 ),
+                opening_hours (
+                  day,
+                  from,
+                  to,
+                  closed,
+                  season
+                ),
                 ${IMAGES_FRAGMENT}
             `)
       .eq('provider_translations.language', language)
@@ -645,12 +652,28 @@ class ProviderService extends EntityService {
   }
 
   public update = async (
-    idOrSlug: string, name: string, mainCategoryId: string, subCategoryIds: Array<number>, images: Array<File>
+    idOrSlug: string,
+    { name, mainCategoryId, subCategoryIds, images, address, phone, mail, website, googleMapsUrl }: {
+      name: string,
+      mainCategoryId: string,
+      subCategoryIds: Array<number>,
+      images: Array<File>,
+      address: string,
+      phone: string,
+      mail: string,
+      website: string,
+      googleMapsUrl: string
+    }
   ): Promise<boolean> => {
     const {data, error: providerError} = await this.supabase
       .from('providers')
       .update({
         name,
+        address,
+        phone,
+        mail,
+        website,
+        google_maps_url: googleMapsUrl,
         maincategory_id: mainCategoryId
       })
       .eq(isUUID(idOrSlug) ? 'id' : 'slug', idOrSlug)

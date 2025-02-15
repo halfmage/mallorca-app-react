@@ -19,3 +19,5 @@ export const CATEGORY_HOTEL_SLUG = 'hotel'
 export const CATEGORY_LEISURE_SLUG = 'leisure'
 export const CATEGORY_SHOPPING_SLUG = 'shopping'
 export const MIN_CHARACTERS_NUMBER = 6
+export const SEASON_WINTER = 'winter'
+export const SEASON_SUMMER = 'winter'

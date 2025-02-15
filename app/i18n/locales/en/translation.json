@@ -75,7 +75,12 @@
         "websiteButton": "Website",
         "directionsButton": "Directions",
         "claim": "Claim business"
-      }
+      },
+      "openingHours": {
+        "title": "Opening Hours",
+        "closed": "Closed"
+      },
+      "noImages": "No images available"
     },
     "savedProviders": {
       "title": "Saved Providers",
@@ -203,6 +208,18 @@
         "createdAt": "Member since",
         "actions": "Actions",
         "remove": "Remove User"
+      },
+      "basicInfo": {
+        "title": "Basic Info"
+      },
+      "contact": {
+        "title": "Contact",
+        "mail": "Mail",
+        "phone": "Phone",
+        "address": "Address",
+        "website": "Website",
+        "googleMapsUrl": "Google Maps URL",
+        "googleMapsUrlPlaceholder": "Directions (google maps link)"
       }
     },
     "providerDashboard": {
@@ -236,6 +253,7 @@
         "other": "Other",
         "age": "Age",
         "noUsers": "No users have saved your profile yet.",
+        "undefined": "Unknown",
         "table": {
           "user": "User",
           "savedDate": "Saved Date",

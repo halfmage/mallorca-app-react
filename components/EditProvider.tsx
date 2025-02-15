@@ -1,17 +1,17 @@
 'use client'
 
 import React, {useState, useCallback} from 'react'
-import {useParams, useRouter} from 'next/navigation'
+import {useParams} from 'next/navigation'
 import {useTranslation} from '@/app/i18n/client'
 import {useForm} from 'react-hook-form'
+import Link from 'next/link'
 import Alert from '@/components/shared/Alert'
 
 const EditProvider = ({
   provider: initialProvider, mainCategories, subCategories
 }) => {
   const {id} = useParams()
-  const {push} = useRouter()
-  const {t} = useTranslation()
+  const {t, i18n: {language}} = useTranslation()
   const [loading, setLoading] = useState(false)
   const [provider, setProvider] = useState(initialProvider)
   const [saving, setSaving] = useState(false)
@@ -21,6 +21,11 @@ const EditProvider = ({
       name: provider?.name,
       mainCategory: provider?.maincategory_id,
       subCategories: (provider?.provider_subcategories || []).map(sc => sc?.subcategories?.id).join(','),
+      mail: provider?.mail,
+      phone: provider?.phone,
+      address: provider?.address,
+      website: provider?.website,
+      googleMapsUrl: provider?.google_maps_url
     },
   })
   const [images, setImages] = useState(provider?.provider_images || [])
@@ -99,7 +104,9 @@ const EditProvider = ({
 
   const onSubmit = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
     handleSubmit(
-      async ({name, mainCategory, subCategories}) => {
+      async ({
+        name, mainCategory, subCategories, mail, phone, address, website, googleMapsUrl
+      }) => {
         try {
           setSaving(true)
 
@@ -107,6 +114,11 @@ const EditProvider = ({
           preparedFormData.append('name', name)
           preparedFormData.append('mainCategoryId', mainCategory)
           preparedFormData.append('subCategoryIds', subCategories)
+          preparedFormData.append('mail', mail)
+          preparedFormData.append('phone', phone)
+          preparedFormData.append('address', address)
+          preparedFormData.append('website', website)
+          preparedFormData.append('googleMapsUrl', googleMapsUrl)
           for (let i = 0; i < newImages.length; i++) {
             preparedFormData.append('images', newImages[i])
           }
@@ -146,61 +158,135 @@ const EditProvider = ({
     <div className="max-w-4xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{t('admin.editProvider')}</h1>
-        <button
-          onClick={() => push('/admin')}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-        >
+        <Link href={`/${language}/admin`} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
           {t('common.back')}
-        </button>
+        </Link>
       </div>
       {alertText && <Alert delay={3000} onClose={clearAlertText} className="fixed right-4 top-20 w-64" show>{alertText}</Alert>}
 
       <form onSubmit={onSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('admin.providerName')}
-          </label>
-          <input
-            type="text"
-            className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-            {...register('name', {required: true})}
-          />
+        <div className="max-w-2xl mx-auto p-4">
+          <div className="border-2 border-gray-300 p-4">
+            <div className="max-w-4xl mx-auto p-4">
+              <h2 className="text-2xl font-bold mb-4">{t('admin.basicInfo.title')}</h2>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('admin.providerName')}
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+                  {...register('name', {required: true})}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('admin.category')}
+                </label>
+                <select
+                  {...register('mainCategory', {required: true})}
+                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+                >
+                  <option value="">{t('admin.selectCategory')}</option>
+                  {mainCategories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('admin.subcategories')}
+                </label>
+                <select
+                  {...register('subCategories')}
+                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+                  multiple
+                >
+                  <option value="">{t('admin.selectCategory')}</option>
+                  {subCategories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('admin.category')}
-          </label>
-          <select
-            {...register('mainCategory', {required: true})}
-            className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-          >
-            <option value="">{t('admin.selectCategory')}</option>
-            {mainCategories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+        <div className="max-w-2xl mx-auto p-4">
+          <div className="border-2 border-gray-300 p-4">
+            <div className="max-w-4xl mx-auto p-4">
+              <h2 className="text-2xl font-bold mb-4">{t('admin.contact.title')}</h2>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('admin.contact.phone')}
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+                  placeholder={t('admin.contact.phone')}
+                  {...register('phone')}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('admin.contact.mail')}
+                </label>
+                <input
+                  type="email"
+                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+                  placeholder={t('admin.contact.mail')}
+                  {...register('mail')}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('admin.contact.website')}
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+                  placeholder={t('admin.contact.website')}
+                  {...register('website')}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('admin.contact.address')}
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+                  placeholder={t('admin.contact.address')}
+                  {...register('address')}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('admin.contact.googleMapsUrl')}
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
+                  placeholder={t('admin.contact.googleMapsUrlPlaceholder')}
+                  {...register('googleMapsUrl')}
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('admin.subcategories')}
-          </label>
-          <select
-            {...register('subCategories')}
-            className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-            multiple
-          >
-            <option value="">{t('admin.selectCategory')}</option>
-            {subCategories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </div>
+
 
         <div>
           <div className="flex justify-between items-center mb-2">

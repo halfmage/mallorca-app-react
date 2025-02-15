@@ -4,10 +4,11 @@ import React, { useMemo } from 'react'
 import { useTranslation } from '@/app/i18n/client'
 import Markdown from 'react-markdown'
 import Gallery from './Gallery'
+import OpeningHours from './OpeningHours'
 import SaveButton from '@/components/shared/SaveButton'
 import { Icon } from '@mdi/react'
 import { mdiPhone as IconCall } from '@mdi/js'
-import { mdiEmail as IconEmail } from '@mdi/js' 
+import { mdiEmail as IconEmail } from '@mdi/js'
 import { mdiWeb as IconWebsite } from '@mdi/js'
 import { mdiMapMarker as IconMap } from '@mdi/js'
 import { mdiOpenInNew as IconExternal } from '@mdi/js'
@@ -70,10 +71,10 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
                         <h1 className="text-xl font-semibold text-gray-900 dark:text-white truncate">{provider.name}</h1>
                         <div className="flex items-center gap-4">
                             {showSaveButton && (
-                                <SaveButton 
-                                    provider={provider} 
+                                <SaveButton
+                                    provider={provider}
                                     isSaved={isSavedInitially}
-                                    onClick={() => {}} 
+                                    onClick={() => {}}
                                 />
                             )}
                         </div>
@@ -157,7 +158,7 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
                             {/* Contact Card */}
                             <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
                                 <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Contact Information</h2>
-                                
+
                                 {/* Address */}
                                 {provider?.address && (
                                     <div className="mb-6">
@@ -217,6 +218,9 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }) => {
                                 </div>
                             </div>
                         </div>
+                      {provider?.opening_hours?.length > 0 && (
+                        <OpeningHours days={provider.opening_hours} />
+                      )}
                     </div>
                 </div>
             </div>

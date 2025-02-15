@@ -102,8 +102,13 @@ const ProviderDashboard = ({
                     {userStats?.country && userStats.country.map(
                         (country) => (
                             <div className="flex justify-between" key={country.label}>
-                                <span>{countries.getName(country.label, language)}</span>
-                                <span>{country.value}%</span>
+                                <span>
+                                  {country.label === 'undefined' ?
+                                    t('providerDashboard.savedUsers.undefined') :
+                                    countries.getName(country.label, language)
+                                  }
+                                </span>
+                                <span>{(country.value || 0).toFixed(2)}%</span>
                             </div>
                         )
                     )}
@@ -112,8 +117,13 @@ const ProviderDashboard = ({
                     {userStats?.age && userStats.age.map(
                         (group) => (
                             <div className="flex justify-between" key={group.label}>
-                                <span>{group.label}</span>
-                                <span>{group.value}%</span>
+                                <span>
+                                  {group.label === 'undefined' ?
+                                    t('providerDashboard.savedUsers.undefined') :
+                                    group.label
+                                  }
+                                </span>
+                                <span>{(group.value || 0).toFixed(2)}%</span>
                             </div>
                         )
                     )}
@@ -123,7 +133,7 @@ const ProviderDashboard = ({
                         (gender) => (
                             <div className="flex justify-between" key={gender.label}>
                                 <span>{t(`providerDashboard.savedUsers.${gender.label}`)}</span>
-                                <span>{gender.value}%</span>
+                                <span>{(gender.value || 0).toFixed(2)}%</span>
                             </div>
                         )
                     )}

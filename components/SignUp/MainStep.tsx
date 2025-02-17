@@ -6,6 +6,7 @@ import {useForm} from 'react-hook-form'
 import Link from "next/link";
 import { MIN_CHARACTERS_NUMBER } from '@/app/api/utils/constants'
 
+// @ts-expect-error: skip type for now
 const SignUp = ({onSubmit: onSubmitAction}) => {
   const {t, i18n: {language}} = useTranslation()
   const [loading, setLoading] = useState(false)

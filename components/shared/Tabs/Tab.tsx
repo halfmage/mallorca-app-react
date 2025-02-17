@@ -2,7 +2,14 @@
 
 import React, { useCallback } from 'react'
 
-const Tab = ({ isActive, tabKey, onClick, children }) => {
+interface Props {
+  isActive: boolean
+  tabKey: string
+  onClick?: (tabKey: string) => void
+  children: React.ReactNode
+}
+
+const Tab = ({ isActive, tabKey, onClick, children }: Props) => {
     const handleClick = useCallback(
         () => {
             if (onClick) {

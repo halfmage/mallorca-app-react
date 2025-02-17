@@ -8,10 +8,15 @@ import ProviderService from '@/app/api/utils/services/ProviderService'
 import UserService from '@/app/api/utils/services/UserService'
 import { STATUS_PAYMENT_COMPLETED } from '@/app/api/utils/constants'
 
-export default async function ProviderDashboardPage({ params }) {
+interface Props {
+  params: Promise<{ lng: string, id: string }>
+}
+
+export default async function ProviderDashboardPage({ params }: Props) {
     const { id, lng } = await params
 
     const cookieStore = await cookies()
+    // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -44,7 +49,7 @@ export default async function ProviderDashboardPage({ params }) {
         // Get saved users
         const userIds = await providerService.getUserIdsByProvider(provider.id)
         const usersService = await UserService.init()
-        userStats = await usersService.getUserStats(userIds)
+        userStats = await (usersService as UserService).getUserStats(userIds)
         paymentInfo = await paymentService.getPaymentInfo(provider.id)
     }
 

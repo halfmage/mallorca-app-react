@@ -3,7 +3,11 @@ import React from 'react'
 import { useTranslation } from '@/app/i18n'
 import Link from 'next/link'
 
-export default async function LoginPage({ params }) {
+interface Props {
+  params: Promise<{ lng: string }>
+}
+
+export default async function LoginPage({ params }: Props) {
     const { lng } = await params
     const { t } = await useTranslation(lng) // eslint-disable-line react-hooks/rules-of-hooks
     return (

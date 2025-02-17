@@ -5,12 +5,15 @@ import { getSeason } from '@/app/api/utils/helpers'
 
 const formatTime = (time: string) => moment(time, "HH:mm:ss").format("HH:mm")
 
+// @ts-expect-error: skip type for now
 const OpeningHours = ({ days }) => {
   const { t, i18n: { language } } = useTranslation()
   moment.locale(language)
   const items = useMemo(
     () => days.filter(
+      // @ts-expect-error: skip type for now
       ({ season }) => getSeason() === season
+    // @ts-expect-error: skip type for now
     ).sort((a, b) => a.day - b.day),
     [days]
   )
@@ -23,6 +26,7 @@ const OpeningHours = ({ days }) => {
           {t('providerDetail.openingHours.title')}
         </h3>
         {items.map(
+          // @ts-expect-error: skip type for now
           day => <div key={day.day} className="flex flex-row justify-between">
             <div>{moment().isoWeekday(day.day).format("dddd")}</div>
             <div>{day.closed ? t('providerDetail.openingHours.closed') : `${formatTime(day.from)} - ${formatTime(day.to)}`}</div>

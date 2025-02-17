@@ -146,6 +146,13 @@
         "title": "About You",
         "description": "This information helps us to provide a better service for you and tailor a better experience on out platform."
       },
+      "password": {
+        "title": "Password",
+        "currentPassword": "Current password",
+        "newPassword": "Password",
+        "repeatPassword": "Repeat Password",
+        "submit": "Update password"
+      },
       "success": {
         "profile": "Profile updated successfully!"
       },
@@ -312,7 +319,10 @@
       "passwordHint": "Password must be at least 6 characters",
       "repeatPassword": "Repeat Password",
       "submit": "Update",
-      "notReady": "Technical error"
+      "notReady": "Technical error",
+      "error": {
+        "passwordNotMatch": "Passwords do not match"
+      }
     },
     "claimBusiness": {
       "form": {

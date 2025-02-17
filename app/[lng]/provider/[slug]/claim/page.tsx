@@ -5,9 +5,14 @@ import ClaimBusiness from '@/components/ClaimBusiness'
 import ProviderService from '@/app/api/utils/services/ProviderService'
 import UserService, {isAdmin} from '@/app/api/utils/services/UserService'
 
-export default async function ClaimBusinessPage({params}) {
+interface Props {
+  params: Promise<{ lng: string, slug: string }>
+}
+
+export default async function ClaimBusinessPage({ params }: Props) {
   const {slug, lng} = await params
   const cookieStore = await cookies()
+  // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
   const supabase = await createClient(cookieStore)
   const {data: {user}} = await supabase.auth.getUser();
 
@@ -23,7 +28,7 @@ export default async function ClaimBusinessPage({params}) {
   }
 
   const userService = await UserService.init()
-  const users = await userService.getAllUsers()
+  const users = await (userService as UserService).getAllUsers()
   const userOptions = users.map(
     ({id, email, user_metadata}) => ({
       value: id,

@@ -7,6 +7,7 @@ import { isAdmin } from '@/app/api/utils/services/UserService'
 export async function PATCH(request: NextRequest) {
     const { images } = await request.json()
     const cookieStore = await cookies()
+    // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user?.id) {

@@ -7,6 +7,7 @@ import Link from 'next/link'
 import {translateStatus} from '@/app/api/utils/helpers'
 import {STATUS_VERIFIED, STATUS_PAYMENT_COMPLETED, STATUS_REJECTED} from '@/app/api/utils/constants'
 
+// @ts-expect-error: skip type for now
 const Provider = ({provider}) => {
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState(provider?.status)
@@ -17,6 +18,7 @@ const Provider = ({provider}) => {
     () => {
       const timestamp = [
         provider?.updated_at,
+        // @ts-expect-error: skip type for now
         ...(provider?.claims || []).map(claim => claim?.updated_at)
       ].filter(Boolean).sort().reverse()?.[0]
 
@@ -43,6 +45,7 @@ const Provider = ({provider}) => {
           setClaim(null)
         }
       } catch (error) {
+        // @ts-expect-error: skip type for now
         console.error(error.message)
       } finally {
         setLoading(false)
@@ -55,6 +58,7 @@ const Provider = ({provider}) => {
     if (provider?.claims?.length) {
       setClaim(
         provider.claims.sort(
+          // @ts-expect-error: skip type for now
           (itemA, itemB) => itemA.updated_at > itemB.updated_at ?
             1 :
             (itemA.updated_at < itemB.updated_at ? -1 : 0)

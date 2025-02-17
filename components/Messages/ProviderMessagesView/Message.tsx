@@ -6,6 +6,8 @@ import Markdown from 'react-markdown'
 import { useTranslation } from '@/app/i18n/client'
 import Image from '@/components/shared/Image'
 
+
+// @ts-expect-error: skip type for now
 const Message = ({ message }) => {
     const { t } = useTranslation()
     const readPercent = Math.round(100/(message.receivedCount || 1) * (message.viewedCount || 0))

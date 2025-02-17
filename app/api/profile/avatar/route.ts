@@ -7,6 +7,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData()
     const image = formData.get('image')
     const cookieStore = await cookies()
+    // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user?.id) {
@@ -16,7 +17,7 @@ export async function POST(request: NextRequest) {
     const fileUploadService = new FileUploadService()
     let imageUrl
     try {
-        imageUrl = await fileUploadService.upload(image)
+        imageUrl = await fileUploadService.upload(image as File)
     } catch {
         return Response.json(null, { status: 400 })
     }
@@ -35,6 +36,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE() {
     const cookieStore = await cookies()
+    // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user?.id || !user?.user_metadata?.avatar_url) {

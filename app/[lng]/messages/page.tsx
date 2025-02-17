@@ -6,16 +6,21 @@ import ProviderService from '@/app/api/utils/services/ProviderService'
 // import MessageService from '@/app/api/utils/services/MessageService'
 // import UserMessagesView from '@/components/Messages/UserMessagesView'
 
-export default async function MessagesPage({ params }) {
+interface Props {
+  params: Promise<{ lng: string }>
+}
+
+export default async function MessagesPage({ params }: Props) {
     const { lng } = await params
     const cookieStore = await cookies()
+    // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user?.id) {
         redirect(`/${lng}/login`)
     }
     const providerService = new ProviderService(supabase)
-    const providers = await providerService.getProvidersByUserId(user.id, lng)
+    const providers = await providerService.getProvidersByUserId(user.id)
 
     if (!providers?.length) {
         return redirect(`/${lng}`)

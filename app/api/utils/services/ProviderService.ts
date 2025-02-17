@@ -88,8 +88,10 @@ class ProviderService extends EntityService {
 
     return {
       ...data,
+      // @ts-expect-error: skip type for now
       maincategories: categoryService.mapCategory(data?.maincategories),
       subcategories: (data?.provider_subcategories || []).map(
+        // @ts-expect-error: skip type for now
         item => categoryService.mapCategory(item?.subcategories)
       ),
       'provider_images': await Promise.all((data?.provider_images || []).map(this.getImageWithUrl))
@@ -133,6 +135,7 @@ class ProviderService extends EntityService {
       ...data,
       maincategory: categoryService.mapCategory(data.maincategories),
       subcategories: (data.provider_subcategories || []).map(
+        // @ts-expect-error: skip type for now
         item => categoryService.mapCategory(item?.subcategories)
       ),
       mainImage: await this.getProviderMainImage(data)
@@ -204,7 +207,7 @@ class ProviderService extends EntityService {
   }
 
   // Get provider statistics
-  public async getProviderStats(providerId) {
+  public async getProviderStats(providerId: string) {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -281,7 +284,7 @@ class ProviderService extends EntityService {
     language: string | null = 'en',
     categories: Array<number | string> = [],
     keyword: string | null | undefined = null,
-    sort: string = SORTING_ORDER_NEW,
+    sort: string | null | undefined = SORTING_ORDER_NEW,
     limit: number | null | undefined = null
   ) {
     const query = this.supabase
@@ -311,20 +314,24 @@ class ProviderService extends EntityService {
     if (keyword) {
       query.ilike('providers.name', `%${keyword}%`)
     }
+    // @ts-expect-error: skip type for now
     this.applySortAndLimitToQuery(query, sort, limit)
     const {data} = await query
 
     const categoryService = new CategoryService(this.supabase)
 
+    // @ts-expect-error: skip type for now
     const providers = data
       .map((item) => item?.providers)
       .filter(Boolean)
       .map(
+        // @ts-expect-error: skip type for now
         ({maincategories, saved_providers: savedCount, provider_subcategories, ...item}) => ({
           ...item,
           savedCount: savedCount?.[0]?.count || 0,
           maincategories: categoryService.mapCategory(maincategories),
           subcategories: (provider_subcategories || []).map(
+            // @ts-expect-error: skip type for now
             item => categoryService.mapCategory(item?.subcategories)
           ),
         })
@@ -355,7 +362,10 @@ class ProviderService extends EntityService {
     return (data || []).map(({user_id}) => user_id)
   }
 
-  public async isProviderSaved(providerId: string, userId: string): Promise<boolean> {
+  public async isProviderSaved(providerId: string, userId: string|undefined): Promise<boolean> {
+    if (!userId) {
+      return false
+    }
     const {data} = await this.supabase
       .from('saved_providers')
       .select('provider_id')
@@ -395,7 +405,7 @@ class ProviderService extends EntityService {
     language: string | null = 'en',
     userId: string | null | undefined = null, // eslint-disable-line @typescript-eslint/no-unused-vars
     subCategories: Array<number | string> = [],
-    sort: string = SORTING_ORDER_NEW,
+    sort: string | null | undefined = SORTING_ORDER_NEW,
     limit: number | null | undefined = null
   ) {
     const query = this.supabase
@@ -424,6 +434,7 @@ class ProviderService extends EntityService {
       query.eq('saved_providers.user_id', userId)
     }
 
+    // @ts-expect-error: skip type for now
     this.applySortAndLimitToQuery(query, sort, limit)
 
     const {data} = await query
@@ -436,7 +447,9 @@ class ProviderService extends EntityService {
     // As we still need to show all subcategories for provider and not only the selected ones we are filtering them here
     if (subCategories.length) {
       items = items.filter(provider => provider?.provider_subcategories?.some(
+        // @ts-expect-error: skip type for now
         providerSubcategory => subCategories.includes(providerSubcategory?.subcategories?.id) ||
+          // @ts-expect-error: skip type for now
           subCategories.includes(providerSubcategory?.subcategories?.slug)
       ))
     }
@@ -450,6 +463,7 @@ class ProviderService extends EntityService {
         ...item,
         maincategories: categoryService.mapCategory(maincategories),
         subcategories: (provider_subcategories || []).map(
+          // @ts-expect-error: skip type for now
           item => categoryService.mapCategory(item?.subcategories)
         ),
       })
@@ -460,6 +474,7 @@ class ProviderService extends EntityService {
     )
   }
 
+  // @ts-expect-error: skip type for now
   private processProviderSaved = async (provider) => {
     if (!provider) {
       return null
@@ -477,6 +492,7 @@ class ProviderService extends EntityService {
   }
 
   // Helper method to process provider images
+  // @ts-expect-error: skip type for now
   private processProviderImages = async (provider) => {
     if (!provider) {
       return null
@@ -510,13 +526,16 @@ class ProviderService extends EntityService {
       .order('created_at', {ascending: false})
     const userService = await UserService.init()
     const userIds = new Set(
+      // @ts-expect-error: skip type for now
       data.reduce((result, provider) => [
         ...result,
         ...((provider?.business_claims || []).map(claim => claim?.claimer_id).filter(Boolean))
       ], [])
     )
-    const users = await userService.getUsersByIds([...userIds])
+    // @ts-expect-error: skip type for now
+    const users = await (userService as UserService).getUsersByIds([ ...userIds ])
 
+    // @ts-expect-error: skip type for now
     return data.map(
       ({business_claims: claims, saved_providers: savedProviders, ...provider}) => ({
         ...provider,
@@ -599,7 +618,7 @@ class ProviderService extends EntityService {
     if (usersExpectsRoleChange.length) {
       const userService = await UserService.init()
       await Promise.all(
-        usersExpectsRoleChange.map(async (userId) => await userService.setRole(userId))
+        usersExpectsRoleChange.map(async (userId) => await (userService as UserService).setRole(userId))
       )
     }
 
@@ -726,6 +745,7 @@ class ProviderService extends EntityService {
             image_url: url
           })
         } catch (uploadError) {
+          // @ts-expect-error: skip type for now
           console.error('Error uploading image:', uploadError.message)
           continue
         }
@@ -780,12 +800,14 @@ class ProviderService extends EntityService {
     return true
   }
 
+  // @ts-expect-error: skip type for now
   public async moveProviderImagesToCloudinary(providers) {
     const images = this.getExternalProvidersImages(providers)
 
     const fileUploadService = new FileUploadService()
     await Promise.all(
       images.map(
+        // @ts-expect-error: skip type for now
         async (image) => {
           const imageUrl = await fileUploadService.uploadByUrl(image.url)
 
@@ -797,14 +819,18 @@ class ProviderService extends EntityService {
     )
   }
 
+  // @ts-expect-error: skip type for now
   protected getExternalProvidersImages(providers) {
     return providers
+      // @ts-expect-error: skip type for now
       .flatMap(provider => (provider?.provider_images || [])
         .filter(
+          // @ts-expect-error: skip type for now
           image => image?.image_url && image.image_url.startsWith('http') &&
             !image.image_url.startsWith(DEFAULT_IMAGE_SOURCE)
         )
         .map(
+          // @ts-expect-error: skip type for now
           image => ({
             id: image?.id,
             url: image?.image_url
@@ -852,7 +878,9 @@ class ProviderService extends EntityService {
     const categoryService = new CategoryService(this.supabase)
 
     return Promise.all(
+      // @ts-expect-error: skip type for now
       data.map(async mainCategory => {
+        // @ts-expect-error: skip type for now
         const category = categoryService.mapCategory(mainCategory)
         const providers = await Promise.all(
           mainCategory.providers.map(
@@ -867,6 +895,7 @@ class ProviderService extends EntityService {
                 savedCount: savedCount?.[0]?.count,
                 maincategories: category,
                 subcategories: (provider_subcategories || []).map(
+                  // @ts-expect-error: skip type for now
                   item => categoryService.mapCategory(item?.subcategories)
                 ),
               }
@@ -897,13 +926,15 @@ class ProviderService extends EntityService {
 
   public async search(keyword: string, language: string) {
     const subcategories = await this.searchSubcategoriesByName(keyword, language)
+    // @ts-expect-error: skip type for now
     const providerIds = subcategories.reduce(
       (acc, subcategory) => (
         acc.push(
+          // @ts-expect-error: skip type for now
           ...(subcategory?.provider_subcategories || [])?.map(
             ({provider_id}) => provider_id)
         ),
-          acc
+        acc
       ),
       []
     )
@@ -944,6 +975,7 @@ class ProviderService extends EntityService {
         .eq('provider_subcategories.subcategories.subcategory_translations.language', language)
 
       return await Promise.all(
+        // @ts-expect-error: skip type for now
         data.map(provider => this.processProviderImages(provider))
       )
     } catch {
@@ -979,6 +1011,7 @@ class ProviderService extends EntityService {
     }
   }
 
+  // @ts-expect-error: skip type for now
   private getImageWithUrl = async (image) => {
     if (image?.image_url && image.image_url.startsWith('http')) {
       return {
@@ -997,9 +1030,11 @@ class ProviderService extends EntityService {
     }
   }
 
+  // @ts-expect-error: skip type for now
   private async getProviderMainImage(provider) {
     const mainImage = (provider?.provider_images || [])
       .reduce(
+        // @ts-expect-error: skip type for now
         (mainImage, image) =>
           mainImage && mainImage?.created_at < image?.created_at ?
             mainImage :

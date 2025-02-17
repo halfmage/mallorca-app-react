@@ -12,10 +12,12 @@ export const createClient = (
         {
             cookies: {
                 getAll() {
+                    // @ts-expect-error: Property 'getAll' does not exist on type 'Promise<ReadonlyRequestCookies>'.
                     return cookieStore.getAll()
                 },
                 setAll(cookiesToSet) {
                     try {
+                        // @ts-expect-error: Property 'set' does not exist on type 'Promise<ReadonlyRequestCookies>'.
                         cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
                     } catch {
                         // The `setAll` method was called from a Server Component.

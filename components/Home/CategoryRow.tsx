@@ -3,9 +3,15 @@ import { useTranslation } from '@/app/i18n'
 import ProviderCard from '@/components/ProviderCard'
 import Link from 'next/link'
 import CategoryIcon from '@/components/shared/CategoryIcon'
+import { Category, Provider } from '@/app/api/utils/types'
 
+interface Props {
+  category: Category
+  providers: Provider[],
+  lng: string
+}
 
-const CategoryRow = async ({category, providers, lng}) => {
+const CategoryRow = async ({ category, providers, lng }: Props) => {
     const { t } = await useTranslation(lng) // eslint-disable-line react-hooks/rules-of-hooks
 
     return (
@@ -25,7 +31,7 @@ const CategoryRow = async ({category, providers, lng}) => {
 
             {providers.length > 0 && (
                 <div className="flex overflow-x-auto md:grid md:grid-cols-3 lg:grid-cols-5 gap-5 pb-4 md:pb-0 *:max-w-[250px] *:md:max-w-none *:shrink-0">
-                    {providers.map((provider) => (
+                    {providers.map((provider: Provider) => (
                         <ProviderCard
                             key={provider.id}
                             provider={provider}

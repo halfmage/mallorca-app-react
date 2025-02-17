@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
     const providerId = formData.get('providerId') || ''
     const image = formData.get('image')
     const cookieStore = await cookies()
+    // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user?.id) {
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     const providerService = new ProviderService(supabase)
-    const provider = await providerService.getProviderByUserId(user.id, providerId)
+    const provider = await providerService.getProviderByUserId(user.id, providerId as string)
 
     if (!provider?.id) {
         return Response.json(null, { status: 400 })
@@ -29,11 +30,11 @@ export async function POST(request: NextRequest) {
 
     if (image) {
         const fileUploadService = new FileUploadService()
-        imageUrl = await fileUploadService.upload(image)
+        imageUrl = await fileUploadService.upload(image as File)
     }
 
     const messageService = new MessageService(supabase)
-    const data = await messageService.send(provider.id, user.id, title, text, imageUrl)
+    const data = await messageService.send(provider.id, user.id, title as string, text as string, imageUrl)
 
     return Response.json({ data })
 }

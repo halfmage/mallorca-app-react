@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { ROLE_USER } from '@/app/api/utils/constants'
 import Image from '@/components/shared/Image'
 
+// @ts-expect-error: skip type for now
 const Profile = ({ userData, role }) => {
     const { push, refresh } = useRouter()
     const { register, handleSubmit } = useForm({
@@ -68,6 +69,7 @@ const Profile = ({ userData, role }) => {
         [ handleSubmit ]
     )
 
+    // @ts-expect-error: skip type for now
     const handleAvatarUpload = async (event) => {
         try {
             setUploading(true);

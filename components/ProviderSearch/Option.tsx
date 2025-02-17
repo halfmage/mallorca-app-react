@@ -9,7 +9,7 @@ interface OptionData {
   value: string
   data: {
     type: string
-    [key: string]: any
+    [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
   }
 }
 

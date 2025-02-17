@@ -6,6 +6,7 @@ import ProviderService from '@/app/api/utils/services/ProviderService'
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
     const cookieStore = await cookies()
+    // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user?.id) {
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
         (searchParams.get('maincategory') || '').split(',').filter(Boolean),
         searchParams.get('keyword'),
         searchParams.get('sort'),
-        searchParams.get('limit')
+        searchParams.get('limit') ? Number(searchParams.get('limit')) : null
     )
 
     return Response.json({ data })

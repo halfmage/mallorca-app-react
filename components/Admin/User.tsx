@@ -4,6 +4,7 @@ import React, { useCallback } from 'react'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 
+// @ts-expect-error: skip type for now
 const User = ({ user, onRemove }) => {
     const { t } = useTranslation()
     const handleClick = useCallback(

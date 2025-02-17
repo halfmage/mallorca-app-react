@@ -5,6 +5,7 @@ import {useTranslation} from '@/app/i18n/client'
 import Select from "react-select";
 import {useRouter} from "next/navigation";
 
+// @ts-expect-error: skip type for now
 const ClaimBusiness = ({provider, userOptions}) => {
   const [savingStatus, setSavingStatus] = useState('idle')
   const [value, setValue] = useState(null)
@@ -20,6 +21,7 @@ const ClaimBusiness = ({provider, userOptions}) => {
           `/api/provider/${provider.id}/claim`,
           {
             method: 'POST',
+            // @ts-expect-error: skip type for now
             body: JSON.stringify({user: value?.value})
           }
         )
@@ -28,6 +30,7 @@ const ClaimBusiness = ({provider, userOptions}) => {
           push(`/${language}/admin`)
         }
       } catch (error) {
+        // @ts-expect-error: skip type for now
         console.error(t('claimBusiness.error.saveProvider'), error.message);
       } finally {
         setSavingStatus('idle')

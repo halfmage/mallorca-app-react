@@ -6,13 +6,19 @@ import Category from '@/components/Category'
 import ProviderService from '@/app/api/utils/services/ProviderService'
 import CategoryService from '@/app/api/utils/services/CategoryService'
 
-export default async function CategoryPage({ params, searchParams }) {
+interface Props {
+  params: Promise<{ lng: string, slug: string }>,
+  searchParams: Promise<{ subcategories: string }>
+}
+
+export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug, lng } = await params
   const { subcategories: selectedSubcategories } = await searchParams
   const selectedSubcategoriesSlugs = selectedSubcategories ?
       selectedSubcategories.split(',').filter(Boolean) :
       []
   const cookieStore = await cookies()
+  // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
   const supabase = await createClient(cookieStore)
   const { data: { user } } = await supabase.auth.getUser()
   const providerService = new ProviderService(supabase)

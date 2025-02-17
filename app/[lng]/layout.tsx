@@ -21,9 +21,13 @@ export const metadata: Metadata = {
     description: "Mallorca Xclusive",
 };
 
-export default async function RootLayout({ children, params }) {
+export default async function RootLayout({ children, params }: Readonly<{
+  children: React.ReactNode,
+  params: Promise<{ lng: typeof languages[number] }>
+}>) {
     const { lng } = await params
     const cookieStore = await cookies()
+    // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
     const supabase = await createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
     const messageService = new MessageService(supabase)

@@ -1,8 +1,19 @@
 import React from 'react'
 import { useTranslation } from '@/app/i18n'
 import CategoryRow from './CategoryRow'
+import { Provider } from '@/app/api/utils/types'
 
-const Home = async ({ categories, lng }) => {
+interface Props {
+  categories: Array<{
+    id: string
+    name: string
+    slug: string
+    providers: Provider[]
+  }>
+  lng: string
+}
+
+const Home = async ({ categories, lng }: Props) => {
   const { t } = await useTranslation(lng) // eslint-disable-line react-hooks/rules-of-hooks
 
   return (

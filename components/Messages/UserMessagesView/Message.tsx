@@ -6,9 +6,11 @@ import Markdown from 'react-markdown'
 import moment from 'moment'
 import Image from '@/components/shared/Image'
 
+// @ts-expect-error: skip type for now
 const Message = ({ message }) => {
     const [ isRead, setIsRead ] = useState(false)
     const markAsRead = useCallback(
+        // @ts-expect-error: skip type for now
         async (value) => {
             if (value) {
                 setIsRead(value)

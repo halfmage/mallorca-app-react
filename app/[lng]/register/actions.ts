@@ -8,6 +8,7 @@ import UserService from '@/app/api/utils/services/UserService'
 
 export async function signup(formData: FormData) {
     const cookieStore = await cookies()
+  // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
     const supabase = await createClient(cookieStore)
 
     // type-casting here for convenience
@@ -25,7 +26,7 @@ export async function signup(formData: FormData) {
 
     if (userData?.user?.id) {
         const userService = await UserService.init()
-        const pendingId = await userService.postSignUp(
+        const pendingId = await (userService as UserService).postSignUp(
             userData.user.id,
             `${formData.get('firstName') || ''} ${formData.get('lastName') || ''}`,
         )

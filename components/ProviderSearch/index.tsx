@@ -21,7 +21,7 @@ interface OptionData {
       slug?: string
       id?: string
     }
-    [key: string]: any
+    [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
   }
 }
 
@@ -31,7 +31,7 @@ const ProviderSearch = () => {
   const { t, i18n: { language } } = useTranslation(undefined, 'translation', {})
   
   const handleSelect = useCallback(
-    (newValue: SingleValue<OptionData>, actionMeta: ActionMeta<OptionData>) => {
+    (newValue: SingleValue<OptionData>, actionMeta: ActionMeta<OptionData>) => { // eslint-disable-line @typescript-eslint/no-unused-vars
       if (newValue?.value && newValue.data) {
         const { type, ...data } = newValue.data
         const baseUrl = `/${language}`

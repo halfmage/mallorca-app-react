@@ -7,9 +7,13 @@ import CategoryService from '@/app/api/utils/services/CategoryService'
 import { isAdmin } from '@/app/api/utils/services/UserService'
 import EditProvider from '@/components/EditProvider'
 
-export default async function EditProviderPage({ params }) {
+interface Props {
+  params: Promise<{ lng: string, id: string }>
+}
+export default async function EditProviderPage({ params }: Props) {
     const { id, lng } = await params
     const cookieStore = await cookies()
+    // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
     const supabase = createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
     if (!isAdmin(user)) {

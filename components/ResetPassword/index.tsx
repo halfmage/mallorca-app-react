@@ -6,6 +6,7 @@ import {useForm} from "react-hook-form";
 import { createClient } from '@/utils/supabase/client'
 import { MIN_CHARACTERS_NUMBER } from '@/app/api/utils/constants'
 
+// @ts-expect-error: skip type for now
 const ResetPassword = ({onSubmit: onSubmitAction}) => {
   const {t} = useTranslation()
   const [loading, setLoading] = useState(false)

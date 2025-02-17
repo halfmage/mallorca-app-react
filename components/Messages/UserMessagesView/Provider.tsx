@@ -4,6 +4,7 @@ import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from '@/app/i18n/client'
 import ProviderImage from './ProviderImage'
 
+// @ts-expect-error: skip type for now
 const Provider = ({ provider, isActive, onClick }) => {
     const { t } = useTranslation()
     const textHtml = useMemo(
@@ -11,6 +12,7 @@ const Provider = ({ provider, isActive, onClick }) => {
         [ provider ]
     )
     const hasNewMessages = useMemo(
+        // @ts-expect-error: skip type for now
         () => provider?.messages?.length > 0 && provider?.messages?.some((message) => !message.read),
         [ provider ]
     )

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 const Alert = ({
+  // @ts-expect-error: skip type for now
   children, delay, show: isShown = false, onClose, className
 }) => {
   const [show, setShow] = useState(isShown)

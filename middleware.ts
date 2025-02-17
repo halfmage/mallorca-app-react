@@ -10,6 +10,7 @@ export async function middleware(request: NextRequest) {
     let lng
 
     if (request.cookies.has(cookieName)) {
+        // @ts-ignore
         lng = acceptLanguage.get(request.cookies.get(cookieName).value)
     }
     if (!lng) {
@@ -29,7 +30,7 @@ export async function middleware(request: NextRequest) {
     }
 
     if (request.headers.has('referer')) {
-        const refererUrl = new URL(request.headers.get('referer'))
+        const refererUrl = new URL(request.headers.get('referer') as string)
         const lngInReferer = languages.find((l) => refererUrl.pathname.startsWith(`/${l}`))
         const response = NextResponse.next()
         if (lngInReferer) response.cookies.set(cookieName, lngInReferer)

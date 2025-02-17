@@ -4,6 +4,7 @@ import React from 'react'
 import { useTranslation } from '@/app/i18n/client'
 import Image from '@/components/shared/Image'
 
+// @ts-expect-error: skip type for now
 const ProviderImage = ({ provider }) => {
     const { t } = useTranslation()
 

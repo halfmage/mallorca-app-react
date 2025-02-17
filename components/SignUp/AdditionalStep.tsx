@@ -6,6 +6,10 @@ import {useTranslation} from '@/app/i18n/client'
 import {useForm} from "react-hook-form";
 import countries from "i18n-iso-countries";
 
+interface Props {
+  pendingId: string
+}
+
 const FORM_OPTIONS = {
   defaultValues: {
     birthdate: '',
@@ -14,7 +18,7 @@ const FORM_OPTIONS = {
   },
 }
 
-const AdditionalStep = ({pendingId}) => {
+const AdditionalStep = ({pendingId}: Props) => {
   const {push} = useRouter()
   const {register, handleSubmit} = useForm(FORM_OPTIONS)
 

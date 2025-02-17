@@ -1,7 +1,11 @@
 import React from 'react'
 import { useTranslation } from '@/app/i18n'
 
-export default async function ForbiddenPage({ params }) {
+interface Props {
+  params: Promise<{ lng: string }>
+}
+
+export default async function ForbiddenPage({ params }: Props) {
     const { lng } = await params
     const { t } = await useTranslation(lng) // eslint-disable-line react-hooks/rules-of-hooks
 

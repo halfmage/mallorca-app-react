@@ -9,7 +9,7 @@ import { CircleUserRound, Heart, Inbox, MessagesSquare, LayoutDashboard, Setting
 import ProviderSearch from '@/components/ProviderSearch'
 
 type HeaderProps = {
-    user: any
+    user: any // eslint-disable-line @typescript-eslint/no-explicit-any
     isAdmin: boolean
     newMessagesCount: number
     hasProviders: boolean

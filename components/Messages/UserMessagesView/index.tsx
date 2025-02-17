@@ -7,6 +7,7 @@ import Message from './Message'
 import Provider from './Provider'
 import ProviderImage from './ProviderImage'
 
+// @ts-expect-error: skip type for now
 const UserMessagesView = ({ providers }) => {
     const { t, i18n: { language } } = useTranslation()
     const [ selectedProvider, setSelectedProvider ] = useState(providers?.[0])
@@ -18,6 +19,7 @@ const UserMessagesView = ({ providers }) => {
                 <div className="md:col-span-5 border-2 border-gray-300 p-4">
                     {providers?.length > 0 &&
                         providers.map(
+                            // @ts-expect-error: skip type for now
                             (provider) => (
                                 <Provider
                                     provider={provider}
@@ -53,6 +55,7 @@ const UserMessagesView = ({ providers }) => {
                               <p className="text-gray-600 mb-4">{selectedProvider?.maincategories?.name}</p>
                           )}
                           {selectedProvider?.subcategories?.length > 0 && selectedProvider?.subcategories.map(
+                              // @ts-expect-error: skip type for now
                               (subcategory) => (
                                   <span key={subcategory.id}>
                                         {subcategory.name}
@@ -63,6 +66,7 @@ const UserMessagesView = ({ providers }) => {
                     </div>
                       {selectedProvider?.messages?.length > 0 &&
                           selectedProvider.messages.map(
+                              // @ts-expect-error: skip type for now
                               (message) => (<Message message={message} key={message.id}/>)
                           )
                       }

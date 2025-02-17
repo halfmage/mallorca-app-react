@@ -9,18 +9,20 @@ const LanguageSwitcher = () => {
   const { push } = useRouter()
   const pathname = usePathname()
   const handleChange = useCallback(
-      (e) => {
-          const oldLng = i18n.language
-          const lng = e.target.value
-          i18n.changeLanguage(lng)
-          push(pathname.startsWith(`/${oldLng}`) ? pathname.replace(`/${oldLng}`, `/${lng}`) : `/${lng}`)
-      },
-      [i18n, push, pathname]
+    // @ts-expect-error: skip type for now
+    (e) => {
+      const oldLng = i18n.language
+      const lng = e.target.value
+      i18n.changeLanguage(lng)
+      push(pathname.startsWith(`/${oldLng}`) ? pathname.replace(`/${oldLng}`, `/${lng}`) : `/${lng}`)
+    },
+    [ i18n, push, pathname ]
   )
 
   return (
-    <div className="p-1.5 px-2.5 rounded-lg flex flex-col items-center hover:bg-gray-50 relative opacity-70 hover:opacity-100">
-      <Globe size={24} strokeWidth={1.5} />
+    <div
+      className="p-1.5 px-2.5 rounded-lg flex flex-col items-center hover:bg-gray-50 relative opacity-70 hover:opacity-100">
+      <Globe size={24} strokeWidth={1.5}/>
       {i18n.language === 'en' ? 'English' : i18n.language === 'de' ? 'Deutsch' : 'Español'}
       <select
         onChange={handleChange}

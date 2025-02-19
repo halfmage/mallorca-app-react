@@ -12,11 +12,34 @@ export default {
       center: true,
       padding: {
         DEFAULT: '1.5rem',
-      }
+        sm: '2rem',
+        lg: '3rem',
+        xl: '4rem',
+        '2xl': '5rem',
+      },
     },
     extend: {
       fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
         gloock: ['Gloock', 'serif'],
+      },
+      spacing: {
+        '4.5': '1.125rem',
+        '13': '3.25rem',
+        '15': '3.75rem',
+        '128': '32rem',
+        '144': '36rem',
+      },
+      maxWidth: {
+        '8xl': '88rem',
+        '9xl': '96rem',
+      },
+      fontSize: {
+        '2xs': ['0.625rem', { lineHeight: '1rem' }],
+        '3xs': ['0.5rem', { lineHeight: '0.75rem' }],
+      },
+      borderWidth: {
+        '3': '3px',
       },
       colors: {
         background: "var(--background)",

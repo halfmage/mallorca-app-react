@@ -12,7 +12,8 @@
       }
     },
     "home": {
-      "title": "Encuentre su Proveedor Perfecto",
+      "title": "Encuentre Top-Lugares en Mallorca.",
+      "subtitle": "Descubra los mejores lugares para comer, beber y disfrutar en la isla de Mallorca.",
       "noProviders": "No hay proveedores disponibles en este momento",
       "loading": "Cargando proveedores...",
       "category": "Categoría",

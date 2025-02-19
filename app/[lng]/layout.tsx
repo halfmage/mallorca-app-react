@@ -49,7 +49,9 @@ export default async function RootLayout({ children, params }: Readonly<{
             {/*        {logoutMessage}*/}
             {/*    </div>*/}
             {/*)}*/}
-            <main className="container">{children}</main>
+            <main className="container">
+                {children}
+            </main>
         </>
         </body>
         </html>

@@ -31,10 +31,9 @@ const ProviderCard = ({
       className="group"
     >
       {/* Provider Image */}
-      <div
-        className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 relative">
+      <div className="aspect-[5/4] w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 relative group">
         {provider?.mainImage?.publicUrl ? (
-          <div className="*:w-full *:h-full">
+          <div className="w-full h-full *:w-full *:h-full group-hover:scale-105 transition-all">
             <Image
               src={provider.mainImage.publicUrl}
               alt={provider.name}
@@ -57,7 +56,7 @@ const ProviderCard = ({
       {/* Provider Details */}
       <div className="mt-2">
         <div
-          className="font-bold group-hover:underline text-lg tracking-tight truncate flex items-center gap-1">
+          className="font-bold text-lg tracking-tight truncate flex items-center gap-1">
           {provider.name}
         </div>
         <div className='flex items-center gap-1 text-sm overflow-hidden'>

@@ -18,8 +18,9 @@ const Home = async ({ categories, lng }: Props) => {
 
   return (
     <>
-      <div className="h1 py-6">
-        {t('home.title')}
+      <div className="text-center py-8 md:py-12">
+        <div className="h1 py-6">{t('home.title')}</div>
+        <p>{t('home.subtitle')}</p>
       </div>
       <div className='flex flex-col'>
         {categories.length === 0 ? (

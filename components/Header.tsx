@@ -54,7 +54,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
   );
 
   return (
-    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 relative z-40">
+    <header className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-950 relative z-40">
       <div className="container">
         <div className="flex justify-between items-center h-16 gap-2">
           <Link href={`/${language}`} className="text-xl font-bold shrink-0 text-black dark:text-white transition-colors" onClick={closeMenu}>
@@ -99,33 +99,33 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
             {user ? (
               <>
                 {isAdmin && (
-                  <Link href={`/${language}/admin`} className="hover:bg-gray-50 hover:opacity-100">
+                  <Link href={`/${language}/admin`} className="hover:opacity-100">
                     <Settings size={24} strokeWidth={1.5} />
                     {t('header.admin')}
                   </Link>
                 )}
                 {hasProviders && (
-                    <Link href={`/${language}/dashboard`} className="hover:bg-gray-50 hover:opacity-100">
+                    <Link href={`/${language}/dashboard`} className="hover:opacity-100">
                       <LayoutDashboard size={24} strokeWidth={1.5} />
                       Dashboard
                     </Link>
                 )}
                 {hasProviders && (
-                    <Link href={`/${language}/messages`} className="hover:bg-gray-50 hover:opacity-100">
+                    <Link href={`/${language}/messages`} className="hover:opacity-100">
                       <MessagesSquare size={24} strokeWidth={1.5} />
                       {t('header.messages')}
                     </Link>
                 )}
-                <Link href={`/${language}/my-messages`} className="hover:bg-gray-50 hover:opacity-100">
+                <Link href={`/${language}/my-messages`} className="hover:opacity-100">
                   <Inbox size={24} strokeWidth={1.5} />
                   {t('header.myMessages')} {newMessagesCount > 0 && `(${newMessagesCount})`}
                 </Link>
-                <Link href={`/${language}/saved`} className="hover:bg-gray-50 hover:opacity-100">
+                <Link href={`/${language}/saved`} className="hover:opacity-100">
                   <Heart size={24} strokeWidth={1.5} />
                   {t('header.savedProviders')}
                 </Link>
                 <LanguageSwitcher />
-                <Link href={`/${language}/profile`} className="hover:bg-gray-50 hover:opacity-100">
+                <Link href={`/${language}/profile`} className="hover:opacity-100">
                   <AvatarDisplay />
                   <span>{t('header.profile')}</span>
                 </Link>
@@ -133,7 +133,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
             ) : (
               <>  
                 <LanguageSwitcher />
-                <Link href={`/${language}/login`} className="hover:bg-gray-50 hover:opacity-100">
+                <Link href={`/${language}/login`} className="hover:opacity-100">
                   <CircleUserRound size={24} strokeWidth={1.5} />
                   {t('header.signIn')}
                 </Link>
@@ -161,7 +161,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                 {isAdmin && (
                   <Link
                     href={`/${language}/admin`}
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                     onClick={closeMenu}
                   >
                     <Settings size={20} strokeWidth={1.5} />
@@ -172,7 +172,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                   <>
                     <Link
                       href={`/${language}/dashboard`}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                      className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                       onClick={closeMenu}
                     >
                       <LayoutDashboard size={20} strokeWidth={1.5} />
@@ -180,7 +180,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                     </Link>
                     <Link
                       href={`/${language}/messages`}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                      className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                       onClick={closeMenu}
                     >
                       <MessagesSquare size={20} strokeWidth={1.5} />
@@ -190,7 +190,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                 )}
                 <Link
                   href={`/${language}/my-messages`}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                  className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                   onClick={closeMenu}
                 >
                   <div className="relative">
@@ -205,7 +205,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                 </Link>
                 <Link
                   href={`/${language}/saved`}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                  className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                   onClick={closeMenu}
                 >
                   <Heart size={20} strokeWidth={1.5} />
@@ -216,7 +216,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                 </div>
                 <Link
                   href={`/${language}/profile`}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                  className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                   onClick={closeMenu}
                 >
                   <AvatarDisplay />
@@ -230,7 +230,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                 </div>
                 <Link
                   href={`/${language}/login`}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                  className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                   onClick={closeMenu}
                 >
                   <CircleUserRound size={20} strokeWidth={1.5} />

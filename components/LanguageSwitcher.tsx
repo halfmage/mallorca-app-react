@@ -21,7 +21,7 @@ const LanguageSwitcher = () => {
 
   return (
     <div
-      className="p-1.5 px-2.5 rounded-lg flex flex-col items-center hover:bg-gray-50 relative opacity-70 hover:opacity-100">
+      className="p-1.5 px-2.5 rounded-lg flex flex-col items-center relative opacity-70 hover:opacity-100">
       <Globe size={24} strokeWidth={1.5}/>
       {i18n.language === 'en' ? 'English' : i18n.language === 'de' ? 'Deutsch' : 'Español'}
       <select

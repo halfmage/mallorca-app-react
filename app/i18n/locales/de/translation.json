@@ -12,7 +12,8 @@
       }
     },
     "home": {
-      "title": "Finden Sie Ihren perfekten Anbieter",
+      "title": "Finde Top-Anbieter auf Mallorca.",
+      "subtitle": "Entdecken Sie die besten Orte zum Essen, Trinken und Genießen auf der Insel Mallorca.",
       "noProviders": "Derzeit keine Anbieter verfügbar",
       "loading": "Anbieter werden geladen...",
       "category": "Kategorie",

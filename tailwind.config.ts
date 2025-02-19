@@ -10,9 +10,14 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: '1rem',
+      padding: {
+        DEFAULT: '1.5rem',
+      }
     },
     extend: {
+      fontFamily: {
+        gloock: ['Gloock', 'serif'],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",

@@ -18,7 +18,8 @@
       }
     },
     "home": {
-      "title": "Find Your Perfect Provider",
+      "title": "Find top places on Mallorca.",
+      "subtitle": "Discover the best places to eat, drink, and enjoy on the island of Mallorca.",
       "noProviders": "No providers available at the moment",
       "category": "Category",
       "saves": "Saves",

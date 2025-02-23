@@ -12,12 +12,12 @@ const ProviderImage = ({ provider }) => {
         <Image
             src={provider.mainImage.publicUrl}
             alt={provider.name}
-            className="h-16 w-16 object-cover rounded-full"
+            className="h-full w-full object-cover"
             width={64}
             height={64}
         />
     ) : (
-        <div className="h-16 w-16 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded">
+        <div className="h-full w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
             <span className="text-gray-400 text-sm">
                 {t('common.noImage')}
             </span>

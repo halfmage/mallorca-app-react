@@ -53,8 +53,8 @@
         "cancelButton": "Cancel"
       },
       "user": {
-        "title": "my messages",
-        "ownProvider": "My Provider"
+        "title": "Your messages",
+        "ownProvider": "Your Provider"
       }
     },
     "providerDetail": {

@@ -8,10 +8,6 @@ import moment from 'moment'
 // @ts-expect-error: skip type for now
 const Provider = ({ provider, isActive, onClick }) => {
     const { t } = useTranslation()
-    const textHtml = useMemo(
-        () => ({ __html: provider?.messages?.[0]?.message?.text }),
-        [ provider ]
-    )
     const hasNewMessages = useMemo(
         // @ts-expect-error: skip type for now
         () => provider?.messages?.length > 0 && provider?.messages?.some((message) => !message.read),

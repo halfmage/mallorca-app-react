@@ -46,7 +46,7 @@ const Send: React.FC<SendProps> = ({ savedCount, limit, latestEmailDate, isBlock
     }
   }
 
-  const onSubmit = useCallback(
+  const onSubmit = useCallback(  // eslint-disable-line react-hooks/exhaustive-deps
     handleSubmit(
       async ({ title, text, image }) => {
         try {

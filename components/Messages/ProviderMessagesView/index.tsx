@@ -6,7 +6,7 @@ import Image from '@/components/shared/Image'
 
 // @ts-expect-error: skip type for now
 const ProviderMessagesView = async ({ lng, messages, providerId, providers }) => {
-  const { t } = await useTranslation(lng)
+  const { t } = await useTranslation(lng) // eslint-disable-line react-hooks/rules-of-hooks
 
   // @ts-expect-error: skip type for now
   const tabs = providers.map(provider => ({

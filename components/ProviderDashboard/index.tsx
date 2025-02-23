@@ -8,6 +8,7 @@ import Image from '@/components/shared/Image'
 import StatsCard from './StatsCard'
 import countries from 'i18n-iso-countries'
 import { AlertTriangle, Clock, CheckCircle } from 'lucide-react'
+import { ProviderTab } from '@/app/api/utils/types'
 
 const ProviderDashboard = ({
   // @ts-expect-error: skip type for now
@@ -53,7 +54,7 @@ const ProviderDashboard = ({
     }
   }, [paymentInfo?.cancelAt])
 
-  const renderEmptyState = (title, description) => (
+  const renderEmptyState = (title: string, description: string) => (
     <div className="flex flex-col items-center justify-center py-12 text-center">
       <div className="w-16 h-16 mb-4 text-gray-300 dark:text-gray-600">
         <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -72,7 +73,7 @@ const ProviderDashboard = ({
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-1 mb-8">
           <nav className="flex overflow-x-auto hide-scrollbar">
             <div className="flex space-x-1 min-w-full p-2">
-              {tabs.map((tab) => {
+              {tabs.map((tab: ProviderTab) => {
                 const mainImage = tab.mainImage || (tab.provider_images && tab.provider_images[0]?.publicUrl)
                 return (
                   <Link 

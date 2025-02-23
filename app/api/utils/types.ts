@@ -28,3 +28,17 @@ export interface Category {
 }
 
 export type SortingOrder = typeof SORTING_ORDER_NEW | typeof SORTING_ORDER_OLD
+
+export interface Message {
+  id: string
+  receivedCount?: number|null
+  viewedCount?: number|null
+}
+
+export interface ProviderTab {
+  key: string
+  label: string
+  mainImage: string
+  maincategory: string
+  provider_images: Array<{ publicUrl?: string|null }>
+}

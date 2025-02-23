@@ -6,6 +6,9 @@ import Link from 'next/link'
 import Message from './Message'
 import Provider from './Provider'
 import ProviderImage from './ProviderImage'
+import {
+  Category as CategoryType, Message as MessageType, Provider as ProviderType
+} from '@/app/api/utils/types'
 
 // @ts-expect-error: skip type for now
 const UserMessagesView = ({ providers }) => {
@@ -24,7 +27,7 @@ const UserMessagesView = ({ providers }) => {
                     } md:col-span-4 md:border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-y-auto`}>
                         {providers?.length > 0 ? (
                             <div className="divide-y divide-gray-200 dark:divide-gray-800">
-                                {providers.map((provider) => (
+                                {providers.map((provider: ProviderType) => (
                                     <Provider
                                         provider={provider}
                                         isActive={provider.id === selectedProvider?.id}
@@ -68,7 +71,7 @@ const UserMessagesView = ({ providers }) => {
                                     )}
                                     {selectedProvider?.subcategories?.length > 0 && (
                                         <div className="hidden sm:flex flex-wrap gap-1.5 mt-2">
-                                            {selectedProvider.subcategories.map((subcategory) => (
+                                            {selectedProvider.subcategories.map((subcategory: CategoryType) => (
                                                 <span key={subcategory.id} 
                                                       className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
                                                     {subcategory.name}
@@ -80,7 +83,7 @@ const UserMessagesView = ({ providers }) => {
                             </div>
                             <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 hide-scrollbar bg-gray-50 dark:bg-gray-950">
                                 {selectedProvider?.messages?.length > 0 ? (
-                                    selectedProvider.messages.map((message) => (
+                                    selectedProvider.messages.map((message: MessageType) => (
                                         <Message message={message} key={message.id}/>
                                     ))
                                 ) : (

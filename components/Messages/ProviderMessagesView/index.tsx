@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useTranslation } from '@/app/i18n'
 import Message from './Message'
 import Image from '@/components/shared/Image'
+import { Message as MessageType, ProviderTab } from '@/app/api/utils/types'
 
 // @ts-expect-error: skip type for now
 const ProviderMessagesView = async ({ lng, messages, providerId, providers }) => {
@@ -24,7 +25,7 @@ const ProviderMessagesView = async ({ lng, messages, providerId, providers }) =>
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-1 mb-8">
           <nav className="flex overflow-x-auto hide-scrollbar">
             <div className="flex space-x-1 min-w-full p-2">
-              {tabs.map((tab) => {
+              {tabs.map((tab: ProviderTab) => {
                 const mainImage = tab.mainImage || (tab.provider_images && tab.provider_images[0]?.publicUrl)
                 return (
                   <Link 
@@ -105,7 +106,7 @@ const ProviderMessagesView = async ({ lng, messages, providerId, providers }) =>
       {/* Messages List */}
       <div className="space-y-6 max-w-xl mx-auto">
         {messages?.length > 0 ? (
-          messages.map((message) => (
+          messages.map((message: MessageType) => (
             <Message message={message} key={message.id}/>
           ))
         ) : (

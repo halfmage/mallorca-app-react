@@ -4,7 +4,7 @@ import React from 'react'
 
 interface StatsCardProps {
     label: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
     hidden?: boolean;
     value?: number;
 }
@@ -24,9 +24,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ label, children, hidden, value })
                         <p className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">
                             {value.toLocaleString()}
                         </p>
-                    ) : (
-                        children
-                    )}
+                    ) : (children && children)}
                 </div>
             )}
         </div>

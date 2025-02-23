@@ -109,6 +109,23 @@
           "actions": "Aktionen",
           "message": "Nachricht senden"
         }
+      },
+      "alerts": {
+        "subscriptionActive": {
+          "title": "Premium-Funktionen Aktiv",
+          "description": "Ihr Abonnement ist aktiv. Sie haben vollen Zugriff auf alle Premium-Funktionen einschließlich Analysen und Messaging."
+        },
+        "verificationPending": {
+          "title": "Analysen nach Verifizierung verfügbar",
+          "description": "Schließen Sie den Verifizierungsprozess und die Abonnementzahlung ab, um auf detaillierte Analysen und Nutzerdemografien zuzugreifen.",
+          "action": "Verifizierung abschließen"
+        },
+        "subscriptionCancelled": {
+          "title": "Abonnement endet bald",
+          "description": "Ihr Abonnement endet am {{date}}. Nach diesem Datum verlieren Sie den Zugriff auf Analysen und Nachrichtenfunktionen.",
+          "timeLeft": "Noch {{days}} Tage und {{hours}} Stunden",
+          "action": "Abonnement erneuern"
+        }
       }
     },
     "admin": {

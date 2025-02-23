@@ -124,6 +124,23 @@
           "actions": "Acciones",
           "message": "Enviar Mensaje"
         }
+      },
+      "alerts": {
+        "subscriptionActive": {
+          "title": "Funciones Premium Activas",
+          "description": "Su suscripción está activa. Tiene acceso completo a todas las funciones premium, incluyendo análisis y mensajería."
+        },
+        "verificationPending": {
+          "title": "Análisis disponibles después de la verificación",
+          "description": "Complete el proceso de verificación y el pago de la suscripción para acceder a análisis detallados y demografía de usuarios.",
+          "action": "Completar verificación"
+        },
+        "subscriptionCancelled": {
+          "title": "Suscripción a punto de finalizar",
+          "description": "Su suscripción finalizará el {{date}}. Después de esta fecha, perderá acceso a las funciones de análisis y mensajería.",
+          "timeLeft": "{{days}} días y {{hours}} horas restantes",
+          "action": "Renovar suscripción"
+        }
       }
     },
     "login": {

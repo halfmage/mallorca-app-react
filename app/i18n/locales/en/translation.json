@@ -273,7 +273,24 @@
         "notFound": "Provider profile not found"
       },
       "viewPublicProfile": "View Public Profile",
-      "editProfile": "Edit Profile"
+      "editProfile": "Edit Profile",
+      "alerts": {
+        "subscriptionActive": {
+          "title": "Premium Features Active",
+          "description": "Your subscription is active. You have full access to all premium features including analytics and messaging."
+        },
+        "verificationPending": {
+          "title": "Analytics Available After Verification",
+          "description": "Complete the verification process and subscription payment to access detailed analytics and user demographics.",
+          "action": "Complete Verification"
+        },
+        "subscriptionCancelled": {
+          "title": "Subscription Ending Soon",
+          "description": "Your subscription will end on {{date}}. After this date, you will lose access to analytics and messaging features.",
+          "timeLeft": "{{days}} days and {{hours}} hours remaining",
+          "action": "Renew Subscription"
+        }
+      }
     },
     "login": {
       "title": "Login",

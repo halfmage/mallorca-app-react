@@ -38,7 +38,7 @@ export default async function MessageSendPage({ params }: Props) {
             savedCount={provider?.saved_providers?.[0]?.count || 0}
             limit={limit}
             latestEmailDate={latestEmailDate}
-            isBlocked={isBlocked}
+            isBlocked={isBlocked as boolean}
             providerId={id}
         />
     )

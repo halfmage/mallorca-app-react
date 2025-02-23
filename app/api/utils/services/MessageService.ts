@@ -52,7 +52,7 @@ class MessageService extends EntityService {
     )
   }
 
-  public async getLatestEmailDate(providerId: string): Promise<Date | null | undefined> {
+  public async getLatestEmailDate(providerId: string): Promise<string | null | undefined> {
     const query = this.supabase
       .from('messages')
       .select('created_at')

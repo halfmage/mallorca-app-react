@@ -11,12 +11,12 @@ import { ImagePlus, Clock, Send as SendIcon, ArrowLeft } from 'lucide-react'
 interface SendProps {
   savedCount: number
   limit: number
-  latestEmailDate?: string
+  latestEmailDate?: string|null
   isBlocked: boolean
   providerId: string
 }
 
-const Send: React.FC<SendProps> = ({ savedCount, limit, latestEmailDate, isBlocked, providerId }) => {
+const Send: React.FC<SendProps> = ({ savedCount, limit, latestEmailDate, isBlocked, providerId }: SendProps) => {
   const [savingStatus, setSavingStatus] = useState<'idle' | 'loading'>('idle')
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const { push } = useRouter()

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import countries from 'i18n-iso-countries'
@@ -23,12 +23,21 @@ const Profile = ({ userData, role }) => {
     })
 
     const { t, i18n: { language } } = useTranslation()
+    const [isClient, setIsClient] = useState(false)
     const [displayName] = useState(userData?.display_name || '')
     const [avatarUrl, setAvatarUrl] = useState(userData?.avatar_url || '')
     const [updating, setUpdating] = useState(false)
     const [uploading, setUploading] = useState(false)
+    
+    // Fix hydration issues by only rendering client-specific content after mount
+    useEffect(() => {
+        setIsClient(true)
+    }, [])
+    
     const countryOptions = useMemo(
         () => {
+            if (!isClient) return []
+            
             const options = countries.getNames(language, { select: 'official' })
             return Object.keys(options).map(
                 (countryCode) => ({
@@ -37,7 +46,7 @@ const Profile = ({ userData, role }) => {
                 })
             )
         },
-        [ language ]
+        [language, isClient]
     )
 
     const onSubmit = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
@@ -66,7 +75,7 @@ const Profile = ({ userData, role }) => {
                 setUpdating(false)
             }
         }),
-        [ handleSubmit ]
+        [handleSubmit]
     )
 
     // @ts-expect-error: skip type for now
@@ -125,176 +134,192 @@ const Profile = ({ userData, role }) => {
                 refresh()
             }
         },
-        [ push, refresh, language ]
+        [push, refresh, language]
     )
 
+    // If not client-side yet, render a minimal placeholder to avoid hydration issues
+    if (!isClient) {
+        return <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="max-w-3xl mx-auto space-y-8">
+                <div className="bg-white dark:bg-gray-900 shadow-sm rounded-xl overflow-hidden">
+                    <div className="px-6 py-8 md:px-8 md:py-10">
+                        <h1 className="h2 mb-6">{t('profile.title')}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
     return (
-        <div className="max-w-4xl mx-auto p-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl mx-auto space-y-8">
 
-          <div className="max-w-2xl mx-auto p-4">
-            <div className="border-2 border-gray-300 p-4">
-              <div className="max-w-4xl mx-auto p-4">
-                <h1 className="text-2xl font-bold mb-4">{t('profile.title')}</h1>
+                {/* Profile Form */}
+                <form onSubmit={onSubmit} className="space-y-8">
+                    {/* Basic Information */}
+                    <div className="bg-white dark:bg-gray-900 shadow-sm rounded-xl overflow-hidden">
+                        <div className="px-6 py-8 md:px-8 md:py-10">
+                        <h1 className="h2 mb-6">{t('profile.title')}</h1>
 
-                <div className="mb-4">
-                  <p className="text-sm text-gray-600">
-                    {t('profile.userType')}: <span className="font-semibold capitalize">{role || ROLE_USER}</span>
-                  </p>
-                </div>
+                        {/* Avatar Section */}
+                        <div className="mb-8">
+                            <div className="flex flex-col sm:flex-row items-center gap-6">
+                                <div className="relative">
+                                    {avatarUrl ? (
+                                        <div className="w-24 h-24 rounded-full overflow-hidden shadow-md">
+                                            <Image
+                                                src={avatarUrl}
+                                                alt="Profile"
+                                                width={128}
+                                                height={128}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shadow-md">
+                                            <span className="text-gray-500 dark:text-gray-400 text-3xl font-gloock">
+                                                {displayName ? displayName[0].toUpperCase() : '?'}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {uploading && (
+                                        <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                                            <div className="text-white text-caption">{t('profile.avatar.uploading')}</div>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex gap-3 w-full sm:w-auto">
+                                    <label className="button cursor-pointer text-center sm:text-left">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleAvatarUpload}
+                                            className="hidden"
+                                        />
+                                        {t('profile.avatar.change')}
+                                    </label>
+                                    {avatarUrl && (
+                                        <button
+                                            onClick={handleRemoveAvatar}
+                                            className="button-danger text-center sm:text-left"
+                                        >
+                                            {t('profile.avatar.remove')}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="text-body-sm font-medium block mb-2">
+                                        {t('profile.displayName')}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        {...register('displayName', {required: true})}
+                                        className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="text-body-sm font-medium block mb-2">
+                                        {t('profile.email')}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        {...register('email', {disabled: true})}
+                                        className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                                    />
+                                </div>
 
-                {/* Avatar Section */}
-                <div className="mb-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="relative">
-                      {avatarUrl ? (
-                        <div className="w-24 h-24 rounded-full object-cover overflow-hidden">
-                          <Image
-                            src={avatarUrl}
-                            alt="Profile"
-                            width={96}
-                            height={96}
-                          />
+
+                                <button
+                                    type="submit"
+                                    disabled={updating}
+                                    className="button-primary w-full sm:w-auto"
+                                >
+                                    {updating ? t('common.updating') : t('common.update')}
+                                </button>
+                            </div>
                         </div>
-                      ) : (
-                        <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
-                                <span className="text-gray-500 text-xl">
-                                  {displayName ? displayName[0].toUpperCase() : '?'}
-                                </span>
-                        </div>
-                      )}
-                      {uploading && (
-                        <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-                          <div className="text-white">{t('profile.avatar.uploading')}</div>
-                        </div>
-                      )}
                     </div>
-                    <div className="flex flex-col space-y-2">
-                      <label className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleAvatarUpload}
-                          className="hidden"
-                        />
-                        {t('profile.avatar.change')}
-                      </label>
-                      {avatarUrl && (
+
+                    {/* About You Section */}
+                    <div className="bg-white dark:bg-gray-900 shadow-sm rounded-xl overflow-hidden">
+                        <div className="px-6 py-8 md:px-8 md:py-10">
+                            <h2 className="h3 mb-2">{t('profile.aboutYou.title')}</h2>
+                            <p className="text-body-sm text-gray-600 dark:text-gray-400 mb-6">
+                                {t('profile.aboutYou.description')}
+                            </p>
+                            
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="text-body-sm font-medium block mb-2">
+                                        {t('profile.birthdate')}
+                                    </label>
+                                    <input
+                                        type="date"
+                                        {...register('birthdate')}
+                                        className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-body-sm font-medium block mb-2">
+                                        {t('profile.country')}
+                                    </label>
+                                    <select
+                                        {...register('country')}
+                                        className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                                    >
+                                        <option value="">{t('common.select.placeholder')}</option>
+                                        {countryOptions.map((country) => (
+                                            <option key={country.value} value={country.value}>
+                                                {country.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="text-body-sm font-medium block mb-2">
+                                        {t('profile.gender')}
+                                    </label>
+                                    <select
+                                        {...register('gender')}
+                                        className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                                    >
+                                        <option value="">{t('common.select.placeholder')}</option>
+                                        <option value="male">{t('common.gender.male')}</option>
+                                        <option value="female">{t('common.gender.female')}</option>
+                                        <option value="other">{t('common.gender.other')}</option>
+                                    </select>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={updating}
+                                    className="button-primary w-full sm:w-auto"
+                                >
+                                    {updating ? t('common.updating') : t('common.update')}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                {/* Logout Section */}
+                <div className="bg-white dark:bg-gray-900 shadow-sm rounded-xl overflow-hidden">
+                    <div className="px-6 py-8 md:px-8 md:py-10">
                         <button
-                          onClick={handleRemoveAvatar}
-                          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                            onClick={handleLogout}
+                            className="button-danger w-full sm:w-auto"
                         >
-                          {t('profile.avatar.remove')}
+                            {t('profile.logout')}
                         </button>
-                      )}
                     </div>
-                  </div>
                 </div>
-              </div>
             </div>
-          </div>
-
-            <form onSubmit={onSubmit} className="mb-8">
-              <div className="max-w-2xl mx-auto p-4">
-                <div className="border-2 border-gray-300 p-4">
-                  <div className="max-w-4xl mx-auto p-4">
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-1">
-                        {t('profile.displayName')}
-                      </label>
-                      <input
-                        type="text"
-                        {...register('displayName', {required: true})}
-                        className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-1">
-                        {t('profile.email')}
-                      </label>
-                      <input
-                        type="text"
-                        {...register('email', {disabled: true})}
-                        className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="max-w-2xl mx-auto p-4">
-                <div className="border-2 border-gray-300 p-4">
-                  <div className="max-w-4xl mx-auto p-4">
-                    <h2>{t('profile.aboutYou.title')}</h2>
-                    <p className="my-4">
-                      {t('profile.aboutYou.description')}
-                    </p>
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-1">
-                        {t('profile.birthdate')}
-                      </label>
-                      <input
-                        type="date"
-                        {...register('birthdate')}
-                        className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                      />
-                    </div>
-
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-1">
-                        {t('profile.country')}
-                      </label>
-                      <select
-                        {...register('country')}
-                        className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                      >
-                        <option value="">{t('common.select.placeholder')}</option>
-                        {countryOptions.map((country) => (
-                          <option key={country.value} value={country.value}>
-                            {country.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-1">
-                        {t('profile.gender')}
-                      </label>
-                      <select
-                        {...register('gender')}
-                        className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                      >
-                        <option value="">{t('common.select.placeholder')}</option>
-                        <option value="male">{t('common.gender.male')}</option>
-                        <option value="female">{t('common.gender.female')}</option>
-                        <option value="other">{t('common.gender.other')}</option>
-                      </select>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={updating}
-                      className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
-                    >
-                      {updating ? t('common.updating') : t('common.update')}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </form>
-
-          <div className="max-w-2xl mx-auto p-4">
-            <div className="border-2 border-gray-300 p-4">
-              <div className="max-w-4xl mx-auto p-4">
-                <button
-                  onClick={handleLogout}
-                  className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                >
-                  {t('profile.logout')}
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
     );
 };

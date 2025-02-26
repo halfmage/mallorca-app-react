@@ -41,7 +41,7 @@ export default async function RootLayout({ children, params }: Readonly<{
 
     return (
         <html lang={lng} dir={dir(lng)}>
-        <body className={`antialiased bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200`}>
+        <body className={`antialiased bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200`}>
         <>
             <Header user={user} isAdmin={isAdmin(user)} newMessagesCount={newMessagesCount} hasProviders={hasProviders} />
             {/*{logoutMessage && (*/}

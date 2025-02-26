@@ -16,15 +16,15 @@ const UserMessagesView = ({ providers }) => {
     const [ selectedProvider, setSelectedProvider ] = useState(providers?.[0])
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-            <div className="h-screen flex flex-col">
-                <div className="px-4 py-3 sm:px-6 sm:py-4 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800">
+        <div className="bg-gray-50 dark:bg-gray-950 h-full flex flex-col">
+            <div className="flex flex-col h-full">
+                <div className="py-3 sm:py-4">
                     <h1 className="h3">{t('messages.user.title')}</h1>
                 </div>
-                <div className="flex-1 flex flex-col md:grid md:grid-cols-12 bg-white dark:bg-gray-900">
+                <div className="flex-1 flex flex-col md:grid md:grid-cols-12 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 h-full">
                     <div className={`${
                         selectedProvider ? 'hidden md:block' : ''
-                    } md:col-span-4 md:border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-y-auto`}>
+                    } md:col-span-4 md:border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-y-auto max-h-[calc(100vh-150px)]`}>
                         {providers?.length > 0 ? (
                             <div className="divide-y divide-gray-200 dark:divide-gray-800">
                                 {providers.map((provider: ProviderType) => (
@@ -81,7 +81,7 @@ const UserMessagesView = ({ providers }) => {
                                     )}
                                 </div>
                             </div>
-                            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 hide-scrollbar bg-gray-50 dark:bg-gray-950">
+                            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 hide-scrollbar bg-gray-50 dark:bg-gray-950 min-h-0">
                                 {selectedProvider?.messages?.length > 0 ? (
                                     selectedProvider.messages.map((message: MessageType) => (
                                         <Message message={message} key={message.id}/>

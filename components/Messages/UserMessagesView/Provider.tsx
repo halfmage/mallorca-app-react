@@ -27,7 +27,7 @@ const Provider = ({ provider, isActive, onClick }) => {
                 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-800/50
                 active:bg-gray-100 dark:active:bg-gray-800
                 ${isActive 
-                    ? 'bg-gray-50 dark:bg-gray-800/50 border-l-4 border-primary-500 dark:border-primary-400' 
+                    ? 'bg-primary-500/10 hover:bg-primary-500/10 border-l-4 !border-l-primary-500 !dark:border-l-primary-400' 
                     : 'border-l-4 border-transparent'
                 }
                 touch-manipulation

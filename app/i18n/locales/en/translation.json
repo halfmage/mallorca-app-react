@@ -313,7 +313,8 @@
         "submit": "Register",
         "error": {
           "count": "Password must be at least {{count}} characters",
-          "passwordNotMatch": "Passwords do not match"
+          "passwordNotMatch": "Passwords do not match",
+          "signupFailed": "Signup failed"
         },
         "message": "Already have an account?",
         "login": "Login"

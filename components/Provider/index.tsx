@@ -68,7 +68,7 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }: Provi
   return (
     <div className="min-h-screen">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-10 bg-white dark:bg-gray-950 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
+      <div className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-950 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
         <div className="max-w-screen-xl mx-auto px-4 md:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <h1 className="h2">{provider.name}</h1>

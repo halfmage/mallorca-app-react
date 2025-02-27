@@ -162,10 +162,23 @@ class ProviderService extends EntityService {
   public async getProvidersByUserId(userId: string) {
     const {data} = await this.supabase
       .from('providers')
-      .select('id, name')
+      .select(`
+        id,
+        name,
+        ${IMAGES_FRAGMENT}
+      `)
       .eq('user_id', userId)
 
-    return data
+    if (!data) {
+      return []
+    }
+
+    return await Promise.all(
+      data.map(async provider => ({
+        ...provider,
+        mainImage: await this.getProviderMainImage(provider)
+      }))
+    )
   }
 
   public async hasProviders(userId: string): Promise<boolean> {

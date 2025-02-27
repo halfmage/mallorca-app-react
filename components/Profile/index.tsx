@@ -5,11 +5,10 @@ import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import countries from 'i18n-iso-countries'
 import { useRouter } from 'next/navigation'
-import { ROLE_USER } from '@/app/api/utils/constants'
 import Image from '@/components/shared/Image'
 
 // @ts-expect-error: skip type for now
-const Profile = ({ userData, role }) => {
+const Profile = ({ userData }) => {
     const { push, refresh } = useRouter()
     const { register, handleSubmit } = useForm({
         defaultValues: {

@@ -5,22 +5,24 @@ import Link from "next/link";
 
 interface Props {
   params: Promise<{ lng: string }>;
-  searchParams?: { error?: string; min?: string };
+  searchParams: Promise<{ error?: string; min?: string }>;
 }
 
 export default async function RegisterPage({ params, searchParams }: Props) {
   const { lng } = await params;
+  const { min, error } = await searchParams;
   const { t } = await useTranslation(lng); // eslint-disable-line react-hooks/rules-of-hooks
   
   // Handle error messages
   let errorMessage = '';
-  if (searchParams?.error) {
-    switch (searchParams.error) {
+  if (error) {
+    switch (error) {
       case 'passwords_dont_match':
         errorMessage = t("signUp.main.error.passwordNotMatch");
         break;
       case 'password_too_short':
-        errorMessage = t("signUp.main.error.count", { count: searchParams.min || '8' });
+        // @ts-expect-error: not clear Type 'string' is not assignable to type 'number'
+        errorMessage = t("signUp.main.error.count", { count: min || '8' });
         break;
       case 'signup_failed':
         errorMessage = t("signUp.main.error.signupFailed");

@@ -37,7 +37,7 @@ const ProviderDashboard = ({
   )
 
   const showAnalyticsAlert = !paymentInfo
-  const showCancellationAlert = paymentInfo?.cancelAt
+  const showCancellationAlert = !!paymentInfo?.cancelAt
   const showSuccessAlert = paymentInfo && !paymentInfo.cancelAt
 
   const timeLeft = useMemo(() => {
@@ -96,7 +96,7 @@ const ProviderDashboard = ({
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          {t('common.noImage')}
+                          {tab.label ? tab.label[0].toLocaleUpperCase() : t('common.noImage')}
                         </div>
                       )}
                     </div>

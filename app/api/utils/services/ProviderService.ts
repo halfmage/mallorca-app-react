@@ -42,46 +42,51 @@ const SUBCATEGORIES_FRAGMENT = `
 
 class ProviderService extends EntityService {
   // Get a single provider by ID or by slug with full details
-  public async get(idOrSlug: string, language: string = 'en') {
-    const {data} = await this.supabase
+  public async get(idOrSlug: string, language?: string) {
+    const query = this.supabase
       .from('providers')
       .select(`
-                ${BASIC_INFO_FRAGMENT},
-                status,
-                maincategories (
-                  id,
-                  name,
-                  maincategory_translations (
-                    name
-                  )
-                ),
-                ${SUBCATEGORIES_FRAGMENT},
-                address,
-                phone,
-                mail,
-                website,
-                latitude,
-                longitude,
-                google_maps_url,
-                provider_translations (
-                    description,
-                    advantages_list,
-                    tips_list
-                ),
-                opening_hours (
-                  day,
-                  from,
-                  to,
-                  closed,
-                  season
-                ),
-                ${IMAGES_FRAGMENT}
-            `)
-      .eq('provider_translations.language', language)
-      .eq('maincategories.maincategory_translations.language', language)
-      .eq('provider_subcategories.subcategories.subcategory_translations.language', language)
+        ${BASIC_INFO_FRAGMENT},
+        status,
+        maincategories (
+          id,
+          name,
+          maincategory_translations (
+            name
+          )
+        ),
+        ${SUBCATEGORIES_FRAGMENT},
+        address,
+        phone,
+        mail,
+        website,
+        latitude,
+        longitude,
+        google_maps_url,
+        provider_translations (
+          description,
+          advantages_list,
+          tips_list,
+          language
+        ),
+        opening_hours (
+          day,
+          from,
+          to,
+          closed,
+          season
+        ),
+        ${IMAGES_FRAGMENT}
+      `)
       .eq(isUUID(idOrSlug) ? 'id' : 'slug', idOrSlug)
-      .single()
+
+    if (language) {
+      query
+        .eq('provider_translations.language', language)
+        .eq('maincategories.maincategory_translations.language', language)
+        .eq('provider_subcategories.subcategories.subcategory_translations.language', language)
+    }
+    const { data } = await query.single()
 
     // if (error) throw error;
     const categoryService = new CategoryService(this.supabase)

@@ -165,7 +165,7 @@
       "dashboard": "Admin Dashboard",
       "providerList": "Provider List ({{ count }})",
       "addProvider": "Add Provider",
-      "editProvider": "Edit Provider",
+      "editProvider": "Edit {{name}}",
       "providerName": "Provider Name",
       "providerEmail": "Email",
       "providerPhone": "Phone",
@@ -187,6 +187,7 @@
       "saveOrder": "Save Order",
       "deleteImage": "Delete",
       "userList": "Users ({{ count }})",
+      "detailsPage": "Detail Page",
       "error": {
         "notAdmin": "You don't have permission to access this page.",
         "addProvider": "Error adding provider",
@@ -219,6 +220,10 @@
       },
       "basicInfo": {
         "title": "Basic Info"
+      },
+      "descriptions": {
+        "title": "Description",
+        "placeholder": "Description"
       },
       "contact": {
         "title": "Contact",
@@ -408,6 +413,11 @@
         "other": "Other",
         "male": "Male",
         "female": "Female"
+      },
+      "language": {
+        "en": "English",
+        "es": "Spanish",
+        "de": "German"
       }
     }
 }

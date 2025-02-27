@@ -19,7 +19,7 @@ const EditProvider = ({
   const [provider, setProvider] = useState(initialProvider)
   const [saving, setSaving] = useState(false)
   const [alertText, setAlertText] = useState(null)
-  const {register, handleSubmit} = useForm({
+  const {register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       name: provider?.name,
       mainCategory: provider?.maincategory_id,
@@ -126,7 +126,7 @@ const EditProvider = ({
   const onSubmit = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
     handleSubmit(
       async ({
-        name, mainCategory, subCategories, mail, phone, address, website, googleMapsUrl
+        name, mainCategory, subCategories, mail, phone, address, website, googleMapsUrl, description
       }) => {
         try {
           setSaving(true)
@@ -140,6 +140,7 @@ const EditProvider = ({
           preparedFormData.append('address', address)
           preparedFormData.append('website', website)
           preparedFormData.append('googleMapsUrl', googleMapsUrl)
+          preparedFormData.append('description', JSON.stringify(description || {}))
           for (let i = 0; i < newImages.length; i++) {
             preparedFormData.append('images', newImages[i])
           }
@@ -259,10 +260,8 @@ const EditProvider = ({
         </div>
 
         <div className="max-w-7xl mx-auto p-4">
+          <h2 className="text-2xl font-bold mb-4">{t('admin.image.title')}</h2>
           <div className="flex justify-between items-center mb-2">
-            <label className="block text-sm font-medium text-gray-700">
-              {t('admin.images')}
-            </label>
             <button
               type="button"
               onClick={() => setReorderMode(!reorderMode)}
@@ -290,7 +289,7 @@ const EditProvider = ({
                 <img
                   src={image.publicUrl}
                   alt={`${provider.name} ${index + 1}`}
-                  className="w-full h-40 object-cover rounded"
+                  className={`w-full h-40 object-cover rounded ${index ? '' : 'border-2 border-blue-500'}`}
                 />
                 {!reorderMode && (
                   <button
@@ -316,13 +315,19 @@ const EditProvider = ({
             </button>
           )}
 
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleNewImageChange}
-            className="w-full"
-          />
+          <label className="button cursor-pointer text-center sm:text-left">
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleNewImageChange}
+              className="hidden"
+            />
+            {t('admin.image.upload')}
+          </label>
+          <div>
+            {t('admin.image.description')}
+          </div>
         </div>
 
         <Descriptions register={register} />
@@ -340,8 +345,16 @@ const EditProvider = ({
                   type="text"
                   className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                   placeholder={t('admin.contact.phone')}
-                  {...register('phone')}
+                  {...register('phone', {
+                    pattern: {
+                      value: /^\+?[0-9\s-]{6,}$/,
+                      message: t('common.error.phoneFormat'),
+                    },
+                  })}
                 />
+                {errors.phone && <p className="text-red-500 text-sm">
+                  {errors.phone.message as string}
+                </p>}
               </div>
 
               <div>
@@ -352,8 +365,16 @@ const EditProvider = ({
                   type="email"
                   className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                   placeholder={t('admin.contact.mail')}
-                  {...register('mail')}
+                  {...register('mail', {
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                      message: t('common.error.emailFormat'),
+                    },
+                  })}
                 />
+                {errors.mail && <p className="text-red-500 text-sm">
+                  {errors.mail.message as string}
+                </p>}
               </div>
 
               <div>
@@ -364,8 +385,16 @@ const EditProvider = ({
                   type="text"
                   className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                   placeholder={t('admin.contact.website')}
-                  {...register('website')}
+                  {...register('website', {
+                    pattern: {
+                      value: /^(https?:\/\/)?(www\.)?[\w-]+\.[\w-]{2,4}.*$/,
+                      message: t('common.error.websiteFormat'),
+                    },
+                  })}
                 />
+                {errors.website && <p className="text-red-500 text-sm">
+                  {errors.website.message as string}
+                </p>}
               </div>
 
               <div>
@@ -388,8 +417,16 @@ const EditProvider = ({
                   type="text"
                   className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                   placeholder={t('admin.contact.googleMapsUrlPlaceholder')}
-                  {...register('googleMapsUrl')}
+                  {...register('googleMapsUrl', {
+                    pattern: {
+                      value: /^(https:\/\/www\.google\.com\/maps\/|https:\/\/maps\.app\.goo\.gl\/).*$/,
+                      message: t('common.error.googleMapsUrlFormat'),
+                    },
+                  })}
                 />
+                {errors.googleMapsUrl && <p className="text-red-500 text-sm">
+                  {errors.googleMapsUrl.message as string}
+                </p>}
               </div>
             </div>
           </div>

@@ -690,58 +690,48 @@ class ProviderService extends EntityService {
 
   public update = async (
     idOrSlug: string,
-    { name, mainCategoryId, subCategoryIds, images, address, phone, mail, website, googleMapsUrl }: {
-      name: string,
-      mainCategoryId: string,
-      subCategoryIds: Array<number>,
+    {
+      name, mainCategoryId, subCategoryIds, images, address, phone, mail, website, googleMapsUrl,
+      description
+    }: {
+      name?: string,
+      mainCategoryId?: string,
+      subCategoryIds?: Array<number>,
       images: Array<File>,
       address: string,
       phone: string,
       mail: string,
       website: string,
-      googleMapsUrl: string
+      googleMapsUrl: string,
+      description: Record<string, string>
     }
   ): Promise<boolean> => {
     const {data, error: providerError} = await this.supabase
       .from('providers')
       .update({
-        name,
         address,
         phone,
         mail,
         website,
         google_maps_url: googleMapsUrl,
-        maincategory_id: mainCategoryId
+        ...(name ? { name } : {}),
+        ...(mainCategoryId ? { maincategory_id: mainCategoryId } : {})
       })
       .eq(isUUID(idOrSlug) ? 'id' : 'slug', idOrSlug)
-      .select('id, provider_subcategories(subcategory_id)')
+      .select('id, provider_subcategories(subcategory_id), provider_translations(id, language)')
 
-    const id = data?.[0]?.id
+    const provider = data?.[0]
 
-    const currentSubcategoryIds = (data?.[0]?.provider_subcategories || []).map(
-      item => item?.subcategory_id
-    )
-    const itemsToRemove = currentSubcategoryIds.filter(id => !subCategoryIds.includes(id));
-    const itemsToAdd = subCategoryIds.filter(id => !currentSubcategoryIds.includes(id));
-
-    if (itemsToRemove.length) {
-      await this.supabase
-        .from('provider_subcategories')
-        .delete()
-        .in('subcategory_id', itemsToRemove)
+    if (!provider) {
+      return false
     }
 
-    if (itemsToAdd.length) {
-      await this.supabase
-        .from('provider_subcategories')
-        .insert(
-          itemsToAdd.map(
-            subCategoryId => ({
-              provider_id: id,
-              subcategory_id: subCategoryId
-            })
-          )
-        )
+    if (Object.keys(description).length) {
+      await this.updateProviderDescription(provider, description)
+    }
+
+    if (subCategoryIds) {
+      await this.updateProviderSubcategories(provider, subCategoryIds)
     }
 
     if (providerError) {
@@ -759,7 +749,7 @@ class ProviderService extends EntityService {
           const url = await fileUploadService.upload(file)
 
           uploadedImages.push({
-            provider_id: id,
+            provider_id: provider.id,
             image_url: url
           })
         } catch (uploadError) {
@@ -775,6 +765,75 @@ class ProviderService extends EntityService {
       .insert(uploadedImages)
 
     return true
+  }
+
+  private updateProviderDescription = async (
+    provider: { id: string; provider_translations: Array<{ id: string; language: string; }> },
+    description: Record<string, string>
+  ): Promise<void> => {
+    const itemsToUpdate = (provider.provider_translations || [])
+      .filter((item: { id: string; language: string; }) => Object.keys(description).includes(item.language))
+
+    if (itemsToUpdate.length) {
+      await Promise.all(
+        itemsToUpdate.map(async (item: { id: string; language: string; }) => {
+          await this.supabase
+            .from('provider_translations')
+            .update({
+              description: description[item.language],
+            })
+            .eq('provider_id', provider.id)
+        })
+      )
+    }
+
+    const itemsToAdd = Object.keys(description)
+      .filter(lang => !itemsToUpdate.some((item: { id: string; language: string; }) => item.language === lang))
+
+    if (itemsToAdd.length) {
+      await this.supabase
+        .from('provider_translations')
+        .insert(
+          itemsToAdd.map(
+            (lang: string) => ({
+              language: lang,
+              description: description[lang],
+              provider_id: provider.id
+            })
+          )
+        )
+    }
+  }
+
+  private updateProviderSubcategories = async (
+    provider: { id: string; provider_subcategories: Array<{ subcategory_id: number; }> },
+    subCategoryIds: Array<number>
+  ): Promise<void> => {
+    const currentSubcategoryIds = (provider.provider_subcategories || []).map(
+      (item: { subcategory_id: number; }) => item?.subcategory_id
+    )
+    const itemsToRemove = currentSubcategoryIds.filter((id: number) => !subCategoryIds.includes(id));
+    const itemsToAdd = subCategoryIds.filter(id => !currentSubcategoryIds.includes(id));
+
+    if (itemsToRemove.length) {
+      await this.supabase
+        .from('provider_subcategories')
+        .delete()
+        .in('subcategory_id', itemsToRemove)
+    }
+
+    if (itemsToAdd.length) {
+      await this.supabase
+        .from('provider_subcategories')
+        .insert(
+          itemsToAdd.map(
+            subCategoryId => ({
+              provider_id: provider.id,
+              subcategory_id: subCategoryId
+            })
+          )
+        )
+    }
   }
 
   public deleteImage = async (id: string): Promise<boolean> => {

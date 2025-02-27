@@ -233,6 +233,11 @@
         "website": "Website",
         "googleMapsUrl": "Google Maps URL",
         "googleMapsUrlPlaceholder": "Directions (google maps link)"
+      },
+      "image": {
+        "title": "Photos",
+        "upload": "Upload new photos",
+        "description": "First photo is your cover photo and will be shown on your provider card as well in the messaging app."
       }
     },
     "providerDashboard": {
@@ -386,7 +391,11 @@
         "generic": "An error occurred",
         "unauthorized": "You are not authorized to view this page",
         "notFound": "Page not found",
-        "required": "This field is required"
+        "required": "This field is required",
+        "emailFormat": "Invalid email format",
+        "phoneFormat": "Invalid phone format",
+        "websiteFormat": "Invalid website format",
+        "googleMapsUrlFormat": "Invalid Google Maps URL format"
       },
       "success": {
         "saved": "Changes saved successfully",

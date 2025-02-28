@@ -20,7 +20,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
     return Response.json(null, { status: 403 })
   }
   const providerService = new ProviderService(supabase)
-  const isProviderAdmin = await providerService.isProviderAdmin(user.id, id)
+  const isProviderAdmin = await providerService.isProviderAdmin(user.id, id, true)
   if (!isAdmin(user) && !isProviderAdmin) {
     return Response.json(null, { status: 403 })
   }
@@ -35,7 +35,8 @@ export async function PATCH(request: NextRequest, { params }: Props) {
         mainCategoryId: formData.get('mainCategoryId') as string,
         subCategoryIds: ((formData.get('subCategoryIds') || '') as string).split(',').map(Number),
       } : {}),
-      images: formData.getAll('images') as File[],
+      images: ((formData.get('images') || '') as string).split(',').map(Number),
+      newImages: formData.getAll('newImages') as File[],
       mail: formData.get('mail') as string,
       phone: formData.get('phone') as string,
       address: formData.get('address') as string,

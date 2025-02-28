@@ -16,16 +16,26 @@ export default async function EditProviderPage({ params }: Props) {
     // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
     const supabase = createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
-    if (!isAdmin(user)) {
-        return redirect(`/${lng}/403`)
+    if (!user) {
+      return redirect(`/${lng}/403`)
     }
     const providerService = new ProviderService(supabase)
+    const isProviderAdmin = await providerService.isProviderAdmin(user.id, id, true)
+    if (!isAdmin(user) && !isProviderAdmin) {
+        return redirect(`/${lng}/403`)
+    }
+
     const provider = await providerService.get(id)
     const categoryService = new CategoryService(supabase)
     const mainCategories = await categoryService.getMainCategories(lng)
     const subCategories = await categoryService.getAllSubCategories(lng)
 
     return (
-        <EditProvider provider={provider} mainCategories={mainCategories} subCategories={subCategories} />
+        <EditProvider
+          provider={provider}
+          mainCategories={mainCategories}
+          subCategories={subCategories}
+          isProviderAdmin={isProviderAdmin && !isAdmin(user)}
+        />
     )
 }

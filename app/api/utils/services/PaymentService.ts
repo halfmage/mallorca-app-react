@@ -88,7 +88,7 @@ export default class PaymentService extends EntityService {
       await this.supabase
         .from('business_claims')
         .update({ payment_status: STATUS_PAYMENT_CANCELED })
-        .eq('id', providerId)
+        .eq('provider_id', providerId)
     }
 
     return {

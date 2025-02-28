@@ -1,17 +1,19 @@
 'use client'
 
-import React, {useState, useCallback} from 'react'
-import {useParams} from 'next/navigation'
-import {useTranslation} from '@/app/i18n/client'
-import {useForm} from 'react-hook-form'
+import React, { useState, useCallback, useMemo } from 'react'
+import { useParams } from 'next/navigation'
+import { useTranslation } from '@/app/i18n/client'
+import { Controller, useForm } from 'react-hook-form'
+import Select from 'react-select'
 import { languages } from '@/app/i18n/settings'
 import Link from 'next/link'
 import Alert from '@/components/shared/Alert'
 import Descriptions from '@/components/EditProvider/Descriptions'
+import Image from '@/components/EditProvider/Image'
 
 const EditProvider = ({
   // @ts-expect-error: skip type for now
-  provider: initialProvider, mainCategories, subCategories
+  provider: initialProvider, mainCategories, subCategories, isProviderAdmin
 }) => {
   const {id} = useParams()
   const {t, i18n: {language}} = useTranslation()
@@ -19,7 +21,14 @@ const EditProvider = ({
   const [provider, setProvider] = useState(initialProvider)
   const [saving, setSaving] = useState(false)
   const [alertText, setAlertText] = useState(null)
-  const {register, handleSubmit, formState: { errors } } = useForm({
+  const [previews, setPreviews] = useState([])
+  const subCategoryOptions = useMemo(
+    () => subCategories.map(
+      (subcategory: { id: number, name: string }) => ({ value: subcategory.id, label: subcategory.name })
+    ),
+    [ subCategories ]
+  )
+  const { register, handleSubmit, control, formState: { errors } } = useForm({
     defaultValues: {
       name: provider?.name,
       mainCategory: provider?.maincategory_id,
@@ -43,7 +52,6 @@ const EditProvider = ({
   })
   const [images, setImages] = useState(provider?.provider_images || [])
   const [newImages, setNewImages] = useState([])
-  const [reorderMode, setReorderMode] = useState(false)
   const fetchProvider = useCallback(async () => {
     try {
       setLoading(true);
@@ -62,31 +70,24 @@ const EditProvider = ({
     []
   )
 
-  // @ts-expect-error: skip type for now
-  const handleNewImageChange = (e) => {
+  const handleNewImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) {
+      return
+    }
     const files = Array.from(e.target.files)
     // @ts-expect-error: skip type for now
     setNewImages(files)
+    const previewUrls = files.map((file: File) => URL.createObjectURL(file))
+    // @ts-expect-error: skip type for now
+    setPreviews(previewUrls)
   }
 
-  // @ts-expect-error: skip type for now
-  const handleImageDelete = async (imageId) => {
-    try {
-      const response = await fetch(
-        `/api/provider-images/${imageId}`,
-        {method: 'DELETE'}
-      )
-      const {data: success} = await response.json()
-      if (success) {
-        // Update local state
-        // @ts-expect-error: skip type for now
-        setImages(prev => prev.filter(img => img.id !== imageId))
-        // @ts-expect-error: skip type for now
-        setAlertText(t('common.success.imageDeleted'))
-      }
-    } catch (error) {
-      console.error(t('admin.error.deleteImage'), error)
-    }
+  const handleImageDeleteById = async (imageId: number) => {
+    setImages((prev: Array<{ id: number }>) => prev.filter((img: { id: number }) => img.id !== imageId))
+  }
+  const handleImageDeleteByIndex = async (imageId: number) => {
+    setPreviews(previews => previews.filter((_preview, index) => index !== imageId))
+    setNewImages(newImages => newImages.filter((_image, index) => index !== imageId))
   }
 
   // @ts-expect-error: skip type for now
@@ -95,32 +96,6 @@ const EditProvider = ({
     const [draggedImage] = reorderedImages.splice(dragIndex, 1);
     reorderedImages.splice(dropIndex, 0, draggedImage)
     setImages(reorderedImages)
-  }
-
-  const handleSaveReorder = async () => {
-    try {
-      setSaving(true);
-      const response = await fetch(
-        `/api/provider-images`,
-        {
-          method: 'PATCH',
-          body: JSON.stringify({
-            // @ts-expect-error: skip type for now
-            images: images.map(image => image?.id)
-          })
-        }
-      )
-      const {data: success} = await response.json()
-      setReorderMode(false)
-      if (success) {
-        // @ts-expect-error: skip type for now
-        setAlertText(t('common.success.orderSaved'))
-      }
-    } catch (error) {
-      console.error(t('admin.error.saveOrder'), error);
-    } finally {
-      setSaving(false)
-    }
   }
 
   const onSubmit = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
@@ -141,8 +116,9 @@ const EditProvider = ({
           preparedFormData.append('website', website)
           preparedFormData.append('googleMapsUrl', googleMapsUrl)
           preparedFormData.append('description', JSON.stringify(description || {}))
+          preparedFormData.append('images', (images || []).map(({ id }: { id: number }) => id))
           for (let i = 0; i < newImages.length; i++) {
-            preparedFormData.append('images', newImages[i])
+            preparedFormData.append('newImages', newImages[i])
           }
 
           const response = await fetch(
@@ -158,6 +134,7 @@ const EditProvider = ({
             setAlertText(t('common.success.saved'))
             fetchProvider()
             setNewImages([])
+            setPreviews([])
           }
         } catch (error) {
           console.error(t('admin.error.updateProvider'), error)
@@ -166,7 +143,7 @@ const EditProvider = ({
         }
       }
     ),
-    [id, t, fetchProvider, newImages]
+    [id, t, fetchProvider, newImages, images]
   )
 
   if (loading) {
@@ -182,7 +159,7 @@ const EditProvider = ({
       <form onSubmit={onSubmit} className="space-y-6">
         <div className="flex justify-between items-center mb-6">
           <div className="flex flex-row justify-center items-center">
-            <Link href={`/${language}/admin`} className="text-white px-4 py-2">
+            <Link href={`/${language}/${isProviderAdmin ? 'dashboard' : 'admin'}`} className="text-white px-4 py-2">
               &lt;-
             </Link>
             <h1 className="text-2xl font-bold">{t('admin.editProvider', { name: provider?.name || '' })}</h1>
@@ -215,7 +192,7 @@ const EditProvider = ({
                 <input
                   type="text"
                   className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                  {...register('name', {required: true})}
+                  {...register('name', {required: true, disabled: isProviderAdmin})}
                 />
               </div>
 
@@ -224,7 +201,7 @@ const EditProvider = ({
                   {t('admin.category')}
                 </label>
                 <select
-                  {...register('mainCategory', {required: true})}
+                  {...register('mainCategory', {required: true, disabled: isProviderAdmin})}
                   className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
                 >
                   <option value="">{t('admin.selectCategory')}</option>
@@ -241,19 +218,23 @@ const EditProvider = ({
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {t('admin.subcategories')}
                 </label>
-                <select
-                  {...register('subCategories')}
-                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                  multiple
-                >
-                  <option value="">{t('admin.selectCategory')}</option>
-                  {/* @ts-expect-error: skip type for now */}
-                  {subCategories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
+                <Controller
+                  name="subCategories"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={subCategoryOptions}
+                      isMulti
+                      className="w-full"
+                      classNamePrefix="react-select"
+                      placeholder={t('admin.selectCategory')}
+                      onChange={(selectedOptions) => field.onChange(selectedOptions.map((opt: { value: number }) => opt.value))}
+                      value={subCategoryOptions.filter((opt: { value: number }) => field.value?.includes(opt.value))}
+                      isDisabled={isProviderAdmin}
+                    />
+                  )}
+                />
               </div>
             </div>
           </div>
@@ -261,59 +242,34 @@ const EditProvider = ({
 
         <div className="max-w-7xl mx-auto p-4">
           <h2 className="text-2xl font-bold mb-4">{t('admin.image.title')}</h2>
-          <div className="flex justify-between items-center mb-2">
-            <button
-              type="button"
-              onClick={() => setReorderMode(!reorderMode)}
-              className="text-blue-500 hover:text-blue-600"
-            >
-              {reorderMode ? t('admin.saveOrder') : t('admin.reorderImages')}
-            </button>
-          </div>
 
-          <div className="grid grid-cols-3 md:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-3 md:grid-cols-4 gap-4 mb-4 border-dashed border-gray-300 border-2 rounded p-3">
             {/* @ts-expect-error: skip type for now */}
             {images.map((image, index) => (
-              <div
+              <Image
+                src={image.publicUrl}
+                alt={`${provider.name} ${index + 1}`}
+                index={index}
+                onDelete={handleImageDeleteById}
+                onOrderChange={handleImageReorder}
+                isCover={!index}
+                imageId={image.id}
                 key={image.id}
-                className="relative group"
-                draggable={reorderMode}
-                onDragStart={(e) => e.dataTransfer.setData('text/plain', index)}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const dragIndex = parseInt(e.dataTransfer.getData('text/plain'));
-                  handleImageReorder(dragIndex, index);
-                }}
-              >
-                <img
-                  src={image.publicUrl}
-                  alt={`${provider.name} ${index + 1}`}
-                  className={`w-full h-40 object-cover rounded ${index ? '' : 'border-2 border-blue-500'}`}
-                />
-                {!reorderMode && (
-                  <button
-                    type="button"
-                    onClick={() => handleImageDelete(image.id)}
-                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    {t('admin.deleteImage')}
-                  </button>
-                )}
-              </div>
+              />
+            ))}
+            {previews.map((image, index) => (
+              <Image
+                src={image}
+                alt={`${provider.name} ${images.length + index + 1}`}
+                index={index}
+                onDelete={handleImageDeleteByIndex}
+                onOrderChange={handleImageReorder}
+                isNew
+                imageId={index}
+                key={index}
+              />
             ))}
           </div>
-
-          {reorderMode && (
-            <button
-              type="button"
-              onClick={handleSaveReorder}
-              disabled={saving}
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:bg-gray-400"
-            >
-              {saving ? t('common.saving') : t('admin.saveOrder')}
-            </button>
-          )}
 
           <label className="button cursor-pointer text-center sm:text-left">
             <input

@@ -4,7 +4,10 @@ import {
   STATUS_ACTIVE,
   DEFAULT_IMAGE_SOURCE,
   SEARCH_TYPE_SUBCATEGORY,
-  SEARCH_TYPE_PROVIDER, STATUS_VERIFIED, STATUS_REJECTED
+  SEARCH_TYPE_PROVIDER,
+  STATUS_VERIFIED,
+  STATUS_REJECTED,
+  STATUS_PAYMENT_COMPLETED
 } from '@/app/api/utils/constants'
 import {isUUID} from '@/app/api/utils/helpers'
 import EntityService from '@/app/api/utils/services/EntityService'
@@ -79,6 +82,7 @@ class ProviderService extends EntityService {
         ${IMAGES_FRAGMENT}
       `)
       .eq(isUUID(idOrSlug) ? 'id' : 'slug', idOrSlug)
+      .order('created_at', {referencedTable: 'provider_images', ascending: true})
 
     if (language) {
       query
@@ -197,12 +201,18 @@ class ProviderService extends EntityService {
     return !!data
   }
 
-  public async isProviderAdmin(userId: string, providerId: string): Promise<boolean> {
-    const {data, error} = await this.supabase
+  public async isProviderAdmin(userId: string, idOrSlug: string, isPaid: boolean = false): Promise<boolean> {
+    const query = this.supabase
       .from('providers')
-      .select('id')
+      .select('id, business_claims(payment_status)')
       .eq('user_id', userId)
-      .eq('id', providerId)
+      .eq(isUUID(idOrSlug) ? 'id' : 'slug', idOrSlug)
+
+    if (isPaid) {
+      query.eq('business_claims.payment_status', STATUS_PAYMENT_COMPLETED)
+    }
+
+    const {data, error} = await query
       .limit(1)
       .single()
 
@@ -443,7 +453,7 @@ class ProviderService extends EntityService {
                 saved_providers (count),
                 ${IMAGES_FRAGMENT}
             `)
-      .in('status', [STATUS_ACTIVE, STATUS_PENDING])
+      .in('status', [STATUS_ACTIVE, STATUS_PENDING, STATUS_VERIFIED])
       .eq('maincategory_id', categoryId)
       .eq('maincategories.maincategory_translations.language', language)
       .eq('provider_subcategories.subcategories.subcategory_translations.language', language)
@@ -691,13 +701,14 @@ class ProviderService extends EntityService {
   public update = async (
     idOrSlug: string,
     {
-      name, mainCategoryId, subCategoryIds, images, address, phone, mail, website, googleMapsUrl,
-      description
+      name, mainCategoryId, subCategoryIds, images, newImages, address, phone, mail, website,
+      googleMapsUrl, description
     }: {
       name?: string,
       mainCategoryId?: string,
       subCategoryIds?: Array<number>,
-      images: Array<File>,
+      images: Array<number>,
+      newImages: Array<File>,
       address: string,
       phone: string,
       mail: string,
@@ -741,11 +752,11 @@ class ProviderService extends EntityService {
 
     const uploadedImages = []
 
-    if (images.length) {
+    if (newImages.length) {
       const fileUploadService = new FileUploadService()
-      for (let i = 0; i < images.length; i++) {
+      for (let i = 0; i < newImages.length; i++) {
         try {
-          const file = images[i]
+          const file = newImages[i]
           const url = await fileUploadService.upload(file)
 
           uploadedImages.push({
@@ -760,9 +771,23 @@ class ProviderService extends EntityService {
       }
     }
 
-    await this.supabase
+    const { data: newImagesData } = await this.supabase
       .from('provider_images')
       .insert(uploadedImages)
+      .select('id')
+
+    const actualImageIds = [ ...images, ...(newImagesData || []).map(({ id }) => id) ]
+
+    if (actualImageIds.length) {
+      await this.supabase
+        .from('provider_images')
+        .delete()
+        .not('id', 'in', `(${actualImageIds.join(',')})`)
+    }
+
+    if (images?.length) {
+      return await this.reorderImages(images)
+    }
 
     return true
   }
@@ -783,6 +808,7 @@ class ProviderService extends EntityService {
               description: description[item.language],
             })
             .eq('provider_id', provider.id)
+            .eq('language', item.language)
         })
       )
     }
@@ -862,7 +888,7 @@ class ProviderService extends EntityService {
     return !dbError
   }
 
-  public reorderImages = async (imageIds: Array<string>): Promise<boolean> => {
+  public reorderImages = async (imageIds: Array<string|number>): Promise<boolean> => {
     for (let i = 0; i < imageIds.length; i++) {
       const {error} = await this.supabase
         .from('provider_images')
@@ -886,7 +912,7 @@ class ProviderService extends EntityService {
       images.map(
         // @ts-expect-error: skip type for now
         async (image) => {
-          const imageUrl = await fileUploadService.uploadByUrl(image.url)
+          const imageUrl = await fileUploadService.uploadByUrl(image.url, { tags: [image.provider] })
 
           if (imageUrl) {
             return this.updateImageUrl(image.id, imageUrl)
@@ -910,7 +936,8 @@ class ProviderService extends EntityService {
           // @ts-expect-error: skip type for now
           image => ({
             id: image?.id,
-            url: image?.image_url
+            url: image?.image_url,
+            provider: provider.slug
           })
         )
       )

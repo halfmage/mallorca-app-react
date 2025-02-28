@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from '@/app/i18n/client'
 import { languages } from '@/app/i18n/settings'
+import LanguageButton from '@/components/EditProvider/LanguageButton'
 
 // @ts-expect-error: skip type for now
 const Descriptions = ({ register }) => {
@@ -14,13 +15,12 @@ const Descriptions = ({ register }) => {
           <h2 className="text-2xl font-bold mb-4">{t('admin.descriptions.title')}</h2>
           <div className="flex gap-3">
             {languages.map((lng: string) => (
-              <a
-                className={`text-white px-4 py-2 rounded-md ${activeLng === lng ? 'bg-primary-500' : 'bg-gray-500  hover:bg-gray-600'}`}
-                onClick={() => setActiveLng(lng)}
+              <LanguageButton
+                lng={lng}
+                activeLng={activeLng}
+                onClick={setActiveLng}
                 key={lng}
-              >
-                {t(`common.language.${lng}`)}
-              </a>
+              />
             ))}
           </div>
           <div className="mt-6">

@@ -430,6 +430,14 @@ const ProviderDashboard = ({
             {t('providerDashboard.viewPublicProfile')}
           </button>
         </Link>
+
+        {!!stats && (
+          <Link href={`/${language}/admin/edit-provider/${provider.slug || provider.id}`}>
+            <button className="button-outline">
+              {t('providerDashboard.editProfile')}
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   );

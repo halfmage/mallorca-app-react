@@ -12,9 +12,9 @@ export default class FileUploadService {
     })
   }
 
-  public async uploadByUrl(url: string) {
+  public async uploadByUrl(url: string, options = {}) {
     const uploadResult = await cloudinary.uploader
-      .upload(url)
+      .upload(url, options)
       .catch((error) => {
         console.log('error = ', error)
       })

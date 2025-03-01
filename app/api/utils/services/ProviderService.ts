@@ -783,6 +783,7 @@ class ProviderService extends EntityService {
         .from('provider_images')
         .delete()
         .not('id', 'in', `(${actualImageIds.join(',')})`)
+        .eq('provider_id', provider.id)
     }
 
     if (images?.length) {

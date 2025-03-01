@@ -4,7 +4,7 @@ import { languages } from '@/app/i18n/settings'
 import LanguageButton from '@/components/EditProvider/LanguageButton'
 
 // @ts-expect-error: skip type for now
-const Descriptions = ({ register }) => {
+const Descriptions = ({ register, descriptions }) => {
   const { t, i18n: { language } } = useTranslation()
   const [activeLng, setActiveLng] = useState(language)
 
@@ -17,9 +17,10 @@ const Descriptions = ({ register }) => {
             {languages.map((lng: string) => (
               <LanguageButton
                 lng={lng}
-                activeLng={activeLng}
                 onClick={setActiveLng}
                 key={lng}
+                isActive={lng === activeLng}
+                isEmpty={(descriptions?.[lng] || '').trim() === ''}
               />
             ))}
           </div>

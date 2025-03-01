@@ -39,3 +39,8 @@ export const getSeason = () => {
 
   return now.isBetween(startDate, endDate) ? SEASON_SUMMER : SEASON_WINTER
 }
+
+export const PHONE_PATTERN = /^\+?[0-9\s-]{6,}$/
+export const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+export const WEBSITE_PATTERN = /^(https?:\/\/)?(www\.)?[\w-]+\.[\w-]{2,4}.*$/
+export const GOOGLE_MAPS_LINK_PATTERN = /^(https:\/\/www\.google\.com\/maps\/|https:\/\/maps\.app\.goo\.gl\/).*$/

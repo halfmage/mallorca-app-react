@@ -4,6 +4,12 @@ import { createClient } from '@/utils/supabase/server'
 import ProviderService from '@/app/api/utils/services/ProviderService'
 import { isAdmin } from '@/app/api/utils/services/UserService'
 import { languages } from '@/app/i18n/settings'
+import {
+  EMAIL_PATTERN,
+  GOOGLE_MAPS_LINK_PATTERN,
+  PHONE_PATTERN,
+  WEBSITE_PATTERN
+} from '@/app/api/utils/helpers';
 
 interface Props {
   params: Promise<{ id: string }>
@@ -26,6 +32,10 @@ export async function PATCH(request: NextRequest, { params }: Props) {
   }
 
   const description = JSON.parse(formData.get('description') as string)
+  const mail = (formData.get('mail') || '') as string
+  const phone = (formData.get('phone') || '') as string
+  const website = (formData.get('website') || '') as string
+  const googleMapsUrl = (formData.get('googleMapsUrl') || '') as string
 
   const data = await providerService.update(
     id,
@@ -37,11 +47,11 @@ export async function PATCH(request: NextRequest, { params }: Props) {
       } : {}),
       images: ((formData.get('images') || '') as string).split(',').map(Number),
       newImages: formData.getAll('newImages') as File[],
-      mail: formData.get('mail') as string,
-      phone: formData.get('phone') as string,
+      mail: mail.match(EMAIL_PATTERN) ? mail : '',
+      phone: phone.match(PHONE_PATTERN) ? phone : '',
       address: formData.get('address') as string,
-      website: formData.get('website') as string,
-      googleMapsUrl: formData.get('googleMapsUrl') as string,
+      website: website.match(WEBSITE_PATTERN) ? website : '',
+      googleMapsUrl: googleMapsUrl.match(GOOGLE_MAPS_LINK_PATTERN) ? googleMapsUrl : '',
       description: Object.keys(description)
         .filter((lang: string) => languages.includes(lang))
         .reduce(

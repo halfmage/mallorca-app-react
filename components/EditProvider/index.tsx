@@ -10,6 +10,12 @@ import Link from 'next/link'
 import Alert from '@/components/shared/Alert'
 import Descriptions from '@/components/EditProvider/Descriptions'
 import Image from '@/components/EditProvider/Image'
+import {
+  EMAIL_PATTERN,
+  GOOGLE_MAPS_LINK_PATTERN,
+  PHONE_PATTERN,
+  WEBSITE_PATTERN
+} from '@/app/api/utils/helpers';
 
 const EditProvider = ({
   // @ts-expect-error: skip type for now
@@ -28,7 +34,7 @@ const EditProvider = ({
     ),
     [ subCategories ]
   )
-  const { register, handleSubmit, control, formState: { errors } } = useForm({
+  const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
     defaultValues: {
       name: provider?.name,
       mainCategory: provider?.maincategory_id,
@@ -50,6 +56,7 @@ const EditProvider = ({
       googleMapsUrl: provider?.google_maps_url
     },
   })
+  const descriptions = watch('description')
   const [images, setImages] = useState(provider?.provider_images || [])
   const [newImages, setNewImages] = useState([])
   const fetchProvider = useCallback(async () => {
@@ -286,7 +293,7 @@ const EditProvider = ({
           </div>
         </div>
 
-        <Descriptions register={register} />
+        <Descriptions register={register} descriptions={descriptions} />
 
         <div className="max-w-7xl mx-auto p-4">
           <div className="border-2 border-gray-300 p-4">
@@ -303,7 +310,7 @@ const EditProvider = ({
                   placeholder={t('admin.contact.phone')}
                   {...register('phone', {
                     pattern: {
-                      value: /^\+?[0-9\s-]{6,}$/,
+                      value: PHONE_PATTERN,
                       message: t('common.error.phoneFormat'),
                     },
                   })}
@@ -323,7 +330,7 @@ const EditProvider = ({
                   placeholder={t('admin.contact.mail')}
                   {...register('mail', {
                     pattern: {
-                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                      value: EMAIL_PATTERN,
                       message: t('common.error.emailFormat'),
                     },
                   })}
@@ -343,7 +350,7 @@ const EditProvider = ({
                   placeholder={t('admin.contact.website')}
                   {...register('website', {
                     pattern: {
-                      value: /^(https?:\/\/)?(www\.)?[\w-]+\.[\w-]{2,4}.*$/,
+                      value: WEBSITE_PATTERN,
                       message: t('common.error.websiteFormat'),
                     },
                   })}
@@ -375,7 +382,7 @@ const EditProvider = ({
                   placeholder={t('admin.contact.googleMapsUrlPlaceholder')}
                   {...register('googleMapsUrl', {
                     pattern: {
-                      value: /^(https:\/\/www\.google\.com\/maps\/|https:\/\/maps\.app\.goo\.gl\/).*$/,
+                      value: GOOGLE_MAPS_LINK_PATTERN,
                       message: t('common.error.googleMapsUrlFormat'),
                     },
                   })}

@@ -31,6 +31,7 @@ export default async function RegisterPage({ params, searchParams }: Props) {
         errorMessage = t("signUp.main.error.default");
     }
   }
+  const handleSubmit = signup.bind(null, lng)
   
   return (
     <div className="h-[calc(100vh-6rem)] flex items-center rounded-3xl justify-center p-4 bg-cover bg-center bg-no-repeat" style={{backgroundImage: 'url("https://images.pexels.com/photos/1731826/pexels-photo-1731826.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")'}}>
@@ -127,7 +128,7 @@ export default async function RegisterPage({ params, searchParams }: Props) {
                 />
               </div>
               <button
-                formAction={signup}
+                formAction={handleSubmit}
                 className="w-full py-3 px-4 bg-primary-500 hover:bg-primary-600 
                            focus:ring-2 focus:ring-primary-400 focus:ring-offset-2
                            text-white font-medium rounded-lg

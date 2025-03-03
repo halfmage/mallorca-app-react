@@ -5,11 +5,14 @@ import Link from "next/link";
 
 interface Props {
   params: Promise<{ lng: string }>;
+  searchParams: Promise<{ pendingId?: string, error?: string }>;
 }
 
-export default async function LoginPage({ params }: Props) {
-  const { lng } = await params;
+export default async function LoginPage({ params, searchParams }: Props) {
+  const { lng } = await params
+  const { pendingId, error } = await searchParams
   const { t } = await useTranslation(lng); // eslint-disable-line react-hooks/rules-of-hooks
+  const handleSubmit = login.bind(null, lng)
   return (
     <div className="h-[calc(100vh-6rem)] flex items-center rounded-3xl justify-center p-4 bg-cover bg-center bg-no-repeat" style={{backgroundImage: 'url("https://images.pexels.com/photos/1731826/pexels-photo-1731826.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")'}}>
       <div className="">
@@ -20,6 +23,16 @@ export default async function LoginPage({ params }: Props) {
             </h1>
           </div>
           <div className="p-8">
+            {pendingId &&
+              <div>
+                {t('login.signUpSuccessful')}
+              </div>
+            }
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg">
+                {t(`login.error.${error}`)}
+              </div>
+            )}
             <form className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -61,7 +74,7 @@ export default async function LoginPage({ params }: Props) {
                 </Link>
               </div>
               <button
-                formAction={login}
+                formAction={handleSubmit}
                 className="w-full py-3 px-4 bg-primary-500 hover:bg-primary-600 
                                          focus:ring-2 focus:ring-primary-400 focus:ring-offset-2
                                          text-white font-medium rounded-lg

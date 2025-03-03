@@ -309,7 +309,12 @@
       "button": "Login",
       "message": "Dont have an account yet?",
       "register": "Register",
-      "forgotPassword": "Forgot password?"
+      "forgotPassword": "Forgot password?",
+      "signUpSuccessful": "Registration successful. Please Log in",
+      "error": {
+        "notConfirmed": "Account not confirmed. Please check your inbox",
+        "general": "Something went wrong. Please try again later"
+      }
     },
     "signUp": {
       "main": {

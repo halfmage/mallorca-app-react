@@ -4,7 +4,7 @@ import { CATEGORY_HOTEL_SLUG, CATEGORY_LEISURE_SLUG, CATEGORY_SHOPPING_SLUG } fr
 
 const SubcategoryOption = ({
   // @ts-expect-error: skip type for now
-  slug, className = 'text-primary-600', size = 24, strokeWidth = 1.5
+  slug, className = 'text-primary-600 dark:text-primary-400', size = 24, strokeWidth = 1.5
 }) => {
     const iconProps = useMemo(() => ({ className, size, strokeWidth }), [className, size, strokeWidth])
     return slug === CATEGORY_HOTEL_SLUG ? <BedDouble {...iconProps} /> :

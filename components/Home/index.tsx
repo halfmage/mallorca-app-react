@@ -2,6 +2,8 @@ import React from 'react'
 import { useTranslation } from '@/app/i18n'
 import CategoryRow from './CategoryRow'
 import { Provider } from '@/app/api/utils/types'
+import Link from 'next/link'
+import CategoryIcon from '@/components/shared/CategoryIcon'
 
 interface Props {
   categories: Array<{
@@ -20,7 +22,13 @@ const Home = async ({ categories, lng }: Props) => {
     <>
       <div className="text-center py-8 md:py-12">
         <div className="h1 py-6">{t('home.title')}</div>
-        <p>{t('home.subtitle')}</p>
+        <p className="-mt-3 max-w-screen-md mx-auto">{t('home.subtitle')}</p>
+          <Link 
+            href={`/${lng}/login`} 
+            className="button-primary mt-4"
+          >
+            {t('header.signIn')}
+          </Link>
       </div>
       <div className='flex flex-col'>
         {categories.length === 0 ? (

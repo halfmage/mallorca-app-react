@@ -127,7 +127,7 @@ const ProviderDashboard = ({
 
       {/* Provider Header */}
       <div className="flex items-center space-x-6 pb-6 border-b border-gray-200 dark:border-gray-800">
-        <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center shadow-sm">
+        <div className="w-16 h-16 md:w-20 md:h-20 shrink-0 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center shadow-sm">
           {provider?.mainImage?.publicUrl ? (
             <Image
               src={provider.mainImage.publicUrl}
@@ -144,7 +144,7 @@ const ProviderDashboard = ({
         </div>
         <div>
           <h1 className="h2 mb-2">{provider.name}</h1>
-          <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+          <div className="flex flex-wrap items-center space-x-2 text-gray-600 dark:text-gray-300">
             <span>{provider.maincategory?.name}</span>
             {provider?.subcategories?.length > 0 && (
               <>
@@ -163,6 +163,23 @@ const ProviderDashboard = ({
             )}
           </div>
         </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex space-x-4">
+        <Link href={`/${language}/provider/${provider.slug || provider.id}`}>
+          <button className="button-outline">
+            {t('providerDashboard.viewPublicProfile')}
+          </button>
+        </Link>
+
+        {!!stats && (
+          <Link href={`/${language}/admin/edit-provider/${provider.slug || provider.id}`}>
+            <button className="button-outline">
+              {t('providerDashboard.editProfile')}
+            </button>
+          </Link>
+        )}
       </div>
 
       {/* Success Alert */}
@@ -421,23 +438,6 @@ const ProviderDashboard = ({
             </Link>
           </div>
         </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex space-x-4 pt-4">
-        <Link href={`/${language}/provider/${provider.slug || provider.id}`}>
-          <button className="button-outline">
-            {t('providerDashboard.viewPublicProfile')}
-          </button>
-        </Link>
-
-        {!!stats && (
-          <Link href={`/${language}/admin/edit-provider/${provider.slug || provider.id}`}>
-            <button className="button-outline">
-              {t('providerDashboard.editProfile')}
-            </button>
-          </Link>
-        )}
       </div>
     </div>
   );

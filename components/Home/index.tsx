@@ -3,7 +3,6 @@ import { useTranslation } from '@/app/i18n'
 import CategoryRow from './CategoryRow'
 import { Provider } from '@/app/api/utils/types'
 import Link from 'next/link'
-import CategoryIcon from '@/components/shared/CategoryIcon'
 
 interface Props {
   categories: Array<{

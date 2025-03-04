@@ -6,9 +6,15 @@
       "admin": "Admin",
       "signOut": "Abmelden",
       "signIn": "Anmelden",
+      "messages": "Nachrichten",
+      "myMessages": "Posteingang",
       "userRole": {
         "admin": "Administrator",
         "member": "Mitglied"
+      },
+      "providerSearch": {
+        "placeholder": "Restaurants, Küche, usw. suchen",
+        "noOptions": "Keine Ergebnisse gefunden"
       }
     },
     "home": {
@@ -18,16 +24,45 @@
       "loading": "Anbieter werden geladen...",
       "category": "Kategorie",
       "saves": "Speichert",
+      "noSaves": "Noch keine Speicherungen",
       "viewDetails": "Details anzeigen",
       "noCategory": "Nicht kategorisiert",
       "noImage": "Kein Bild verfügbar",
       "showAll": "Alle anzeigen"
+    },
+    "messages":  {
+      "provider": {
+        "title": "Nachrichten",
+        "composeButton": "Neue Nachricht verfassen",
+        "receivedCount": "Empfangen",
+        "viewedCount": "Angesehen"
+      },
+      "form": {
+        "title": "Neue Nachricht",
+        "messageTitle": {
+          "placeholder": "Titel"
+        },
+        "messageText": {
+          "placeholder": "Text"
+        },
+        "blockedMessage": "Nachrichten sind blockiert für:",
+        "blockedUntil": "{{hours}}h {{minutes}}min",
+        "infoText": "Sie senden diese Nachricht an alle Ihre <b>{{count}}</b> Fans. Nach dem Senden können Sie für {{limit}} Stunden keine weitere Nachricht senden, um Spam zu vermeiden.",
+        "addImageButton": "Bild hinzufügen",
+        "sendButton": "Nachricht senden",
+        "cancelButton": "Abbrechen"
+      },
+      "user": {
+        "title": "Ihre Nachrichten",
+        "ownProvider": "Ihr Anbieter"
+      }
     },
     "providerDetail": {
       "loading": "Anbieterdetails werden geladen...",
       "saveButton": {
         "save": "Anbieter speichern",
         "unsave": "Anbieter entfernen",
+        "remove": "Entfernen",
         "saving": "Wird gespeichert...",
         "loginRequired": "Bitte melden Sie sich an, um Anbieter zu speichern"
       },
@@ -39,26 +74,53 @@
         "callButton": "Rufen Sie an",
         "sendEmailButton": "Mail senden",
         "websiteButton": "Website",
+        "directionsButton": "Wegbeschreibung",
         "claim": "Geschäft beanspruchen"
-      }
+      },
+      "openingHours": {
+        "title": "Öffnungszeiten",
+        "closed": "Geschlossen"
+      },
+      "noImages": "Keine Bilder verfügbar"
     },
     "savedProviders": {
       "title": "Gespeicherte Anbieter",
       "empty": "Sie haben noch keine Anbieter gespeichert.",
       "browseProviders": "Anbieter durchsuchen",
-      "unsave": "Entfernen"
+      "unsave": "Entfernen",
+      "viewDetails": "Details anzeigen",
+      "error": {
+        "fetch": "Fehler beim Abrufen gespeicherter Anbieter",
+        "remove": "Fehler beim Entfernen des Anbieters"
+      }
+    },
+    "category": {
+      "title": "Top {{category}}s",
+      "empty": "Sie haben noch keine Anbieter gespeichert.",
+      "browseProviders": "Anbieter durchsuchen",
+      "save": "Speichern",
+      "unsave": "Entfernen",
+      "viewDetails": "Details anzeigen",
+      "error": {
+        "fetch": "Fehler beim Abrufen gespeicherter Anbieter",
+        "remove": "Fehler beim Entfernen des Anbieters"
+      }
     },
     "profile": {
       "title": "Profil",
       "email": "E-Mail",
       "fullName": "Vollständiger Name",
       "displayName": "Anzeigename",
+      "birthdate": "Geburtstag",
+      "country": "Land",
+      "gender": "Geschlecht",
       "save": "Änderungen speichern",
       "logout": "Abmelden",
       "logoutSuccess": "Sie wurden erfolgreich abgemeldet",
       "logoutButton": "Abmelden",
       "updateProfile": "Profil aktualisieren",
       "notLoggedIn": "Bitte melden Sie sich an, um Ihr Profil anzuzeigen",
+      "userType": "Kontotyp",
       "becomeProvider": {
         "title": "Anbieter werden",
         "description": "Upgraden Sie Ihr Konto zu einem Anbieterkonto, um Ihr Unternehmen zu präsentieren und mit potenziellen Kunden in Kontakt zu treten.",
@@ -77,9 +139,22 @@
         "error": {
           "noFile": "Keine Datei ausgewählt.",
           "upload": "Fehler beim Hochladen des Avatars"
-        }
+        },
+        "change": "Avatar ändern",
+        "remove": "Avatar entfernen"
       },
       "userId": "Benutzer-ID",
+      "aboutYou": {
+        "title": "Über Sie",
+        "description": "Diese Informationen helfen uns, Ihnen einen besseren Service zu bieten und ein besseres Erlebnis auf unserer Plattform zu ermöglichen."
+      },
+      "password": {
+        "title": "Passwort",
+        "currentPassword": "Aktuelles Passwort",
+        "newPassword": "Passwort",
+        "repeatPassword": "Passwort wiederholen",
+        "submit": "Passwort aktualisieren"
+      },
       "success": {
         "profile": "Profil erfolgreich aktualisiert!"
       },
@@ -87,22 +162,119 @@
         "update": "Fehler beim Aktualisieren des Profils"
       }
     },
+    "admin": {
+      "dashboard": "Admin-Dashboard",
+      "providerList": "Anbieterliste ({{ count }})",
+      "providers": "Anbieter",
+      "addProvider": "Anbieter hinzufügen",
+      "editProvider": "{{name}} bearbeiten",
+      "providerName": "Anbietername",
+      "providerEmail": "E-Mail",
+      "providerPhone": "Telefon",
+      "providerAddress": "Adresse",
+      "providerServices": "Dienstleistungen",
+      "servicesPlaceholder": "Listen Sie die Dienstleistungen dieses Anbieters auf",
+      "providerAdded": "Anbieter erfolgreich hinzugefügt!",
+      "noProviders": "Keine Anbieter verfügbar",
+      "providerNotFound": "Anbieter nicht gefunden",
+      "viewDetails": "Details anzeigen",
+      "edit": "Bearbeiten",
+      "revoke": "Widerrufen",
+      "access": "Zugriff",
+      "category": "Kategorie",
+      "subcategories": "Unterkategorien",
+      "selectCategory": "Kategorie auswählen",
+      "images": "Bilder",
+      "reorderImages": "Bilder neu anordnen",
+      "saveOrder": "Reihenfolge speichern",
+      "deleteImage": "Löschen",
+      "userList": "Benutzer ({{ count }})",
+      "detailsPage": "Detailseite",
+      "error": {
+        "notAdmin": "Sie müssen Administrator sein, um auf diese Seite zuzugreifen",
+        "addProvider": "Fehler beim Hinzufügen des Anbieters",
+        "fetch": "Fehler beim Abrufen der Anbieter",
+        "fetchProvider": "Fehler beim Abrufen der Anbieterdetails",
+        "updateProvider": "Fehler beim Aktualisieren des Anbieters",
+        "deleteImage": "Fehler beim Löschen des Bildes",
+        "saveOrder": "Fehler beim Speichern der Bildreihenfolge",
+        "fetchCategories": "Fehler beim Abrufen der Kategorien",
+        "notFound": "Seite nicht gefunden"
+      },
+      "providers": {
+        "name": "Name",
+        "status": "Status",
+        "paymentStatus": "Zahlungsstatus",
+        "updatedAt": "Letzte Aktualisierung",
+        "saved": "Fans",
+        "user": "Zugriff Benutzer",
+        "userEmail": "Zugriff Benutzer E-Mail",
+        "actions": "Aktionen",
+        "access": "Zugriff",
+        "revoke": "Widerrufen"
+      },
+      "users": {
+        "name": "Name",
+        "savedProviders": "Gespeicherte Anbieter",
+        "messages": "Nachrichten erhalten",
+        "createdAt": "Mitglied seit",
+        "actions": "Aktionen",
+        "remove": "Benutzer entfernen"
+      },
+      "basicInfo": {
+        "title": "Grundinformationen"
+      },
+      "descriptions": {
+        "title": "Beschreibung",
+        "placeholder": "Beschreibung"
+      },
+      "contact": {
+        "title": "Kontakt",
+        "mail": "E-Mail",
+        "phone": "Telefon",
+        "address": "Adresse",
+        "website": "Website",
+        "googleMapsUrl": "Google Maps URL",
+        "googleMapsUrlPlaceholder": "Wegbeschreibung (Google Maps Link)"
+      },
+      "image": {
+        "title": "Fotos",
+        "upload": "Neue Fotos hochladen",
+        "description": "Das erste Foto ist Ihr Titelbild und wird sowohl auf Ihrer Anbieterkarte als auch in der Messaging-App angezeigt."
+      }
+    },
     "providerDashboard": {
       "stats": {
-        "totalSaves": "Gesamt Speicherungen",
+        "title": "Analysen",
+        "totalSaves": "Fans",
         "totalViews": "Gesamt Aufrufe",
-        "recentViews": "Aufrufe (Letzte 30 Tage)"
+        "recentViews": "Aufrufe (Letzte 30 Tage)",
+        "uniqueViews": "Eindeutige Aufrufe",
+        "messagesSent": "Gesendete Nachrichten",
+        "reachedUsers": "Erreichte Benutzer"
       },
       "subscription": {
-        "title": "Abonnement-Status",
+        "title": "Zahlungseinstellungen",
         "manage": "Abonnement verwalten",
         "subscribe": "Jetzt abonnieren",
         "status": "Ihr Abonnement ist {{status}} und wird am {{date}} verlängert",
-        "noSubscription": "Sie haben kein aktives Abonnement. Abonnieren Sie jetzt, um alle Anbieter-Funktionen zu nutzen."
+        "noSubscription": "Sie haben kein aktives Abonnement. Abonnieren Sie jetzt, um alle Anbieter-Funktionen zu nutzen.",
+        "perMonth": "Monat",
+        "nextPayment": "Nächste Zahlung",
+        "cancelAt": "Ihr Abonnement wurde gekündigt und endet am",
+        "proposal": "Für vollen Zugriff bitte abonnieren",
+        "notPayed": "Noch nicht bezahlt"
       },
       "savedUsers": {
-        "title": "Von Nutzern gespeichert",
+        "title": "Fans Zielgruppen",
+        "country": "Länder",
+        "gender": "Geschlecht",
+        "male": "Männlich",
+        "female": "Weiblich",
+        "other": "Andere",
+        "age": "Alter",
         "noUsers": "Ihr Profil wurde noch von keinem Nutzer gespeichert.",
+        "undefined": "Unbekannt",
         "table": {
           "user": "Nutzer",
           "savedDate": "Gespeichert am",
@@ -110,6 +282,11 @@
           "message": "Nachricht senden"
         }
       },
+      "error": {
+        "notFound": "Anbieterprofil nicht gefunden"
+      },
+      "viewPublicProfile": "Öffentliches Profil anzeigen",
+      "editProfile": "Profil bearbeiten",
       "alerts": {
         "subscriptionActive": {
           "title": "Premium-Funktionen Aktiv",
@@ -128,36 +305,136 @@
         }
       }
     },
-    "admin": {
-      "dashboard": "Admin-Dashboard",
-      "providers": "Anbieter",
-      "addProvider": "Anbieter hinzufügen",
-      "providerName": "Anbietername",
-      "providerEmail": "E-Mail",
-      "providerPhone": "Telefon",
-      "providerAddress": "Adresse",
-      "providerServices": "Dienstleistungen",
-      "servicesPlaceholder": "Listen Sie die Dienstleistungen dieses Anbieters auf",
-      "providerAdded": "Anbieter erfolgreich hinzugefügt!",
-      "error": {
-        "notAdmin": "Sie müssen Administrator sein, um auf diese Seite zuzugreifen",
-        "addProvider": "Fehler beim Hinzufügen des Anbieters",
-        "notFound": "Seite nicht gefunden"
-      }
-    },
     "login": {
       "title": "Login",
       "email": "Email",
-      "password": "Password",
-      "button": "Login"
+      "password": "Passwort",
+      "button": "Login",
+      "message": "Noch kein Konto?",
+      "register": "Registrieren",
+      "forgotPassword": "Passwort vergessen?",
+      "signUpSuccessful": "Registrierung erfolgreich. Bitte melden Sie sich an",
+      "error": {
+        "notConfirmed": "Konto nicht bestätigt. Bitte überprüfen Sie Ihren Posteingang",
+        "general": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut"
+      }
+    },
+    "signUp": {
+      "main": {
+        "title": "Registrieren",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "email": "E-Mail",
+        "password": "Passwort",
+        "passwordHint": "Passwort muss mindestens 6 Zeichen lang sein",
+        "repeatPassword": "Passwort wiederholen",
+        "submit": "Registrieren",
+        "error": {
+          "count": "Passwort muss mindestens {{count}} Zeichen lang sein",
+          "passwordNotMatch": "Passwörter stimmen nicht überein",
+          "signupFailed": "Registrierung fehlgeschlagen"
+        },
+        "message": "Haben Sie bereits ein Konto?",
+        "login": "Login"
+      },
+      "additional": {
+        "title": "Über Sie",
+        "skip": "Überspringen",
+        "info": "Diese Informationen helfen uns, Ihnen einen besseren Service zu bieten und ein besseres Erlebnis auf unserer Plattform zu ermöglichen.",
+        "submit": "Fertigstellen"
+      }
+    },
+    "forgotPassword": {
+      "title": "Passwort vergessen?",
+      "email": "E-Mail",
+      "emailPlaceholder": "Geben Sie Ihre E-Mail-Adresse ein",
+      "button": "Senden"
+    },
+    "resetPassword": {
+      "title": "Passwort aktualisieren",
+      "password": "Passwort",
+      "passwordHint": "Passwort muss mindestens 6 Zeichen lang sein",
+      "repeatPassword": "Passwort wiederholen",
+      "submit": "Aktualisieren",
+      "notReady": "Technischer Fehler",
+      "error": {
+        "passwordNotMatch": "Passwörter stimmen nicht überein"
+      }
+    },
+    "claimBusiness": {
+      "form": {
+        "title": "Benutzer Zugriff gewähren",
+        "user": {
+          "placeholder": "Benutzer auswählen"
+        },
+        "button": {
+          "save": "Zugriff gewähren",
+          "saving": "Zugriff wird gewährt..."
+        }
+      },
+      "error": {
+        "saveProvider": "Fehler beim Gewähren des Zugriffs"
+      }
+    },
+    "paymentSuccess":  {
+      "title": "Zahlung erfolgreich",
+      "subtitle": "Sie können jetzt die Vorteile unseres MallorcaXclusive Anbieter-Zugangs nutzen",
+      "message": "Die einfachste und schnellste Lösung, um in unserem Werbenetzwerk zu starten und sofort gefunden zu werden.",
+      "line1": "Erhalten Sie analytische Einblicke in Ihr Unternehmen",
+      "line2": "Senden Sie Massennachrichten an Ihre Fans",
+      "line3": "Bearbeiten und aktualisieren Sie Ihre Unternehmensdaten",
+      "button": "Anbieter-Detailseite"
     },
     "common": {
       "loading": "Wird geladen...",
       "updating": "Wird aktualisiert...",
+      "uploading": "Wird hochgeladen...",
+      "saving": "Wird gespeichert...",
+      "save": "Speichern",
+      "update": "Aktualisieren",
+      "back": "Zurück",
+      "noImage": "Kein Bild verfügbar",
+      "user": "Benutzer",
       "error": {
         "generic": "Ein Fehler ist aufgetreten",
-        "unauthorized": "Sie sind nicht berechtigt, diese Seite anzuzeigen"
+        "unauthorized": "Sie sind nicht berechtigt, diese Seite anzuzeigen",
+        "notFound": "Seite nicht gefunden",
+        "required": "Dieses Feld ist erforderlich",
+        "emailFormat": "Ungültiges E-Mail-Format",
+        "phoneFormat": "Ungültiges Telefonformat",
+        "websiteFormat": "Ungültiges Website-Format",
+        "googleMapsUrlFormat": "Ungültiges Google Maps URL-Format"
       },
-      "success": "Erfolgreich!"
+      "success": {
+        "saved": "Änderungen erfolgreich gespeichert",
+        "imageDeleted": "Bild erfolgreich gelöscht",
+        "orderSaved": "Bildreihenfolge erfolgreich gespeichert"
+      },
+      "search": {
+        "placeholder": "Nach Anbieter suchen"
+      },
+      "sorting": {
+        "new": "Neueste",
+        "old": "Älteste"
+      },
+      "status": {
+        "pending": "Ausstehend",
+        "verified": "Verifiziert",
+        "rejected": "Abgelehnt",
+        "completed": "Abgeschlossen"
+      },
+      "select": {
+        "placeholder": "Auswählen..."
+      },
+      "gender": {
+        "other": "Andere",
+        "male": "Männlich",
+        "female": "Weiblich"
+      },
+      "language": {
+        "en": "Englisch",
+        "es": "Spanisch",
+        "de": "Deutsch"
+      }
     }
 }

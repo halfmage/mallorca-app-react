@@ -6,9 +6,15 @@
       "admin": "Admin",
       "signOut": "Cerrar Sesión",
       "signIn": "Iniciar Sesión",
+      "messages": "Mensajes",
+      "myMessages": "Bandeja de entrada",
       "userRole": {
         "admin": "Administrador",
         "member": "Miembro"
+      },
+      "providerSearch": {
+        "placeholder": "Buscar restaurantes, cocinas, etc.",
+        "noOptions": "No se encontraron resultados"
       }
     },
     "home": {
@@ -18,16 +24,45 @@
       "loading": "Cargando proveedores...",
       "category": "Categoría",
       "saves": "Guardados",
+      "noSaves": "Aún no hay guardados",
       "viewDetails": "Ver Detalles",
       "noCategory": "Sin categoría",
       "noImage": "No hay imagen disponible",
       "showAll": "Mostrar todo"
+    },
+    "messages":  {
+      "provider": {
+        "title": "Mensajes",
+        "composeButton": "Redactar nuevo mensaje",
+        "receivedCount": "Recibidos",
+        "viewedCount": "Vistos"
+      },
+      "form": {
+        "title": "Nuevo Mensaje",
+        "messageTitle": {
+          "placeholder": "título"
+        },
+        "messageText": {
+          "placeholder": "texto"
+        },
+        "blockedMessage": "Los mensajes están bloqueados por:",
+        "blockedUntil": "{{hours}}h {{minutes}}min",
+        "infoText": "Enviará este mensaje a todos sus <b>{{count}}</b> fans. Después de enviar, no podrá enviar otro mensaje durante {{limit}} horas para evitar spam.",
+        "addImageButton": "Añadir imagen",
+        "sendButton": "Enviar mensaje",
+        "cancelButton": "Cancelar"
+      },
+      "user": {
+        "title": "Tus mensajes",
+        "ownProvider": "Tu Proveedor"
+      }
     },
     "providerDetail": {
       "loading": "Cargando detalles del proveedor...",
       "saveButton": {
         "save": "Guardar Proveedor",
         "unsave": "Eliminar de Guardados",
+        "remove": "Eliminar",
         "saving": "Guardando...",
         "loginRequired": "Por favor, inicia sesión para guardar proveedores"
       },
@@ -39,25 +74,52 @@
         "callButton": "Llame a",
         "sendEmailButton": "Enviar correo",
         "websiteButton": "Página web",
+        "directionsButton": "Cómo llegar",
         "claim": "Reclamar negocios"
-      }
+      },
+      "openingHours": {
+        "title": "Horario de apertura",
+        "closed": "Cerrado"
+      },
+      "noImages": "No hay imágenes disponibles"
     },
     "savedProviders": {
       "title": "Proveedores Guardados",
       "empty": "Aún no has guardado ningún proveedor.",
       "browseProviders": "Explorar Proveedores",
-      "unsave": "Eliminar"
+      "unsave": "Eliminar",
+      "viewDetails": "Ver Detalles",
+      "error": {
+        "fetch": "Error al obtener proveedores guardados",
+        "remove": "Error al eliminar proveedor"
+      }
+    },
+    "category": {
+      "title": "Top {{category}}s",
+      "empty": "Aún no has guardado ningún proveedor.",
+      "browseProviders": "Explorar Proveedores",
+      "save": "Guardar",
+      "unsave": "Eliminar",
+      "viewDetails": "Ver Detalles",
+      "error": {
+        "fetch": "Error al obtener proveedores guardados",
+        "remove": "Error al eliminar proveedor"
+      }
     },
     "profile": {
       "title": "Perfil",
       "email": "Correo electrónico",
       "fullName": "Nombre completo",
       "displayName": "Nombre de usuario",
+      "birthdate": "Fecha de nacimiento",
+      "country": "País",
+      "gender": "Género",
       "save": "Guardar cambios",
       "logout": "Cerrar sesión",
       "logoutSuccess": "Has cerrado sesión correctamente",
       "updateProfile": "Actualizar perfil",
       "notLoggedIn": "Por favor, inicia sesión para ver tu perfil",
+      "userType": "Tipo de cuenta",
       "becomeProvider": {
         "title": "Conviértete en proveedor",
         "description": "Actualiza tu cuenta a una cuenta de proveedor para listar tu negocio y conectar con clientes potenciales.",
@@ -76,9 +138,22 @@
         "error": {
           "noFile": "No se seleccionó ningún archivo.",
           "upload": "Error al subir el avatar"
-        }
+        },
+        "change": "Cambiar Avatar",
+        "remove": "Eliminar Avatar"
       },
       "userId": "ID de Usuario",
+      "aboutYou": {
+        "title": "Sobre ti",
+        "description": "Esta información nos ayuda a proporcionarte un mejor servicio y adaptar una mejor experiencia en nuestra plataforma."
+      },
+      "password": {
+        "title": "Contraseña",
+        "currentPassword": "Contraseña actual",
+        "newPassword": "Contraseña",
+        "repeatPassword": "Repetir Contraseña",
+        "submit": "Actualizar contraseña"
+      },
       "success": {
         "profile": "¡Perfil actualizado con éxito!"
       },
@@ -88,8 +163,10 @@
     },
     "admin": {
       "dashboard": "Panel de Administración",
+      "providerList": "Lista de Proveedores ({{ count }})",
       "providers": "Proveedores",
       "addProvider": "Añadir Proveedor",
+      "editProvider": "Editar {{name}}",
       "providerName": "Nombre del Proveedor",
       "providerEmail": "Correo Electrónico",
       "providerPhone": "Teléfono",
@@ -97,27 +174,106 @@
       "providerServices": "Servicios",
       "servicesPlaceholder": "Lista los servicios que ofrece este proveedor",
       "providerAdded": "¡Proveedor añadido con éxito!",
+      "noProviders": "No hay proveedores disponibles",
+      "providerNotFound": "Proveedor no encontrado",
+      "viewDetails": "Ver Detalles",
+      "edit": "Editar",
+      "revoke": "Revocar",
+      "access": "Acceso",
+      "category": "Categoría",
+      "subcategories": "Subcategorías",
+      "selectCategory": "Seleccionar una categoría",
+      "images": "Imágenes",
+      "reorderImages": "Reordenar Imágenes",
+      "saveOrder": "Guardar Orden",
+      "deleteImage": "Eliminar",
+      "userList": "Usuarios ({{ count }})",
+      "detailsPage": "Página de Detalles",
       "error": {
         "notAdmin": "No tienes permiso para acceder a esta página",
-        "addProvider": "Error al añadir el proveedor"
+        "addProvider": "Error al añadir el proveedor",
+        "fetch": "Error al obtener proveedores",
+        "fetchProvider": "Error al obtener detalles del proveedor",
+        "updateProvider": "Error al actualizar proveedor",
+        "deleteImage": "Error al eliminar imagen",
+        "saveOrder": "Error al guardar el orden de las imágenes",
+        "fetchCategories": "Error al obtener categorías",
+        "notFound": "Página no encontrada"
+      },
+      "providers": {
+        "name": "Nombre",
+        "status": "Estado",
+        "paymentStatus": "Estado de pago",
+        "updatedAt": "Última actualización",
+        "saved": "Fans",
+        "user": "Usuario de Acceso",
+        "userEmail": "Correo de Usuario de Acceso",
+        "actions": "Acciones",
+        "access": "Acceso",
+        "revoke": "Revocar"
+      },
+      "users": {
+        "name": "Nombre",
+        "savedProviders": "Proveedores guardados",
+        "messages": "Recibir mensajes",
+        "createdAt": "Miembro desde",
+        "actions": "Acciones",
+        "remove": "Eliminar Usuario"
+      },
+      "basicInfo": {
+        "title": "Información Básica"
+      },
+      "descriptions": {
+        "title": "Descripción",
+        "placeholder": "Descripción"
+      },
+      "contact": {
+        "title": "Contacto",
+        "mail": "Correo",
+        "phone": "Teléfono",
+        "address": "Dirección",
+        "website": "Sitio web",
+        "googleMapsUrl": "URL de Google Maps",
+        "googleMapsUrlPlaceholder": "Cómo llegar (enlace de Google Maps)"
+      },
+      "image": {
+        "title": "Fotos",
+        "upload": "Subir nuevas fotos",
+        "description": "La primera foto es tu foto de portada y se mostrará tanto en tu tarjeta de proveedor como en la aplicación de mensajería."
       }
     },
     "providerDashboard": {
       "stats": {
-        "totalSaves": "Total Guardados",
+        "title": "Analíticas",
+        "totalSaves": "Fans",
         "totalViews": "Total Vistas",
-        "recentViews": "Vistas (Últimos 30 días)"
+        "recentViews": "Vistas (Últimos 30 días)",
+        "uniqueViews": "Vistas Únicas",
+        "messagesSent": "Mensajes Enviados",
+        "reachedUsers": "Usuarios Alcanzados"
       },
       "subscription": {
-        "title": "Estado de Suscripción",
+        "title": "Configuración de pago",
         "manage": "Gestionar Suscripción",
         "subscribe": "Suscribirse Ahora",
         "status": "Tu suscripción está {{status}} y se renovará el {{date}}",
-        "noSubscription": "No tienes una suscripción activa. Suscríbete ahora para acceder a todas las funciones de proveedor."
+        "noSubscription": "No tienes una suscripción activa. Suscríbete ahora para acceder a todas las funciones de proveedor.",
+        "perMonth": "mes",
+        "nextPayment": "Próximo pago",
+        "cancelAt": "Tu suscripción ha sido cancelada y finalizará el",
+        "proposal": "Para obtener acceso completo, por favor suscríbete",
+        "notPayed": "Aún no pagado"
       },
       "savedUsers": {
-        "title": "Guardado por Usuarios",
+        "title": "Grupos Objetivo de Fans",
+        "country": "Países",
+        "gender": "Género",
+        "male": "Masculino",
+        "female": "Femenino",
+        "other": "Otro",
+        "age": "Edad",
         "noUsers": "Ningún usuario ha guardado tu perfil todavía.",
+        "undefined": "Desconocido",
         "table": {
           "user": "Usuario",
           "savedDate": "Fecha Guardado",
@@ -125,6 +281,11 @@
           "message": "Enviar Mensaje"
         }
       },
+      "error": {
+        "notFound": "Perfil de proveedor no encontrado"
+      },
+      "viewPublicProfile": "Ver Perfil Público",
+      "editProfile": "Editar Perfil",
       "alerts": {
         "subscriptionActive": {
           "title": "Funciones Premium Activas",
@@ -146,17 +307,133 @@
     "login": {
       "title": "Login",
       "email": "Email",
-      "password": "Password",
-      "button": "Login"
+      "password": "Contraseña",
+      "button": "Login",
+      "message": "¿No tienes una cuenta todavía?",
+      "register": "Registrarse",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "signUpSuccessful": "Registro exitoso. Por favor inicia sesión",
+      "error": {
+        "notConfirmed": "Cuenta no confirmada. Por favor revisa tu bandeja de entrada",
+        "general": "Algo salió mal. Por favor intenta de nuevo más tarde"
+      }
+    },
+    "signUp": {
+      "main": {
+        "title": "Registrarse",
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "email": "Email",
+        "password": "Contraseña",
+        "passwordHint": "La contraseña debe tener al menos 6 caracteres",
+        "repeatPassword": "Repetir Contraseña",
+        "submit": "Registrarse",
+        "error": {
+          "count": "La contraseña debe tener al menos {{count}} caracteres",
+          "passwordNotMatch": "Las contraseñas no coinciden",
+          "signupFailed": "Registro fallido"
+        },
+        "message": "¿Ya tienes una cuenta?",
+        "login": "Login"
+      },
+      "additional": {
+        "title": "Sobre ti",
+        "skip": "Omitir",
+        "info": "Esta información nos ayuda a proporcionarte un mejor servicio y adaptar una mejor experiencia en nuestra plataforma.",
+        "submit": "Finalizar"
+      }
+    },
+    "forgotPassword": {
+      "title": "¿Olvidaste tu contraseña?",
+      "email": "Email",
+      "emailPlaceholder": "Ingresa tu email",
+      "button": "Enviar"
+    },
+    "resetPassword": {
+      "title": "Actualizar Contraseña",
+      "password": "Contraseña",
+      "passwordHint": "La contraseña debe tener al menos 6 caracteres",
+      "repeatPassword": "Repetir Contraseña",
+      "submit": "Actualizar",
+      "notReady": "Error técnico",
+      "error": {
+        "passwordNotMatch": "Las contraseñas no coinciden"
+      }
+    },
+    "claimBusiness": {
+      "form": {
+        "title": "Dar acceso al usuario",
+        "user": {
+          "placeholder": "Seleccionar usuario"
+        },
+        "button": {
+          "save": "Conceder acceso",
+          "saving": "Concediendo acceso..."
+        }
+      },
+      "error": {
+        "saveProvider": "Error al conceder acceso"
+      }
+    },
+    "paymentSuccess":  {
+      "title": "Pago Exitoso",
+      "subtitle": "Ahora puedes aprovechar las ventajas de nuestro Acceso de Proveedor MallorcaXclusive",
+      "message": "La solución más fácil y rápida para comenzar en nuestra red publicitaria y ser encontrado inmediatamente.",
+      "line1": "Obtén información analítica de tu negocio",
+      "line2": "Envía mensajes masivos a tus fans",
+      "line3": "Edita y actualiza los datos de tu negocio",
+      "button": "Página de detalles del proveedor"
     },
     "common": {
       "loading": "Cargando...",
       "updating": "Actualizando...",
+      "uploading": "Subiendo...",
+      "saving": "Guardando...",
+      "save": "Guardar",
+      "update": "Actualizar",
+      "back": "Volver",
+      "noImage": "No hay imagen disponible",
+      "user": "Usuario",
       "error": {
         "generic": "Ha ocurrido un error",
         "unauthorized": "No estás autorizado para ver esta página",
-        "notFound": "Página no encontrada"
+        "notFound": "Página no encontrada",
+        "required": "Este campo es obligatorio",
+        "emailFormat": "Formato de email inválido",
+        "phoneFormat": "Formato de teléfono inválido",
+        "websiteFormat": "Formato de sitio web inválido",
+        "googleMapsUrlFormat": "Formato de URL de Google Maps inválido"
       },
-      "success": "¡Éxito!"
+      "success": {
+        "saved": "Cambios guardados con éxito",
+        "imageDeleted": "Imagen eliminada con éxito",
+        "orderSaved": "Orden de imágenes guardado con éxito"
+      },
+      "search": {
+        "placeholder": "Buscar proveedor"
+      },
+      "sorting": {
+        "new": "Más recientes",
+        "old": "Más antiguos"
+      },
+      "status": {
+        "pending": "Pendiente",
+        "verified": "Verificado",
+        "rejected": "Rechazado",
+        "completed": "Completado"
+      },
+      "select": {
+        "placeholder": "Seleccionar..."
+      },
+      "gender": {
+        "other": "Otro",
+        "male": "Masculino",
+        "female": "Femenino"
+      },
+      "language": {
+        "en": "Inglés",
+        "es": "Español",
+        "de": "Alemán"
+      }
     }
 }

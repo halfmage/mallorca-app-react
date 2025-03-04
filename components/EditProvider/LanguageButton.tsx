@@ -17,26 +17,26 @@ const LanguageButton = ({ lng, isActive, isEmpty, onClick }: Props) => {
     [ lng, onClick ]
   )
   const btnClass = useMemo(
-    () => isActive ? 'bg-primary-500' : (isEmpty ? 'bg-red-500  hover:bg-red-600' : 'bg-green-500  hover:bg-green-600'),
+    () => isActive ? 'bg-primary-500' : (isEmpty ? 'bg-red-500  hover:bg-red-600' : 'bg-gray-200  hover:bg-gray-300 text-gray-800'),
     [ isActive, isEmpty ]
   )
 
   return (
     <a
-      className={`flex items-center gap-2 text-sm font-medium text-white cursor-pointer px-4 py-2 rounded-md ${btnClass}`}
+      className={`flex items-center gap-1 text-sm font-medium text-white cursor-pointer px-4 py-2 rounded-md ${btnClass}`}
       onClick={handleClick}
       key={lng}
     >
+      <span>
+        {t(`common.language.${lng}`)}
+      </span>
       {!isActive &&
         <Icon
           path={isEmpty ? IconAlert : IconCheck}
           size={.75}
-          className='text-white ml-1 relative top-px shrink-0'
+          className='relative shrink-0'
         />
       }
-      <span>
-        {t(`common.language.${lng}`)}
-      </span>
     </a>
   )
 }

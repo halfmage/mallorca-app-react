@@ -154,103 +154,103 @@ const EditProvider = ({
   )
 
   if (loading) {
-    return <div className="text-center p-4">{t('common.loading')}</div>;
+    return <div className="text-center p-8 text-body">{t('common.loading')}</div>;
   }
 
   if (!provider) {
-    return <div className="text-center p-4 text-red-500">{t('admin.providerNotFound')}</div>;
+    return <div className="text-center p-8 text-body text-red-500">{t('admin.providerNotFound')}</div>;
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-4">
-      <form onSubmit={onSubmit} className="space-y-6">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex flex-row justify-center items-center">
-            <Link href={`/${language}/${isProviderAdmin ? 'dashboard' : 'admin'}`} className="text-white px-4 py-2">
-              &lt;-
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <form onSubmit={onSubmit} className="space-y-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <Link href={`/${language}/${isProviderAdmin ? 'dashboard' : 'admin'}`} className="button-outline">
+              &larr;
             </Link>
-            <h1 className="text-2xl font-bold">{t('admin.editProvider', { name: provider?.name || '' })}</h1>
+            <h1 className="h4">{t('admin.editProvider', { name: provider?.name || '' })}</h1>
           </div>
-          <div className="flex gap-5">
+          <div className="flex gap-3">
             <Link
               href={`/${language}/provider/${provider?.slug || provider?.id}`}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              className="button-outline"
             >
               {t('admin.detailsPage')}
             </Link>
             <button
               type="submit"
               disabled={saving}
-              className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+              className="button-success"
             >
               {saving ? t('common.saving') : t('common.save')}
             </button>
           </div>
         </div>
-        {alertText && <Alert delay={3000} onClose={clearAlertText} className="fixed right-4 top-20 w-64" show>{alertText}</Alert>}
-        <div className="max-w-7xl mx-auto p-4">
-          <div className="border-2 border-gray-300 p-4">
-            <div className="max-w-4xl mx-auto p-4">
-              <h2 className="text-2xl font-bold mb-4">{t('admin.basicInfo.title')}</h2>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('admin.providerName')}
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                  {...register('name', {required: true, disabled: isProviderAdmin})}
-                />
-              </div>
+        
+        {alertText && <Alert delay={3000} onClose={clearAlertText} className="fixed right-4 top-20 w-64 z-50" show>{alertText}</Alert>}
+        
+        <section className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
+          <h2 className="h4 mb-6">{t('admin.basicInfo.title')}</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="text-body-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                {t('admin.providerName')}
+              </label>
+              <input
+                type="text"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                {...register('name', {required: true, disabled: isProviderAdmin})}
+              />
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('admin.category')}
-                </label>
-                <select
-                  {...register('mainCategory', {required: true, disabled: isProviderAdmin})}
-                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                >
-                  <option value="">{t('admin.selectCategory')}</option>
-                  {/* @ts-expect-error: skip type for now */}
-                  {mainCategories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div>
+              <label className="text-body-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                {t('admin.category')}
+              </label>
+              <select
+                {...register('mainCategory', {required: true, disabled: isProviderAdmin})}
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              >
+                <option value="">{t('admin.selectCategory')}</option>
+                {/* @ts-expect-error: skip type for now */}
+                {mainCategories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('admin.subcategories')}
-                </label>
-                <Controller
-                  name="subCategories"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={subCategoryOptions}
-                      isMulti
-                      className="w-full"
-                      classNamePrefix="react-select"
-                      placeholder={t('admin.selectCategory')}
-                      onChange={(selectedOptions) => field.onChange(selectedOptions.map((opt: { value: number }) => opt.value))}
-                      value={subCategoryOptions.filter((opt: { value: number }) => field.value?.includes(opt.value))}
-                      isDisabled={isProviderAdmin}
-                    />
-                  )}
-                />
-              </div>
+            <div>
+              <label className="text-body-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                {t('admin.subcategories')}
+              </label>
+              <Controller
+                name="subCategories"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={subCategoryOptions}
+                    isMulti
+                    className="w-full"
+                    classNamePrefix="react-select"
+                    placeholder={t('admin.selectCategory')}
+                    onChange={(selectedOptions) => field.onChange(selectedOptions.map((opt: { value: number }) => opt.value))}
+                    value={subCategoryOptions.filter((opt: { value: number }) => field.value?.includes(opt.value))}
+                    isDisabled={isProviderAdmin}
+                  />
+                )}
+              />
             </div>
           </div>
-        </div>
+        </section>
 
-        <div className="max-w-7xl mx-auto p-4">
-          <h2 className="text-2xl font-bold mb-4">{t('admin.image.title')}</h2>
+        <section className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
+          <h2 className="h4 mb-6">{t('admin.image.title')}</h2>
 
-          <div className="grid grid-cols-3 md:grid-cols-4 gap-4 mb-4 border-dashed border-gray-300 border-2 rounded p-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
             {/* @ts-expect-error: skip type for now */}
             {images.map((image, index) => (
               <Image
@@ -278,122 +278,123 @@ const EditProvider = ({
             ))}
           </div>
 
-          <label className="button cursor-pointer text-center sm:text-left">
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleNewImageChange}
-              className="hidden"
-            />
-            {t('admin.image.upload')}
-          </label>
-          <div>
-            {t('admin.image.description')}
+          <div className="space-y-3">
+            <label className="button inline-block cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleNewImageChange}
+                className="hidden"
+              />
+              {t('admin.image.upload')}
+            </label>
+            <p className="text-caption text-gray-600 dark:text-gray-400">
+              {t('admin.image.description')}
+            </p>
           </div>
-        </div>
+        </section>
 
-        <Descriptions register={register} descriptions={descriptions} />
+        <section className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
+          <Descriptions register={register} descriptions={descriptions} />
+        </section>
 
-        <div className="max-w-7xl mx-auto p-4">
-          <div className="border-2 border-gray-300 p-4">
-            <div className="max-w-4xl mx-auto p-4">
-              <h2 className="text-2xl font-bold mb-4">{t('admin.contact.title')}</h2>
+        <section className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+          <h2 className="h4 mb-6">{t('admin.contact.title')}</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="text-body-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                {t('admin.contact.phone')}
+              </label>
+              <input
+                type="text"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder={t('admin.contact.phone')}
+                {...register('phone', {
+                  pattern: {
+                    value: PHONE_PATTERN,
+                    message: t('common.error.phoneFormat'),
+                  },
+                })}
+              />
+              {errors.phone && <p className="text-red-500 text-caption mt-1">
+                {errors.phone.message as string}
+              </p>}
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('admin.contact.phone')}
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                  placeholder={t('admin.contact.phone')}
-                  {...register('phone', {
-                    pattern: {
-                      value: PHONE_PATTERN,
-                      message: t('common.error.phoneFormat'),
-                    },
-                  })}
-                />
-                {errors.phone && <p className="text-red-500 text-sm">
-                  {errors.phone.message as string}
-                </p>}
-              </div>
+            <div>
+              <label className="text-body-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                {t('admin.contact.mail')}
+              </label>
+              <input
+                type="email"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder={t('admin.contact.mail')}
+                {...register('mail', {
+                  pattern: {
+                    value: EMAIL_PATTERN,
+                    message: t('common.error.emailFormat'),
+                  },
+                })}
+              />
+              {errors.mail && <p className="text-red-500 text-caption mt-1">
+                {errors.mail.message as string}
+              </p>}
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('admin.contact.mail')}
-                </label>
-                <input
-                  type="email"
-                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                  placeholder={t('admin.contact.mail')}
-                  {...register('mail', {
-                    pattern: {
-                      value: EMAIL_PATTERN,
-                      message: t('common.error.emailFormat'),
-                    },
-                  })}
-                />
-                {errors.mail && <p className="text-red-500 text-sm">
-                  {errors.mail.message as string}
-                </p>}
-              </div>
+            <div>
+              <label className="text-body-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                {t('admin.contact.website')}
+              </label>
+              <input
+                type="text"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder={t('admin.contact.website')}
+                {...register('website', {
+                  pattern: {
+                    value: WEBSITE_PATTERN,
+                    message: t('common.error.websiteFormat'),
+                  },
+                })}
+              />
+              {errors.website && <p className="text-red-500 text-caption mt-1">
+                {errors.website.message as string}
+              </p>}
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('admin.contact.website')}
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                  placeholder={t('admin.contact.website')}
-                  {...register('website', {
-                    pattern: {
-                      value: WEBSITE_PATTERN,
-                      message: t('common.error.websiteFormat'),
-                    },
-                  })}
-                />
-                {errors.website && <p className="text-red-500 text-sm">
-                  {errors.website.message as string}
-                </p>}
-              </div>
+            <div>
+              <label className="text-body-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                {t('admin.contact.address')}
+              </label>
+              <input
+                type="text"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder={t('admin.contact.address')}
+                {...register('address')}
+              />
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('admin.contact.address')}
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                  placeholder={t('admin.contact.address')}
-                  {...register('address')}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('admin.contact.googleMapsUrl')}
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded bg-white dark:bg-gray-950 text-gray-900 dark:text-white"
-                  placeholder={t('admin.contact.googleMapsUrlPlaceholder')}
-                  {...register('googleMapsUrl', {
-                    pattern: {
-                      value: GOOGLE_MAPS_LINK_PATTERN,
-                      message: t('common.error.googleMapsUrlFormat'),
-                    },
-                  })}
-                />
-                {errors.googleMapsUrl && <p className="text-red-500 text-sm">
-                  {errors.googleMapsUrl.message as string}
-                </p>}
-              </div>
+            <div>
+              <label className="text-body-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                {t('admin.contact.googleMapsUrl')}
+              </label>
+              <input
+                type="text"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder={t('admin.contact.googleMapsUrlPlaceholder')}
+                {...register('googleMapsUrl', {
+                  pattern: {
+                    value: GOOGLE_MAPS_LINK_PATTERN,
+                    message: t('common.error.googleMapsUrlFormat'),
+                  },
+                })}
+              />
+              {errors.googleMapsUrl && <p className="text-red-500 text-caption mt-1">
+                {errors.googleMapsUrl.message as string}
+              </p>}
             </div>
           </div>
-        </div>
+        </section>
       </form>
     </div>
   );

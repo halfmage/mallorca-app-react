@@ -46,7 +46,7 @@ const Image = ({
       <img
         src={src}
         alt={alt}
-        className={`w-full h-40 object-cover rounded ${isCover ? 'border-2 border-blue-500' : ''}${isNew ? 'opacity-50' : ''}`}
+        className={`w-full aspect-[4/3] object-cover rounded ${isCover ? 'outline outline-4 outline-blue-500' : ''}${isNew ? 'opacity-50' : ''}`}
       />
       <button
         type="button"

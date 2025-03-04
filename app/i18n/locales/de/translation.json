@@ -251,7 +251,9 @@
         "recentViews": "Aufrufe (Letzte 30 Tage)",
         "uniqueViews": "Eindeutige Aufrufe",
         "messagesSent": "Gesendete Nachrichten",
-        "reachedUsers": "Erreichte Benutzer"
+        "reachedUsers": "Erreichte Benutzer",
+        "noDataTitle": "Keine Analysedaten verfügbar",
+        "noDataDescription": "Interagieren Sie mit Ihrem Publikum, um hier Analysedaten zu sehen."
       },
       "subscription": {
         "title": "Zahlungseinstellungen",
@@ -275,6 +277,8 @@
         "age": "Alter",
         "noUsers": "Ihr Profil wurde noch von keinem Nutzer gespeichert.",
         "undefined": "Unbekannt",
+        "noDataTitle": "Keine demografischen Daten verfügbar",
+        "noDataDescription": "Demografische Daten werden hier angezeigt, sobald Benutzer mit Ihrem Profil interagieren.",
         "table": {
           "user": "Nutzer",
           "savedDate": "Gespeichert am",

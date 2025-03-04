@@ -248,7 +248,9 @@
         "recentViews": "Views (Last 30 Days)",
         "uniqueViews": "Unique Views",
         "messagesSent": "Messages Sent",
-        "reachedUsers": "Reached Users"
+        "reachedUsers": "Reached Users",
+        "noDataTitle": "No Analytics Data Available",
+        "noDataDescription": "Start engaging with your audience to see analytics data here."
       },
       "subscription": {
         "title": "Payment settings",
@@ -272,6 +274,8 @@
         "age": "Age",
         "noUsers": "No users have saved your profile yet.",
         "undefined": "Unknown",
+        "noDataTitle": "No Demographics Data Available",
+        "noDataDescription": "User demographics will appear here once users start interacting with your profile.",
         "table": {
           "user": "User",
           "savedDate": "Saved Date",

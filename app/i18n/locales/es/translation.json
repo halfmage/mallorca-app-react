@@ -250,7 +250,9 @@
         "recentViews": "Vistas (Últimos 30 días)",
         "uniqueViews": "Vistas Únicas",
         "messagesSent": "Mensajes Enviados",
-        "reachedUsers": "Usuarios Alcanzados"
+        "reachedUsers": "Usuarios Alcanzados",
+        "noDataTitle": "No hay datos analíticos disponibles",
+        "noDataDescription": "Comience a interactuar con su audiencia para ver datos analíticos aquí."
       },
       "subscription": {
         "title": "Configuración de pago",
@@ -274,6 +276,8 @@
         "age": "Edad",
         "noUsers": "Ningún usuario ha guardado tu perfil todavía.",
         "undefined": "Desconocido",
+        "noDataTitle": "No hay datos demográficos disponibles",
+        "noDataDescription": "Los datos demográficos de usuarios aparecerán aquí una vez que los usuarios comiencen a interactuar con su perfil.",
         "table": {
           "user": "Usuario",
           "savedDate": "Fecha Guardado",

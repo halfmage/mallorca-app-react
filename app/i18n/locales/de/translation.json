@@ -321,6 +321,10 @@
       "error": {
         "notConfirmed": "Konto nicht bestätigt. Bitte überprüfen Sie Ihren Posteingang",
         "general": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut"
+      },
+      "passwordFlow": "Anmeldung mit Passwort",
+      "passwordless": {
+        "success": "Überprüfen Sie Ihre E-Mails und folgen Sie den Anweisungen"
       }
     },
     "signUp": {

@@ -318,6 +318,10 @@
       "error": {
         "notConfirmed": "Account not confirmed. Please check your inbox",
         "general": "Something went wrong. Please try again later"
+      },
+      "passwordFlow": "Login with password",
+      "passwordless": {
+        "success": "Check you email and follow the instructions"
       }
     },
     "signUp": {

@@ -4,7 +4,7 @@ import React, {useCallback, useEffect, useState} from 'react'
 import {useTranslation} from "@/app/i18n/client";
 import {useForm} from "react-hook-form";
 import { createClient } from '@/utils/supabase/client'
-import { MIN_CHARACTERS_NUMBER } from '@/app/api/utils/constants'
+import { AUTH_STATUS_SIGNED_IN, MIN_CHARACTERS_NUMBER } from '@/app/api/utils/constants'
 
 // @ts-expect-error: skip type for now
 const ResetPassword = ({onSubmit: onSubmitAction}) => {
@@ -60,7 +60,7 @@ const ResetPassword = ({onSubmit: onSubmitAction}) => {
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.onAuthStateChange(async (event) => {
-      if (event === 'SIGNED_IN') {
+      if (event === AUTH_STATUS_SIGNED_IN) {
         setReady(true)
       }
     })

@@ -7,6 +7,7 @@ import LanguageSwitcher from './LanguageSwitcher'
 
 import { CircleUserRound, Heart, Inbox, MessagesSquare, LayoutDashboard, Settings, Search, X } from 'lucide-react';
 import ProviderSearch from '@/components/ProviderSearch'
+import PasswordlessCallback from '@/components/SignIn/PasswordlessCallback'
 
 type HeaderProps = {
     user: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -146,6 +147,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                   <CircleUserRound size={24} strokeWidth={1.5} />
                   {t('header.signIn')}
                 </Link>
+                <PasswordlessCallback />
               </>
             )}
           </nav>

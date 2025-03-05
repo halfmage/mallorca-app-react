@@ -21,3 +21,4 @@ export const CATEGORY_SHOPPING_SLUG = 'shopping'
 export const MIN_CHARACTERS_NUMBER = 6
 export const SEASON_WINTER = 'winter'
 export const SEASON_SUMMER = 'winter'
+export const AUTH_STATUS_SIGNED_IN = 'SIGNED_IN'

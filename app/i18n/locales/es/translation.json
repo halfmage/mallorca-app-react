@@ -320,6 +320,10 @@
       "error": {
         "notConfirmed": "Cuenta no confirmada. Por favor revisa tu bandeja de entrada",
         "general": "Algo salió mal. Por favor intenta de nuevo más tarde"
+      },
+      "passwordFlow": "Iniciar sesión con contraseña",
+      "passwordless": {
+        "success": "Revisa tu correo electrónico y sigue las instrucciones"
       }
     },
     "signUp": {

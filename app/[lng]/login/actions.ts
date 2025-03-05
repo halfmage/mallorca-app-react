@@ -31,3 +31,18 @@ export async function login(lng: string, formData: FormData) {
   revalidatePath(`/${lng}`, 'layout')
   redirect(`/${lng}${userData?.user?.user_metadata?.pending_id ? `/register/${userData?.user?.user_metadata?.pending_id}` : ''}`)
 }
+
+export async function signInWithMagicLink(lng: string, formData: FormData) {
+  const cookieStore = await cookies()
+  // @ts-expect-error: Argument of type 'ReadonlyRequestCookies' is not assignable to parameter of type 'Promise<ReadonlyRequestCookies>'
+  const supabase = await createClient(cookieStore)
+  const { error } = await supabase.auth.signInWithOtp({
+    email: formData.get('email') as string,
+    options: {
+      shouldCreateUser: true,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_DOMAIN}/${lng}`,
+    },
+  })
+
+  return redirect(error ? `/${lng}/login?error=${ERROR_GENERAL}` : `/${lng}/login?success=true`)
+}

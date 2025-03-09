@@ -105,7 +105,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1 text-xs *:opacity-70 *:p-1.5 *:px-2.5 *:rounded-lg *:flex *:flex-col *:items-center">
+          <nav className="hidden md:flex items-center gap-1 text-xs *:p-1.5 *:px-2.5 *:rounded-lg *:flex *:flex-col *:items-center">
             {user ? (
               <>
                 {isAdmin && (
@@ -175,7 +175,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                     className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                     onClick={closeMenu}
                   >
-                    <Settings size={20} strokeWidth={1.5} />
+                    <Settings size={24} strokeWidth={1.5} />
                     <span>{t('header.admin')}</span>
                   </Link>
                 )}
@@ -186,7 +186,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                       className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                       onClick={closeMenu}
                     >
-                      <LayoutDashboard size={20} strokeWidth={1.5} />
+                      <LayoutDashboard size={24} strokeWidth={1.5} />
                       <span>Dashboard</span>
                     </Link>
                     <Link
@@ -194,7 +194,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                       className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                       onClick={closeMenu}
                     >
-                      <MessagesSquare size={20} strokeWidth={1.5} />
+                      <MessagesSquare size={24} strokeWidth={1.5} />
                       <span>{t('header.messages')}</span>
                     </Link>
                   </>
@@ -205,7 +205,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                   onClick={closeMenu}
                 >
                   <div className="relative">
-                    <Inbox size={20} strokeWidth={1.5} />
+                    <Inbox size={24} strokeWidth={1.5} />
                     {newMessagesCount > 0 && (
                       <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                         {newMessagesCount}
@@ -219,10 +219,10 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                   className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                   onClick={closeMenu}
                 >
-                  <Heart size={20} strokeWidth={1.5} />
+                  <Heart size={24} strokeWidth={1.5} />
                   <span>{t('header.savedProviders')}</span>
                 </Link>
-                <div className="p-3">
+                <div className="">
                   <LanguageSwitcher />
                 </div>
                 <Link
@@ -236,7 +236,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
               </>
             ) : (
               <>
-                <div className="p-3">
+                <div className="">
                   <LanguageSwitcher />
                 </div>
                 <Link
@@ -244,7 +244,7 @@ const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) 
                   className="flex items-center gap-3 p-3 rounded-lg dark:hover:bg-gray-800"
                   onClick={closeMenu}
                 >
-                  <CircleUserRound size={20} strokeWidth={1.5} />
+                  <CircleUserRound size={24} strokeWidth={1.5} />
                   <span>{t('header.signIn')}</span>
                 </Link>
               </>

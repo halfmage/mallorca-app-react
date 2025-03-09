@@ -71,7 +71,7 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }: Provi
       <div className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-950 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
         <div className="max-w-screen-xl mx-auto px-4 md:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="h2">{provider.name}</h1>
+            <h1 className="h3">{provider.name}</h1>
             <div className="flex items-center gap-4">
               {showSaveButton && (
                 <SaveButton
@@ -148,8 +148,7 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }: Provi
 
             {/* Description */}
             {texts?.description && (
-              <div className="prose prose-base dark:prose-invert max-w-none">
-                <h2 className="mb-4 text-gray-900 dark:text-white h2">About this place</h2>
+              <div className="prose prose-base dark:prose-invert max-w-none prose-headings:font-medium">
                 <Markdown>{texts.description}</Markdown>
               </div>
             )}

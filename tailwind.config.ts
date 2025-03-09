@@ -21,7 +21,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        gloock: ['Gloock', 'serif'],
+        gloock: ['Inter', 'system-ui', 'sans-serif'],
       },
       spacing: {
         '4.5': '1.125rem',

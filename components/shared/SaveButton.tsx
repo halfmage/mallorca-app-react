@@ -41,7 +41,7 @@ const SaveButton = ({ provider, isSaved: isSavedInitially, onClick }) => {
     <button
       onClick={handleSaveToggle}
       disabled={savingStatus === 'loading'}
-      className={isSaved ? 'button-outline' : 'button-primary'}
+      className={isSaved ? 'button-outline' : 'button-save'}
     >
       {savingStatus === 'loading' ? (
         'Loading...'

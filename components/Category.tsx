@@ -88,7 +88,7 @@ const Category = ({
 
   return (
     <div className="">
-      <h1 className="h1 py-6">
+      <h1 className="h3 py-6">
         {t('category.title', { category: category.name })}
       </h1>
 

@@ -56,7 +56,7 @@ const ProviderCard = ({
       {/* Provider Details */}
       <div className="mt-2">
         <div
-          className="font-bold text-lg tracking-tight truncate flex items-center gap-1">
+          className="font-semibold truncate flex items-center gap-1">
           {provider.name}
         </div>
         <div className='flex items-center gap-1 text-sm overflow-hidden'>
@@ -71,14 +71,12 @@ const ProviderCard = ({
                 <span key={subcategory.id}>
                         <span>·</span>
                         <span
-                          className='text-gray-500 dark:text-gray-400 whitespace-nowrap'> {subcategory?.name}</span>
+                          className='text-gray-500 dark:text-gray-400 whitespace-nowrap tracking-tight'> {subcategory?.name}</span>
                       </span>
               )
             )
           }
         </div>
-        <div
-          className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{provider.address}</div>
       </div>
     </Link>
   );

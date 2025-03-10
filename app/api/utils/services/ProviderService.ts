@@ -751,18 +751,28 @@ class ProviderService extends EntityService {
     }
 
     const uploadedImages = []
+    const uploadedVideos = []
 
     if (newImages.length) {
       const fileUploadService = new FileUploadService()
       for (let i = 0; i < newImages.length; i++) {
         try {
           const file = newImages[i]
-          const url = await fileUploadService.upload(file)
+          if (file.type.includes('video/')) {
+            const url = await fileUploadService.uploadVideo(file)
 
-          uploadedImages.push({
-            provider_id: provider.id,
-            image_url: url
-          })
+            uploadedVideos.push({
+              provider_id: provider.id,
+              url
+            })
+          } else {
+            const url = await fileUploadService.upload(file)
+
+            uploadedImages.push({
+              provider_id: provider.id,
+              image_url: url
+            })
+          }
         } catch (uploadError) {
           // @ts-expect-error: skip type for now
           console.error('Error uploading image:', uploadError.message)

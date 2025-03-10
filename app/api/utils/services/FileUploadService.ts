@@ -38,4 +38,22 @@ export default class FileUploadService {
     // @ts-expect-error: skip type for now
     return uploadResult?.secure_url || null
   }
+
+  public async uploadVideo(file: File) {
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+    const uploadResult = await new Promise(
+      (resolve) => {
+        cloudinary.uploader
+          .upload_stream(
+            { resource_type: 'video' },
+            (error, uploadResult) => resolve(uploadResult)
+          )
+          .end(buffer)
+      }
+    )
+
+    // @ts-expect-error: skip type for now
+    return uploadResult?.secure_url || null
+  }
 }

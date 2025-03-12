@@ -9,7 +9,7 @@ import { languages } from '@/app/i18n/settings'
 import Link from 'next/link'
 import Alert from '@/components/shared/Alert'
 import Descriptions from '@/components/EditProvider/Descriptions'
-import Image from '@/components/EditProvider/Image'
+import Gallery from '@/components/EditProvider/Gallery'
 import {
   EMAIL_PATTERN,
   GOOGLE_MAPS_LINK_PATTERN,
@@ -57,7 +57,11 @@ const EditProvider = ({
     },
   })
   const descriptions = watch('description')
-  const [images, setImages] = useState(provider?.provider_images || [])
+  const [images, setImages] = useState([
+    ...(provider?.provider_images || []),
+    ...(provider?.provider_videos || [])
+  ])
+
   const [newImages, setNewImages] = useState([])
   const fetchProvider = useCallback(async () => {
     try {
@@ -77,34 +81,6 @@ const EditProvider = ({
     []
   )
 
-  const handleNewImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) {
-      return
-    }
-    const files = Array.from(e.target.files)
-    // @ts-expect-error: skip type for now
-    setNewImages(files)
-    const previewUrls = files.map((file: File) => URL.createObjectURL(file))
-    // @ts-expect-error: skip type for now
-    setPreviews(previewUrls)
-  }
-
-  const handleImageDeleteById = async (imageId: number) => {
-    setImages((prev: Array<{ id: number }>) => prev.filter((img: { id: number }) => img.id !== imageId))
-  }
-  const handleImageDeleteByIndex = async (imageId: number) => {
-    setPreviews(previews => previews.filter((_preview, index) => index !== imageId))
-    setNewImages(newImages => newImages.filter((_image, index) => index !== imageId))
-  }
-
-  // @ts-expect-error: skip type for now
-  const handleImageReorder = (dragIndex, dropIndex) => {
-    const reorderedImages = [...images];
-    const [draggedImage] = reorderedImages.splice(dragIndex, 1);
-    reorderedImages.splice(dropIndex, 0, draggedImage)
-    setImages(reorderedImages)
-  }
-
   const onSubmit = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
     handleSubmit(
       async ({
@@ -123,6 +99,7 @@ const EditProvider = ({
           preparedFormData.append('website', website)
           preparedFormData.append('googleMapsUrl', googleMapsUrl)
           preparedFormData.append('description', JSON.stringify(description || {}))
+          // @ts-expect-error: skip type for now
           preparedFormData.append('images', (images || []).map(({ id }: { id: number }) => id))
           for (let i = 0; i < newImages.length; i++) {
             preparedFormData.append('newImages', newImages[i])
@@ -247,53 +224,14 @@ const EditProvider = ({
           </div>
         </section>
 
-        <section className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="h4 mb-6">{t('admin.image.title')}</h2>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
-            {/* @ts-expect-error: skip type for now */}
-            {images.map((image, index) => (
-              <Image
-                src={image.publicUrl}
-                alt={`${provider.name} ${index + 1}`}
-                index={index}
-                onDelete={handleImageDeleteById}
-                onOrderChange={handleImageReorder}
-                isCover={!index}
-                imageId={image.id}
-                key={image.id}
-              />
-            ))}
-            {previews.map((image, index) => (
-              <Image
-                src={image}
-                alt={`${provider.name} ${images.length + index + 1}`}
-                index={index}
-                onDelete={handleImageDeleteByIndex}
-                onOrderChange={handleImageReorder}
-                isNew
-                imageId={index}
-                key={index}
-              />
-            ))}
-          </div>
-
-          <div className="space-y-3">
-            <label className="button inline-block cursor-pointer">
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleNewImageChange}
-                className="hidden"
-              />
-              {t('admin.image.upload')}
-            </label>
-            <p className="text-caption text-gray-600 dark:text-gray-400">
-              {t('admin.image.description')}
-            </p>
-          </div>
-        </section>
+        <Gallery
+          providerName={provider.name}
+          images={images}
+          setImages={setImages}
+          previews={previews}
+          setPreviews={setPreviews}
+          setNewImages={setNewImages}
+        />
 
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
           <Descriptions register={register} descriptions={descriptions} />

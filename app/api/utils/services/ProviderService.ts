@@ -27,6 +27,13 @@ const IMAGES_FRAGMENT = `
         id,
         image_url,
         created_at
+    ),
+    provider_videos (
+        id,
+        url,
+        thumbnail_url,
+        created_at,
+        external
     )
 `
 
@@ -794,6 +801,13 @@ class ProviderService extends EntityService {
         .delete()
         .not('id', 'in', `(${actualImageIds.join(',')})`)
         .eq('provider_id', provider.id)
+    }
+
+    if (uploadedVideos.length) {
+      await this.supabase
+        .from('provider_videos')
+        .insert(uploadedVideos)
+        .select('id')
     }
 
     if (images?.length) {

@@ -52,13 +52,21 @@ interface ProviderProps {
 const EMPTY_ARRAY = []
 
 const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }: ProviderProps) => {
-  // @ts-expect-error: skip type for now
-  const providerImages = provider.provider_images || EMPTY_ARRAY
+  const providerImages = useMemo(
+    () => [
+      // @ts-expect-error: skip type for now
+      ...(provider?.provider_images || EMPTY_ARRAY),
+      // @ts-expect-error: skip type for now
+      ...(provider?.provider_videos || EMPTY_ARRAY)
+    ],
+    [ provider ]
+  )
   const { t } = useTranslation()
   const texts = useMemo(
     () => provider?.provider_translations?.[0],
     [ provider ]
   )
+  console.log('provider_images = ', providerImages)
 
   if (!provider) {
     return <div

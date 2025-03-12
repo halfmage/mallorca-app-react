@@ -5,6 +5,7 @@ interface Props {
   src: string
   index: number
   alt: string
+  fileType: string
   imageId: number
   isCover?: boolean
   isNew?: boolean
@@ -14,8 +15,8 @@ interface Props {
 
 const handleDragOver = (e: React.DragEvent<HTMLInputElement>) => e.preventDefault()
 
-const Image = ({
-  src, onOrderChange, onDelete, index, alt, imageId, isCover = false, isNew = false
+const Item = ({
+  src, onOrderChange, onDelete, index, alt, imageId, isCover = false, isNew = false, fileType
 }: Props) => {
   const { t } = useTranslation()
   const handleDragStart = useCallback(
@@ -43,11 +44,18 @@ const Image = ({
       onDragOver={handleDragOver}
       onDrop={handleOrderChange}
     >
-      <img
-        src={src}
-        alt={alt}
-        className={`w-full aspect-[4/3] object-cover rounded ${isCover ? 'outline outline-4 outline-blue-500' : ''}${isNew ? 'opacity-50' : ''}`}
-      />
+      {fileType === 'image' ? (
+        <img
+          src={src}
+          alt={alt}
+          className={`w-full aspect-[4/3] object-cover rounded ${isCover ? 'outline outline-4 outline-blue-500' : ''}${isNew ? 'opacity-50' : ''}`}
+        />
+      ) : (
+        <video className={`w-full aspect-[4/3] object-cover rounded ${isNew ? 'opacity-50' : ''}`}>
+          <source src={src} />
+          {alt}
+        </video>
+      )}
       <button
         type="button"
         onClick={handleDelete}
@@ -59,4 +67,4 @@ const Image = ({
   )
 }
 
-export default Image
+export default Item

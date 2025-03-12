@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from '@/app/i18n/client'
 import Image from "@/components/shared/Image"
+import Video from "@/components/shared/Video"
 import { Icon } from '@mdi/react'
 import { mdiClose as IconClose } from '@mdi/js'
 import { mdiChevronLeft as IconPrev } from '@mdi/js'
@@ -68,13 +69,20 @@ const Gallery = ({ images, providerName }) => {
               setShowModal(true)
             }}
           >
-            <Image
-              src={image.publicUrl}
-              alt={`${providerName} - ${index + 2}`}
-              className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-              width={400}
-              height={300}
-            />
+            {image.publicUrl ?
+              <Image
+                src={image.publicUrl}
+                alt={`${providerName} - ${index + 2}`}
+                className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+                width={400}
+                height={300}
+              /> : <Video
+                src={image.url}
+                className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+                autoPlay
+                muted
+              />
+            }
           </div>
         ))}
 

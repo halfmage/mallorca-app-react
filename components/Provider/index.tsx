@@ -12,6 +12,8 @@ import { mdiEmail as IconEmail } from '@mdi/js'
 import { mdiWeb as IconWebsite } from '@mdi/js'
 import { mdiMapMarker as IconMap } from '@mdi/js'
 import { mdiOpenInNew as IconExternal } from '@mdi/js'
+import { getSortedProviderMedia } from '@/app/api/utils/helpers'
+import { ProviderImage, ProviderVideo, Category } from '@/app/api/utils/types'
 
 interface ProviderTranslation {
   advantages_list?: string;
@@ -19,19 +21,9 @@ interface ProviderTranslation {
   description?: string;
 }
 
-interface Subcategory {
-  id: number | string;
-  name: string;
-}
-
-interface ProviderImage {
-  url: string;
-  alt?: string;
-}
-
 interface ProviderProps {
   provider: {
-    id?: number | string;
+    id?: string;
     slug?: string;
     name: string;
     address?: string;
@@ -40,25 +32,18 @@ interface ProviderProps {
     website?: string;
     google_maps_url?: string;
     maincategories?: { name: string };
-    subcategories?: Subcategory[];
+    subcategories?: Category[];
     provider_images?: ProviderImage[];
+    provider_videos?: ProviderVideo[];
     provider_translations?: ProviderTranslation[];
   };
   showSaveButton?: boolean;
   isSaved?: boolean;
 }
 
-// @ts-expect-error: skip type for now
-const EMPTY_ARRAY = []
-
 const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }: ProviderProps) => {
   const providerImages = useMemo(
-    () => [
-      // @ts-expect-error: skip type for now
-      ...(provider?.provider_images || EMPTY_ARRAY),
-      // @ts-expect-error: skip type for now
-      ...(provider?.provider_videos || EMPTY_ARRAY)
-    ],
+    () => getSortedProviderMedia(provider as { provider_images: ProviderImage[], provider_videos: ProviderVideo[] }),
     [ provider ]
   )
   const { t } = useTranslation()
@@ -66,7 +51,6 @@ const Provider = ({ provider, showSaveButton, isSaved: isSavedInitially }: Provi
     () => provider?.provider_translations?.[0],
     [ provider ]
   )
-  console.log('provider_images = ', providerImages)
 
   if (!provider) {
     return <div

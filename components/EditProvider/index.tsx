@@ -14,8 +14,9 @@ import {
   EMAIL_PATTERN,
   GOOGLE_MAPS_LINK_PATTERN,
   PHONE_PATTERN,
-  WEBSITE_PATTERN
-} from '@/app/api/utils/helpers';
+  WEBSITE_PATTERN,
+  getSortedProviderMedia
+} from '@/app/api/utils/helpers'
 
 const EditProvider = ({
   // @ts-expect-error: skip type for now
@@ -57,10 +58,7 @@ const EditProvider = ({
     },
   })
   const descriptions = watch('description')
-  const [images, setImages] = useState([
-    ...(provider?.provider_images || []),
-    ...(provider?.provider_videos || [])
-  ])
+  const [images, setImages] = useState(getSortedProviderMedia(provider))
 
   const [newImages, setNewImages] = useState([])
   const fetchProvider = useCallback(async () => {
@@ -69,7 +67,7 @@ const EditProvider = ({
       const response = await fetch(`/api/edit-provider/${id}`)
       const {data} = await response.json()
       setProvider(data)
-      setImages(data.provider_images);
+      setImages(getSortedProviderMedia(data))
     } catch (error) {
       console.error(t('admin.error.fetchProvider'), error)
     } finally {
@@ -100,7 +98,7 @@ const EditProvider = ({
           preparedFormData.append('googleMapsUrl', googleMapsUrl)
           preparedFormData.append('description', JSON.stringify(description || {}))
           // @ts-expect-error: skip type for now
-          preparedFormData.append('images', (images || []).map(({ id }: { id: number }) => id))
+          preparedFormData.append('media', (images || []).map(({ id }: { id: number }) => id))
           for (let i = 0; i < newImages.length; i++) {
             preparedFormData.append('newImages', newImages[i])
           }

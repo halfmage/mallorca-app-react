@@ -42,3 +42,16 @@ export interface ProviderTab {
   maincategory: string
   provider_images: Array<{ publicUrl?: string|null }>
 }
+
+export interface ProviderImage {
+  publicUrl: string;
+  created_at: string;
+  id: number;
+}
+
+export interface ProviderVideo {
+  url: string;
+  external: boolean;
+  created_at: string;
+  id: string;
+}

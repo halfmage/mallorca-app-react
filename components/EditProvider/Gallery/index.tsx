@@ -24,7 +24,6 @@ const EditProvider = ({
       url: URL.createObjectURL(file),
       type: file.type.match('image/') ? MEDIA_TYPE_IMAGE : MEDIA_TYPE_VIDEO
     }))
-    console.log('files = ', files)
     // @ts-expect-error: skip type for now
     setPreviews(items => [...items, ...previewUrls])
   }
@@ -53,22 +52,19 @@ const EditProvider = ({
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
         {/* @ts-expect-error: skip type for now */}
-        {images.map((image, index) => {
-          console.log('image = ', image)
-          return (
-            <Item
-              src={image.publicUrl || image.thumbnail_url || image.url}
-              fileType={image.publicUrl ? MEDIA_TYPE_IMAGE : MEDIA_TYPE_VIDEO}
-              alt={`${providerName} ${index + 1}`}
-              index={index}
-              onDelete={handleImageDeleteById}
-              onOrderChange={handleImageReorder}
-              isCover={!index}
-              imageId={image.id}
-              key={image.id}
-            />
-          )
-        })}
+        {images.map((image, index) => (
+          <Item
+            src={image.publicUrl || image.thumbnail_url || image.url}
+            fileType={image.publicUrl ? MEDIA_TYPE_IMAGE : MEDIA_TYPE_VIDEO}
+            alt={`${providerName} ${index + 1}`}
+            index={index}
+            onDelete={handleImageDeleteById}
+            onOrderChange={handleImageReorder}
+            isCover={!index}
+            imageId={image.id}
+            key={image.id}
+          />
+        ))}
         {previews.map((file: { url: string, type: string }, index: number) => (
           <Item
             src={file.url}

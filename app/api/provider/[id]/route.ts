@@ -45,7 +45,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
         mainCategoryId: formData.get('mainCategoryId') as string,
         subCategoryIds: ((formData.get('subCategoryIds') || '') as string).split(',').map(Number),
       } : {}),
-      images: ((formData.get('images') || '') as string).split(',').map(Number),
+      media: ((formData.get('media') || '') as string).split(','),
       newImages: formData.getAll('newImages') as File[],
       mail: mail.match(EMAIL_PATTERN) ? mail : '',
       phone: phone.match(PHONE_PATTERN) ? phone : '',

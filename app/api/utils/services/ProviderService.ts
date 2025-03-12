@@ -708,13 +708,13 @@ class ProviderService extends EntityService {
   public update = async (
     idOrSlug: string,
     {
-      name, mainCategoryId, subCategoryIds, images, newImages, address, phone, mail, website,
+      name, mainCategoryId, subCategoryIds, media, newImages, address, phone, mail, website,
       googleMapsUrl, description
     }: {
       name?: string,
       mainCategoryId?: string,
       subCategoryIds?: Array<number>,
-      images: Array<number>,
+      media: Array<string>,
       newImages: Array<File>,
       address: string,
       phone: string,
@@ -736,7 +736,7 @@ class ProviderService extends EntityService {
         ...(mainCategoryId ? { maincategory_id: mainCategoryId } : {})
       })
       .eq(isUUID(idOrSlug) ? 'id' : 'slug', idOrSlug)
-      .select('id, provider_subcategories(subcategory_id), provider_translations(id, language)')
+      .select('id, slug, provider_subcategories(subcategory_id), provider_translations(id, language)')
 
     const provider = data?.[0]
 
@@ -766,14 +766,14 @@ class ProviderService extends EntityService {
         try {
           const file = newImages[i]
           if (file.type.includes('video/')) {
-            const url = await fileUploadService.uploadVideo(file)
+            const url = await fileUploadService.upload(file, { resource_type: 'video', tags: provider?.slug })
 
             uploadedVideos.push({
               provider_id: provider.id,
               url
             })
           } else {
-            const url = await fileUploadService.upload(file)
+            const url = await fileUploadService.upload(file, { tags: provider?.slug })
 
             uploadedImages.push({
               provider_id: provider.id,
@@ -793,6 +793,8 @@ class ProviderService extends EntityService {
       .insert(uploadedImages)
       .select('id')
 
+    const images = media.filter((imageId: string) => !isUUID(imageId))
+
     const actualImageIds = [ ...images, ...(newImagesData || []).map(({ id }) => id) ]
 
     if (actualImageIds.length) {
@@ -801,17 +803,38 @@ class ProviderService extends EntityService {
         .delete()
         .not('id', 'in', `(${actualImageIds.join(',')})`)
         .eq('provider_id', provider.id)
+    } else {
+      await this.supabase
+        .from('provider_images')
+        .delete()
+        .eq('provider_id', provider.id)
     }
 
-    if (uploadedVideos.length) {
+    const { data: newVideosData } = await this.supabase
+      .from('provider_videos')
+      .insert(uploadedVideos)
+      .select('id')
+
+    const actualVideoIds = [
+      ...media.filter((imageId: string) => isUUID(imageId)),
+      ...(newVideosData || []).map(({ id }) => id)
+    ]
+
+    if (actualVideoIds.length) {
       await this.supabase
         .from('provider_videos')
-        .insert(uploadedVideos)
-        .select('id')
+        .delete()
+        .not('id', 'in', `(${actualVideoIds.join(',')})`)
+        .eq('provider_id', provider.id)
+    } else {
+      await this.supabase
+        .from('provider_videos')
+        .delete()
+        .eq('provider_id', provider.id)
     }
 
-    if (images?.length) {
-      return await this.reorderImages(images)
+    if (media?.length) {
+      return await this.reorderImages(media)
     }
 
     return true
@@ -913,15 +936,26 @@ class ProviderService extends EntityService {
     return !dbError
   }
 
-  public reorderImages = async (imageIds: Array<string|number>): Promise<boolean> => {
-    for (let i = 0; i < imageIds.length; i++) {
-      const {error} = await this.supabase
-        .from('provider_images')
-        .update({created_at: new Date(Date.now() + i).toISOString()})
-        .eq('id', imageIds[i])
+  public reorderImages = async (mediaIds: Array<string>): Promise<boolean> => {
+    for (let i = 0; i < mediaIds.length; i++) {
+      if (isUUID(mediaIds[i])) {
+        const {error} = await this.supabase
+          .from('provider_videos')
+          .update({created_at: new Date(Date.now() + i).toISOString()})
+          .eq('id', mediaIds[i])
 
-      if (error) {
-        return false
+        if (error) {
+          return false
+        }
+      } else {
+        const {error} = await this.supabase
+          .from('provider_images')
+          .update({created_at: new Date(Date.now() + i).toISOString()})
+          .eq('id', Number(mediaIds[i]))
+
+        if (error) {
+          return false
+        }
       }
     }
 

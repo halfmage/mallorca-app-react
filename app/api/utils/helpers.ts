@@ -8,6 +8,7 @@ import {
   SEASON_WINTER,
   SEASON_SUMMER
 } from '@/app/api/utils/constants'
+import { ProviderImage, ProviderVideo } from './types'
 
 const TRANSLATABLE_STATUSES = [
   STATUS_PENDING,
@@ -44,3 +45,24 @@ export const PHONE_PATTERN = /^\+?[0-9\s-]{6,}$/
 export const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
 export const WEBSITE_PATTERN = /^(https?:\/\/)?(www\.)?[\w-]+\.[\w-]{2,4}.*$/
 export const GOOGLE_MAPS_LINK_PATTERN = /^(https:\/\/www\.google\.com\/maps\/|https:\/\/maps\.app\.goo\.gl\/).*$/
+
+export const getSortedProviderMedia = (
+  provider: { provider_images: ProviderImage[], provider_videos: ProviderVideo[] }
+): Array<ProviderImage|ProviderVideo> => {
+  const items = [
+    ...(provider?.provider_images || []),
+    ...(provider?.provider_videos || [])
+  ].sort((a: { created_at: string }, b: { created_at: string }) =>
+    Number(new Date(a.created_at)) - Number(new Date(b.created_at))
+  )
+
+  const firstWithPublicUrl = items.findIndex(
+    (item: ProviderImage|ProviderVideo) => (item as ProviderImage)?.publicUrl
+  )
+  if (firstWithPublicUrl > 0) {
+    const reordered = items.splice(firstWithPublicUrl, 1)
+    items.unshift(...reordered)
+  }
+
+  return items
+}

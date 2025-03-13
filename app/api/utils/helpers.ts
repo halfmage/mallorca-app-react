@@ -51,7 +51,7 @@ export const getSortedProviderMedia = (
 ): Array<ProviderImage|ProviderVideo> => {
   const items = [
     ...(provider?.provider_images || []),
-    ...(provider?.provider_videos || [])
+    ...(provider?.provider_videos || []).filter((video: ProviderVideo) => !video.external)
   ].sort((a: { created_at: string }, b: { created_at: string }) =>
     Number(new Date(a.created_at)) - Number(new Date(b.created_at))
   )

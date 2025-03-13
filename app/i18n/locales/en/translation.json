@@ -196,7 +196,9 @@
         "updateProvider": "Error updating provider",
         "deleteImage": "Error deleting image",
         "saveOrder": "Error saving image order",
-        "fetchCategories": "Error fetching categories"
+        "fetchCategories": "Error fetching categories",
+        "videoSizeLimit": "File size too large. Please use file up to 100MB",
+        "videoNumberLimit": "Only one video per provider is allowed"
       },
       "providers": {
         "name": "Name",

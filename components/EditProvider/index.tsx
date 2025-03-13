@@ -229,6 +229,7 @@ const EditProvider = ({
           previews={previews}
           setPreviews={setPreviews}
           setNewImages={setNewImages}
+          onWarning={setAlertText}
         />
 
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">

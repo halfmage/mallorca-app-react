@@ -1,42 +1,77 @@
 'use client'
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useTranslation } from '@/app/i18n/client'
 import Item from '@/components/EditProvider/Gallery/Item'
 
 const MEDIA_TYPE_IMAGE = 'image'
 const MEDIA_TYPE_VIDEO = 'video'
 
+const MAX_FILE_SIZE = Number(process.env.NEXT_PUBLIC_FILEUPLOAD_SIZE || 100 * 1024 * 1024)
+const MAX_VIDEOS_PER_PROVIDER = 1
+
 const EditProvider = ({
   // @ts-expect-error: skip type for now
-  images, setImages, previews, setPreviews, setNewImages, providerName
+  images, setImages, previews, setPreviews, setNewImages, providerName, onWarning
 }) => {
   const {t} = useTranslation()
 
-  const handleNewImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) {
-      return
-    }
-    const files = Array.from(e.target.files)
-    // @ts-expect-error: skip type for now
-    setNewImages(items => [...items, ...files])
-    const previewUrls = files.map((file: File) => ({
-      url: URL.createObjectURL(file),
-      type: file.type.match('image/') ? MEDIA_TYPE_IMAGE : MEDIA_TYPE_VIDEO
-    }))
-    // @ts-expect-error: skip type for now
-    setPreviews(items => [...items, ...previewUrls])
-  }
+  const handleNewImageChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onWarning('')
+      if (!e.target.files) {
+        return
+      }
+      const files = Array.from(e.target.files)
 
-  const handleImageDeleteById = async (imageId: number) => {
-    setImages((prev: Array<{ id: number }>) => prev.filter((img: { id: number }) => img.id !== imageId))
-  }
-  const handleImageDeleteByIndex = async (imageId: number) => {
-    // @ts-expect-error: skip type for now
-    setPreviews(previews => previews.filter((_preview, index) => index !== imageId))
-    // @ts-expect-error: skip type for now
-    setNewImages(newImages => newImages.filter((_image, index) => index !== imageId))
-  }
+      const allowedFilesBySize = files.filter(
+        (file: File) => file.size <= MAX_FILE_SIZE
+      )
+
+      if (allowedFilesBySize.length !== files.length) {
+        onWarning(t('admin.error.videoSizeLimit'))
+      }
+
+      const attachedVideosCount = (
+        images.filter(
+          (image: { publicUrl?: string }) => image.publicUrl
+        ).length || 0
+      ) + allowedFilesBySize.filter((file: File) => file.type.match('video/')).length
+      const allowedFiles = allowedFilesBySize.filter(
+        (file: File) => (file.type.match('image/') || attachedVideosCount <= MAX_VIDEOS_PER_PROVIDER)
+      )
+
+      if (allowedFiles.length !== allowedFilesBySize.length) {
+        onWarning(t('admin.error.videoNumberLimit'))
+      }
+
+      // @ts-expect-error: skip type for now
+      setNewImages(items => [...items, ...allowedFiles])
+      const previewUrls = allowedFiles.map((file: File) => ({
+        url: URL.createObjectURL(file),
+        type: file.type.match('image/') ? MEDIA_TYPE_IMAGE : MEDIA_TYPE_VIDEO
+      }))
+      // @ts-expect-error: skip type for now
+      setPreviews(items => [...items, ...previewUrls])
+    },
+    [ setNewImages, setPreviews, images, onWarning, t ]
+  )
+
+  const handleImageDeleteById = useCallback(
+    async (imageId: number) => {
+      setImages((prev: Array<{ id: number }>) => prev.filter((img: { id: number }) => img.id !== imageId))
+    },
+    [ setImages ]
+  )
+  const handleImageDeleteByIndex = useCallback(
+    async (imageId: number) => {
+      // @ts-expect-error: skip type for now
+      setPreviews(previews => previews.filter((_preview, index) => index !== imageId))
+      // @ts-expect-error: skip type for now
+      setNewImages(newImages => newImages.filter((_image, index) => index !== imageId))
+    },
+    [ setPreviews, setNewImages ]
+  )
 
   // @ts-expect-error: skip type for now
   const handleImageReorder = (dragIndex, dropIndex) => {

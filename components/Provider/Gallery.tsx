@@ -81,6 +81,7 @@ const Gallery = ({ images, providerName }) => {
                 className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
                 autoPlay
                 muted
+                loop
               />
             }
           </div>
@@ -113,13 +114,21 @@ const Gallery = ({ images, providerName }) => {
               setShowModal(true)
             }}
           >
-            <Image
-              src={image.publicUrl}
-              alt={`${providerName} - ${index + 2}`}
-              className="object-cover w-full h-full"
-              width={200}
-              height={200}
-            />
+            {image.publicUrl ?
+              <Image
+                src={image.publicUrl}
+                alt={`${providerName} - ${index + 2}`}
+                className="object-cover w-full h-full"
+                width={200}
+                height={200}
+              /> : <Video
+                src={image.url}
+                className="object-cover w-full h-full"
+                autoPlay
+                muted
+                loop
+              />
+            }
           </div>
         ))}
       </div>
@@ -170,13 +179,21 @@ const Gallery = ({ images, providerName }) => {
                   key={image.id || index}
                   className="break-inside-avoid mb-4"
                 >
-                  <Image
-                    src={image.publicUrl}
-                    alt={`${providerName} - ${index + 1}`}
-                    className="w-full rounded-lg"
-                    width={800}
-                    height={600}
-                  />
+                  {image.publicUrl ?
+                    <Image
+                      src={image.publicUrl}
+                      alt={`${providerName} - ${index + 1}`}
+                      className="w-full rounded-lg"
+                      width={800}
+                      height={600}
+                    /> : <Video
+                      src={image.url}
+                      className="w-full rounded-lg"
+                      autoPlay
+                      muted
+                      loop
+                    />
+                  }
                 </div>
               ))}
             </div>

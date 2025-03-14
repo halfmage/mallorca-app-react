@@ -2,7 +2,6 @@ import React from 'react'
 import { useTranslation } from '@/app/i18n'
 import ProviderCard from '@/components/ProviderCard'
 import Link from 'next/link'
-import CategoryIcon from '@/components/shared/CategoryIcon'
 import { Category, Provider } from '@/app/api/utils/types'
 
 interface Props {

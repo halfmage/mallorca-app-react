@@ -7,7 +7,6 @@ import LanguageSwitcher from './LanguageSwitcher'
 
 import { Search, X, Menu, User } from 'lucide-react';
 import ProviderSearch from '@/components/ProviderSearch'
-import PasswordlessCallback from '@/components/SignIn/PasswordlessCallback'
 
 type HeaderProps = {
     user: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -17,7 +16,7 @@ type HeaderProps = {
 }
 
 const Header = ({ user, isAdmin, newMessagesCount, hasProviders }: HeaderProps) => {
-  const { t, i18n: { language } } = useTranslation()
+  const { i18n: { language } } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const avatarUrl = user?.user_metadata?.avatar_url

@@ -2,9 +2,6 @@ import React from 'react'
 import { useTranslation } from '@/app/i18n'
 import CategoryRow from './CategoryRow'
 import { Provider } from '@/app/api/utils/types'
-import Link from 'next/link'
-import Image from 'next/image'
-import styles from './Home.module.css'
 
 interface Props {
   categories: Array<{

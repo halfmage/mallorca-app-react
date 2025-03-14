@@ -21,28 +21,6 @@ const Home = async ({ categories, lng }: Props) => {
 
   return (
     <>
-      <div className="relative my-4 rounded-2xl overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <Image
-            src="/images/mallorca-home-bg.jpg"
-            alt="Mallorca Cathedral"
-            fill
-            className={`object-cover ${styles.zoomAnimation}`}
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-primary-800/50 to-primary-800/60" />
-        </div>
-        <div className="relative text-center py-10 md:py-16 px-4">
-          <div className="h1 py-6 text-white max-w-xl mx-auto">{t('home.title')}</div>
-          <p className="-mt-3 font-semibold max-w-xl text-white text-body mx-auto">{t('home.subtitle')}</p>
-          <Link 
-            href={`/${lng}/login`} 
-            className="button-primary mt-8 inline-block"
-          >
-            {t('header.signIn')}
-          </Link>
-        </div>
-      </div>
       <div className='flex flex-col'>
         {categories.length === 0 ? (
           <div className="text-center text-gray-600">

@@ -20,7 +20,7 @@ export default async function ProfilePage({ params }: Props) {
     }
 
     return (
-        <main className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-6 pb-16">
+        <main className="min-h-screen pt-6 pb-16">
             <Profile userData={user?.user_metadata} />
         </main>
     );

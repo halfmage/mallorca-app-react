@@ -15,12 +15,11 @@ const CategoryRow = async ({ category, providers, lng }: Props) => {
     const { t } = await useTranslation(lng) // eslint-disable-line react-hooks/rules-of-hooks
 
     return (
-        <div className="flex flex-col gap-3 py-6">
+        <div className="flex flex-col gap-2 py-6">
             <div className="flex items-center justify-between">
-                <h1 className="h4 flex items-center gap-2">
-                    <CategoryIcon slug={category.slug} />
+                <h2 className="h3">
                     {t('category.title', {category: category.name})}
-                </h1>
+                </h2>
                 <Link
                     href={`/${lng}/category/${category.slug || category.id}`}
                     className="underline text-gray-500 dark:text-gray-400"

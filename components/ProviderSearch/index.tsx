@@ -61,8 +61,8 @@ const ProviderSearch = () => {
         components={{ Group, Option, DropdownIndicator: null }}
         classNames={{
           container: () => 'w-full transition-all duration-300',
-          control: (state) => `!min-h-10 ${state.isFocused ? 'shadow-md' : ''} !rounded-xl !border-gray-200 dark:!border-gray-700 !bg-white dark:!bg-gray-950`,
-          menu: () => 'shadow-lg !rounded-xl !border !border-gray-200 dark:!border-gray-700 !mt-1 !z-50 !bg-white dark:!bg-gray-900',
+          control: (state) => `${state.isFocused ? 'shadow-xl' : ''} !min-h-12 !px-3 !rounded !border-gray-200 dark:!border-gray-700 !bg-white dark:!bg-gray-950`,
+          menu: () => 'shadow-2xl !rounded !mt-1 !z-50 !bg-white dark:!bg-gray-900',
           menuList: () => '!p-1',
           input: () => '!text-base md:!text-sm !text-gray-900 dark:!text-gray-100',
           placeholder: () => '!text-gray-500 dark:!text-gray-400',
@@ -82,7 +82,7 @@ const ProviderSearch = () => {
             ...base,
             maxHeight: '60vh',
             '@media (min-width: 768px)': {
-              maxHeight: '40vh'
+              maxHeight: '50vh'
             }
           }),
           option: (base) => ({

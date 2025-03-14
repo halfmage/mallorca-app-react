@@ -176,7 +176,7 @@ const Profile = ({ userData }) => {
                                         </div>
                                     ) : (
                                         <div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shadow-md">
-                                            <span className="text-gray-500 dark:text-gray-400 text-3xl font-gloock">
+                                            <span className="h1">
                                                 {displayName ? displayName[0].toUpperCase() : '?'}
                                             </span>
                                         </div>

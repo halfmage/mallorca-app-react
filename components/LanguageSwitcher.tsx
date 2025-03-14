@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter, usePathname } from 'next/navigation'
-import { Globe, ChevronDown } from 'lucide-react';
+import { Globe } from 'lucide-react';
 
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation()
@@ -23,15 +23,9 @@ const LanguageSwitcher = () => {
     <div className="relative !p-0">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex md:flex-col p-3 gap-3 md:gap-0 w-full items-center rounded-lg dark:hover:bg-gray-800"
+        className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800"
       >
-        <Globe size={24} strokeWidth={1.5}/>
-        <div className="flex items-center w-full">
-          <span className='w-full text-left'>
-            {i18n.language === 'en' ? 'English' : i18n.language === 'de' ? 'Deutsch' : 'Español'}
-          </span>
-          <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-        </div>
+        <Globe size={20} strokeWidth={2}/>
       </button>
 
       {isOpen && (
@@ -40,25 +34,25 @@ const LanguageSwitcher = () => {
             className="fixed inset-0" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute z-10 top-full mt-1 left-0 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 py-1 min-w-[120px] w-full md:w-auto">
+          <div className="absolute z-10 top-full mt-3 py-2 right-0 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 min-w-[120px] w-full md:w-auto">
             <button
               onClick={() => switchLanguage('en')}
               disabled={i18n.language === 'en'}
-              className={`w-full text-left font-medium px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${i18n.language === 'en' ? 'bg-gray-50 dark:bg-gray-800 cursor-not-allowed opacity-50' : ''}`}
+              className={`w-full text-left font-medium px-3 py-2.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${i18n.language === 'en' ? 'bg-gray-50 dark:bg-gray-800 cursor-not-allowed opacity-50' : ''}`}
             >
               English
             </button>
             <button
               onClick={() => switchLanguage('de')}
               disabled={i18n.language === 'de'}
-              className={`w-full text-left font-medium px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${i18n.language === 'de' ? 'bg-gray-50 dark:bg-gray-800 cursor-not-allowed opacity-50' : ''}`}
+              className={`w-full text-left font-medium px-3 py-2.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${i18n.language === 'de' ? 'bg-gray-50 dark:bg-gray-800 cursor-not-allowed opacity-50' : ''}`}
             >
               Deutsch
             </button>
             <button
               onClick={() => switchLanguage('es')}
               disabled={i18n.language === 'es'}
-              className={`w-full text-left font-medium px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${i18n.language === 'es' ? 'bg-gray-50 dark:bg-gray-800 cursor-not-allowed opacity-50' : ''}`}
+              className={`w-full text-left font-medium px-3 py-2.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${i18n.language === 'es' ? 'bg-gray-50 dark:bg-gray-800 cursor-not-allowed opacity-50' : ''}`}
             >
               Español
             </button>

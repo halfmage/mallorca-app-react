@@ -1011,7 +1011,7 @@ class ProviderService extends EntityService {
     return !error
   }
 
-  public async getProvidersGroupedByCategories(language: string, limit: number = 4) {
+  public async getProvidersGroupedByCategories(language: string, limit: number = 5) {
     const {data} = await this.supabase
       .from('maincategories')
       .select(`
@@ -1035,7 +1035,7 @@ class ProviderService extends EntityService {
       .eq('maincategory_translations.language', language)
       .eq('providers.provider_subcategories.subcategories.subcategory_translations.language', language)
       .in('providers.status', [STATUS_ACTIVE, STATUS_PENDING])
-      .order('created_at', {referencedTable: 'providers', ascending: false})
+      .order('updated_at', {referencedTable: 'providers', ascending: false})
       .limit(limit, {referencedTable: 'providers'})
 
     const categoryService = new CategoryService(this.supabase)
